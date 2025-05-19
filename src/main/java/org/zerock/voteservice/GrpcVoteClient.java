@@ -11,7 +11,7 @@ public class GrpcVoteClient {
     public GrpcVoteClient(String grpcHost, int grpcPort) {
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcHost, grpcPort)
-                .usePlaintext() // TLS 사용 시 제거
+                .usePlaintext()
                 .build();
 
         stub = BlockchainServiceGrpc.newBlockingStub(channel);
