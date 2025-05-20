@@ -3,7 +3,7 @@ syntax = "proto3";
 option java_package = "com.example.com";
 option java_outer_classname = "voteMessage";
 
-package vote;
+package vote_message;
 
 service BlockchainService {
   rpc SubmitVote(VoteRequest) returns (VoteResponse);
