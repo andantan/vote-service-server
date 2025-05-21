@@ -5,7 +5,7 @@ option java_outer_classname = "voteMessage";
 
 package vote_message;
 
-service BlockchainService {
+service BlockchainVoteService {
   rpc SubmitVote(VoteRequest) returns (VoteResponse);
 }
 

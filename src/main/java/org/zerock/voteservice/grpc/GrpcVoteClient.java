@@ -1,20 +1,20 @@
 package org.zerock.voteservice.grpc;
 
-import com.example.com.BlockchainServiceGrpc;
+import com.example.com.BlockchainVoteServiceGrpc;
 import com.example.com.voteMessage;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 public class GrpcVoteClient {
-    private final BlockchainServiceGrpc.BlockchainServiceBlockingStub stub;
+    private final BlockchainVoteServiceGrpc.BlockchainVoteServiceBlockingStub stub;
 
-    public GrpcVoteClient(String grpcHost, int grpcPort) {
+    public GrpcVoteClient(String grpcVoteConnectionHost, int grpcVoteConnectionPort) {
         ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(grpcHost, grpcPort)
+                .forAddress(grpcVoteConnectionHost, grpcVoteConnectionPort)
                 .usePlaintext()
                 .build();
 
-        stub = BlockchainServiceGrpc.newBlockingStub(channel);
+        stub = BlockchainVoteServiceGrpc.newBlockingStub(channel);
     }
 
     public long submitVote(String voteHash, String voteOption, String voteId) {

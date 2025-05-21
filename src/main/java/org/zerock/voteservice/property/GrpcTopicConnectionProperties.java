@@ -5,9 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "grpc.server")
+@ConfigurationProperties(prefix = "grpc.server.topic")
 @Data
-public class GrpcServerProperties {
+public class GrpcTopicConnectionProperties {
     private String host;
     private int port;
 }
