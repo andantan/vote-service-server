@@ -1,4 +1,4 @@
-package org.zerock.voteservice;
+package org.zerock.voteservice.grpc;
 
 import com.example.com.BlockchainServiceGrpc;
 import com.example.com.voteMessage;
@@ -17,11 +17,11 @@ public class GrpcVoteClient {
         stub = BlockchainServiceGrpc.newBlockingStub(channel);
     }
 
-    public long submitVote(String voteHash, String voteOption, String electionId) {
+    public long submitVote(String voteHash, String voteOption, String voteId) {
         voteMessage.VoteRequest request = voteMessage.VoteRequest.newBuilder()
                 .setVoteHash(voteHash)
                 .setVoteOption(voteOption)
-                .setElectionId(electionId)
+                .setVoteId(voteId)
                 .build();
 
         voteMessage.VoteResponse response = stub.submitVote(request);

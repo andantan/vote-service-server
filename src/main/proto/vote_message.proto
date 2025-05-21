@@ -12,7 +12,7 @@ service BlockchainService {
 message VoteRequest {
   string vote_hash = 1;
   string vote_option = 2;
-  string election_id = 3;
+  string vote_id = 3;
 }
 
 message VoteResponse {

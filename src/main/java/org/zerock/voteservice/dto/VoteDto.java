@@ -1,4 +1,4 @@
-package org.zerock.voteservice;
+package org.zerock.voteservice.dto;
 
 import lombok.Data;
 
@@ -6,5 +6,5 @@ import lombok.Data;
 public class VoteDto {
     private String voteHash;
     private String voteOption;
-    private String electionId;
+    private String voteId;
 }
