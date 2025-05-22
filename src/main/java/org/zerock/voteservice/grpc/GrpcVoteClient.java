@@ -17,14 +17,16 @@ public class GrpcVoteClient {
         stub = BlockchainVoteServiceGrpc.newBlockingStub(channel);
     }
 
-    public long submitVote(String voteHash, String voteOption, String voteId) {
+    public String submitVote(String hash, String option, String topic) {
         voteMessage.VoteRequest request = voteMessage.VoteRequest.newBuilder()
-                .setVoteHash(voteHash)
-                .setVoteOption(voteOption)
-                .setVoteId(voteId)
+                .setHash(hash)
+                .setOption(option)
+                .setTopic(topic)
                 .build();
 
         voteMessage.VoteResponse response = stub.submitVote(request);
-        return response.getBlockHeight();
+
+        return String.format("status: %s, message: %s",
+                response.getStatus(), response.getMessage());
     }
 }

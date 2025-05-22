@@ -17,15 +17,15 @@ public class GrpcTopicClient {
         stub = BlockchainTopicServiceGrpc.newBlockingStub(channel);
     }
 
-    public String submitTopic(String topicId, int topicDuration) {
+    public String submitTopic(String topic, int duration) {
         topicMessage.TopicRequest request = topicMessage.TopicRequest.newBuilder()
-                .setTopicId(topicId)
-                .setTopicDuration(topicDuration)
+                .setTopic(topic)
+                .setDuration(duration)
                 .build();
 
         topicMessage.TopicResponse response = stub.submitTopic(request);
 
-        return String.format("TopicId: %s, TopicDuration: %d",
-                response.getTopicId(), response.getTopicDuration());
+        return String.format("status: %s, message: %s",
+                response.getStatus(), response.getMessage());
     }
 }

@@ -22,7 +22,11 @@ public class VoteController {
 
     @PostMapping("/submit")
     public ResponseEntity<String> submitVote(@RequestBody VoteDto dto) {
-        long height = grpcVoteClient.submitVote(dto.getVoteHash(), dto.getVoteOption(), dto.getVoteId());
-        return ResponseEntity.ok("gRPC 응답(Vote): " + height);
+        String res = grpcVoteClient.submitVote(
+                dto.getHash(),
+                dto.getOption(),
+                dto.getTopic()
+        );
+        return ResponseEntity.ok(res);
     }
 }

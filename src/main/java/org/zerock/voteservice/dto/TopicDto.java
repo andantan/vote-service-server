@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class TopicDto {
-    private String topicId;
-    private int topicDuration;
+    private String topic;
+    private int duration;
 }

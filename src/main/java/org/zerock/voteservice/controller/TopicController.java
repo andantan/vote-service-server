@@ -23,10 +23,10 @@ public class TopicController {
     @PostMapping("/new")
     public ResponseEntity<String> newTopic(@RequestBody TopicDto dto) {
         String info = grpcTopicClient.submitTopic(
-                dto.getTopicId(),
-                dto.getTopicDuration()
+                dto.getTopic(),
+                dto.getDuration()
         );
 
-        return ResponseEntity.ok("gRPC 응답(Topic): " + info);
+        return ResponseEntity.ok(info);
     }
 }
