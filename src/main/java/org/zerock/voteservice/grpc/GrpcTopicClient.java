@@ -5,6 +5,9 @@ import com.example.com.topicMessage;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GrpcTopicClient {
     private final BlockchainTopicServiceGrpc.BlockchainTopicServiceBlockingStub stub;
 
@@ -17,7 +20,7 @@ public class GrpcTopicClient {
         stub = BlockchainTopicServiceGrpc.newBlockingStub(channel);
     }
 
-    public String submitTopic(String topic, int duration) {
+    public Map<String, String> submitTopic(String topic, int duration) {
         topicMessage.TopicRequest request = topicMessage.TopicRequest.newBuilder()
                 .setTopic(topic)
                 .setDuration(duration)
@@ -25,7 +28,12 @@ public class GrpcTopicClient {
 
         topicMessage.TopicResponse response = stub.submitTopic(request);
 
-        return String.format("status: %s, message: %s",
-                response.getStatus(), response.getMessage());
+        Map<String, String> resp = new HashMap<>();
+
+        resp.put("status", response.getStatus());
+        resp.put("message", response.getMessage());
+        resp.put("success", String.valueOf(response.getSuccess()));
+
+        return resp;
     }
 }

@@ -9,6 +9,8 @@ import org.zerock.voteservice.dto.TopicDto;
 import org.zerock.voteservice.grpc.GrpcTopicClient;
 import org.zerock.voteservice.property.GrpcTopicConnectionProperties;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/topic")
 public class TopicController {
@@ -20,13 +22,13 @@ public class TopicController {
         );
     }
 
+
     @PostMapping("/new")
-    public ResponseEntity<String> newTopic(@RequestBody TopicDto dto) {
-        String info = grpcTopicClient.submitTopic(
+    public Map<String,String> newTopic(@RequestBody TopicDto dto) {
+
+        return grpcTopicClient.submitTopic(
                 dto.getTopic(),
                 dto.getDuration()
         );
-
-        return ResponseEntity.ok(info);
     }
 }
