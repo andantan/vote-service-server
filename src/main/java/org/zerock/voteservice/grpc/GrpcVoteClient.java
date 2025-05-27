@@ -5,6 +5,9 @@ import com.example.com.voteMessage;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GrpcVoteClient {
     private final BlockchainVoteServiceGrpc.BlockchainVoteServiceBlockingStub stub;
 
@@ -17,7 +20,7 @@ public class GrpcVoteClient {
         stub = BlockchainVoteServiceGrpc.newBlockingStub(channel);
     }
 
-    public String submitVote(String hash, String option, String topic) {
+    public Map<String, String> submitVote(String hash, String option, String topic) {
         voteMessage.VoteRequest request = voteMessage.VoteRequest.newBuilder()
                 .setHash(hash)
                 .setOption(option)
@@ -26,7 +29,12 @@ public class GrpcVoteClient {
 
         voteMessage.VoteResponse response = stub.submitVote(request);
 
-        return String.format("status: %s, message: %s",
-                response.getStatus(), response.getMessage());
+        Map<String, String> resp = new HashMap<>();
+
+        resp.put("status", response.getStatus());
+        resp.put("message", response.getMessage());
+        resp.put("success", String.valueOf(response.getSuccess()));
+
+        return resp;
     }
 }

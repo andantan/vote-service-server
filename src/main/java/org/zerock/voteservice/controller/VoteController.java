@@ -9,6 +9,8 @@ import org.zerock.voteservice.property.GrpcVoteConnectionProperties;
 import org.zerock.voteservice.grpc.GrpcVoteClient;
 import org.zerock.voteservice.dto.VoteDto;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/vote")
 public class VoteController {
@@ -21,12 +23,12 @@ public class VoteController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<String> submitVote(@RequestBody VoteDto dto) {
-        String res = grpcVoteClient.submitVote(
+    public Map<String,String> submitVote(@RequestBody VoteDto dto) {
+
+        return grpcVoteClient.submitVote(
                 dto.getHash(),
                 dto.getOption(),
                 dto.getTopic()
         );
-        return ResponseEntity.ok(res);
     }
 }
