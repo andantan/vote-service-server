@@ -1,7 +1,7 @@
 package org.zerock.voteservice.grpc;
 
-import com.example.com.BlockchainTopicServiceGrpc;
-import com.example.com.topicMessage;
+import com.example.com.BlockchainVoteProposalServiceGrpc;
+import com.example.com.voteProposalMessage;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GrpcTopicClient {
-    private final BlockchainTopicServiceGrpc.BlockchainTopicServiceBlockingStub stub;
+    private final BlockchainVoteProposalServiceGrpc.BlockchainVoteProposalServiceBlockingStub stub;
 
     public GrpcTopicClient(String grpcTopicConnectionHost, int grpcTopicConnectionPort) {
         ManagedChannel channel = ManagedChannelBuilder
@@ -17,16 +17,16 @@ public class GrpcTopicClient {
                 .usePlaintext()
                 .build();
 
-        stub = BlockchainTopicServiceGrpc.newBlockingStub(channel);
+        stub = BlockchainVoteProposalServiceGrpc.newBlockingStub(channel);
     }
 
-    public Map<String, String> submitTopic(String topic, int duration) {
-        topicMessage.TopicRequest request = topicMessage.TopicRequest.newBuilder()
+    public Map<String, String> proposalVote(String topic, int duration) {
+        voteProposalMessage.VoteProposalRequest request = voteProposalMessage.VoteProposalRequest.newBuilder()
                 .setTopic(topic)
                 .setDuration(duration)
                 .build();
 
-        topicMessage.TopicResponse response = stub.submitTopic(request);
+        voteProposalMessage.VoteProposalResponse response = stub.proposalVote(request);
 
         Map<String, String> resp = new HashMap<>();
 
