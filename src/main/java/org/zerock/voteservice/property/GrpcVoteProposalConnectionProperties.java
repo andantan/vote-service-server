@@ -5,9 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "grpc.server.topic")
+@ConfigurationProperties(prefix = "grpc.server.vote.proposal")
 @Data
-public class GrpcTopicConnectionProperties {
+public class GrpcVoteProposalConnectionProperties {
     private String host;
     private int port;
 }

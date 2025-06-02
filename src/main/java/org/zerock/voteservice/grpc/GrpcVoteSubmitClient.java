@@ -8,10 +8,10 @@ import io.grpc.ManagedChannelBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GrpcVoteClient {
+public class GrpcVoteSubmitClient {
     private final BlockchainVoteSubmitServiceGrpc.BlockchainVoteSubmitServiceBlockingStub stub;
 
-    public GrpcVoteClient(String grpcVoteConnectionHost, int grpcVoteConnectionPort) {
+    public GrpcVoteSubmitClient(String grpcVoteConnectionHost, int grpcVoteConnectionPort) {
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcVoteConnectionHost, grpcVoteConnectionPort)
                 .usePlaintext()

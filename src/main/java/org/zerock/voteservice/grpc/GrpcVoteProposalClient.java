@@ -8,10 +8,10 @@ import io.grpc.ManagedChannelBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GrpcTopicClient {
+public class GrpcVoteProposalClient {
     private final BlockchainVoteProposalServiceGrpc.BlockchainVoteProposalServiceBlockingStub stub;
 
-    public GrpcTopicClient(String grpcTopicConnectionHost, int grpcTopicConnectionPort) {
+    public GrpcVoteProposalClient(String grpcTopicConnectionHost, int grpcTopicConnectionPort) {
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcTopicConnectionHost, grpcTopicConnectionPort)
                 .usePlaintext()
@@ -26,7 +26,7 @@ public class GrpcTopicClient {
                 .setDuration(duration)
                 .build();
 
-        voteProposalMessage.VoteProposalResponse response = stub.proposalVote(request);
+        voteProposalMessage.VoteProposalResponse response = stub.proposalVote(request); 
 
         Map<String, String> resp = new HashMap<>();
 
