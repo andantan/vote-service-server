@@ -1,18 +1,14 @@
-package org.zerock.voteservice.controller;
+package org.zerock.voteservice.controller.vote;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.zerock.voteservice.dto.VoteProposalDto;
+import org.springframework.web.bind.annotation.*;
+import org.zerock.voteservice.dto.vote.VoteProposalDto;
 import org.zerock.voteservice.grpc.GrpcVoteProposalClient;
 import org.zerock.voteservice.property.GrpcVoteProposalConnectionProperties;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/topic")
-public class VoteProposalController {
+public class VoteProposalController extends VoteRequestMapper {
     private final GrpcVoteProposalClient grpcTopicClient;
 
     public VoteProposalController(GrpcVoteProposalConnectionProperties grpcTopicConnectionProperties) {
@@ -22,7 +18,7 @@ public class VoteProposalController {
     }
 
 
-    @PostMapping("/new")
+    @PostMapping("/proposal")
     public Map<String,String> proposalVote(@RequestBody VoteProposalDto dto) {
 
         return grpcTopicClient.proposalVote(

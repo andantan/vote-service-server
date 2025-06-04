@@ -1,18 +1,14 @@
-package org.zerock.voteservice.controller;
+package org.zerock.voteservice.controller.vote;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.zerock.voteservice.property.GrpcVoteSubmitConnectionProperties;
 import org.zerock.voteservice.grpc.GrpcVoteSubmitClient;
-import org.zerock.voteservice.dto.VoteSubmitDto;
+import org.zerock.voteservice.dto.vote.VoteSubmitDto;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/vote")
-public class VoteSubmitController {
+public class VoteSubmitController extends VoteRequestMapper {
     private final GrpcVoteSubmitClient grpcVoteClient;
 
     public VoteSubmitController(GrpcVoteSubmitConnectionProperties grpcVoteConnectionProps) {
