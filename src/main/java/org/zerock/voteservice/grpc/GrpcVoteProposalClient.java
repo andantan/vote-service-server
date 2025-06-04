@@ -1,7 +1,9 @@
 package org.zerock.voteservice.grpc;
 
-import com.example.com.BlockchainVoteProposalServiceGrpc;
-import com.example.com.voteProposalMessage;
+import domain.vote.proposal.protocol.BlockchainVoteProposalServiceGrpc;
+import domain.vote.proposal.protocol.VoteProposalRequest;
+import domain.vote.proposal.protocol.VoteProposalResponse;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -21,12 +23,12 @@ public class GrpcVoteProposalClient {
     }
 
     public Map<String, String> proposalVote(String topic, int duration) {
-        voteProposalMessage.VoteProposalRequest request = voteProposalMessage.VoteProposalRequest.newBuilder()
+        VoteProposalRequest request = VoteProposalRequest.newBuilder()
                 .setTopic(topic)
                 .setDuration(duration)
                 .build();
 
-        voteProposalMessage.VoteProposalResponse response = stub.proposalVote(request); 
+        VoteProposalResponse response = stub.proposalVote(request);
 
         Map<String, String> resp = new HashMap<>();
 

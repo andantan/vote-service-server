@@ -17,7 +17,6 @@ public class VoteProposalController extends VoteRequestMapper {
         );
     }
 
-
     @PostMapping("/proposal")
     public Map<String,String> proposalVote(@RequestBody VoteProposalDto dto) {
 

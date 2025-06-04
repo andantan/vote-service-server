@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-option java_package = "com.example.com";
+option java_package = "domain.vote.submit.protocol";
 option java_outer_classname = "voteSubmitMessage";
+option java_multiple_files = true;
 
 package vote_submit_message;
 

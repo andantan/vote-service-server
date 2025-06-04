@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_package = "domain.event.block.protocol";
+option java_outer_classname = "blockEventMessage";
+option java_multiple_files = true;
+
+package block_event_message;
+
+service CreatedBlockEventService {
+  rpc ReportCreatedBlockEvent(CreatedBlockEvent) returns (ReportBlockEventResponse);
+}
+
+message CreatedBlockEvent {
+  string topic = 1;
+  uint64 height = 2;
+}
+
+message ReportBlockEventResponse {
+  bool success = 1;
+  string message = 2;
+}

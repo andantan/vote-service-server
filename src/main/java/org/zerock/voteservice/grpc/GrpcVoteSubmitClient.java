@@ -1,7 +1,9 @@
 package org.zerock.voteservice.grpc;
 
-import com.example.com.BlockchainVoteSubmitServiceGrpc;
-import com.example.com.voteSubmitMessage;
+import domain.vote.submit.protocol.BlockchainVoteSubmitServiceGrpc;
+import domain.vote.submit.protocol.VoteSubmitRequest;
+import domain.vote.submit.protocol.VoteSubmitResponse;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -21,13 +23,13 @@ public class GrpcVoteSubmitClient {
     }
 
     public Map<String, String> submitVote(String hash, String option, String topic) {
-        voteSubmitMessage.VoteSubmitRequest request = voteSubmitMessage.VoteSubmitRequest.newBuilder()
+        VoteSubmitRequest request = VoteSubmitRequest.newBuilder()
                 .setHash(hash)
                 .setOption(option)
                 .setTopic(topic)
                 .build();
 
-        voteSubmitMessage.VoteSubmitResponse response = stub.submitVote(request);
+        VoteSubmitResponse response = stub.submitVote(request);
 
         Map<String, String> resp = new HashMap<>();
 
