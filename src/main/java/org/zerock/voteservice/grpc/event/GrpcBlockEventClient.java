@@ -1,4 +1,4 @@
-package org.zerock.voteservice.grpc;
+package org.zerock.voteservice.grpc.event;
 
 import domain.event.block.protocol.CreatedBlockEventServiceGrpc;
 import domain.event.block.protocol.CreatedBlockEvent;
@@ -28,12 +28,11 @@ public class GrpcBlockEventClient {
                 .build();
 
         ReportBlockEventResponse response = stub.reportCreatedBlockEvent(request);
+        Map<String, Object> responseMap = new HashMap<>();
 
-        Map<String, Object> resp = new HashMap<>();
+        responseMap.put("success", response.getSuccess());
+        responseMap.put("message", response.getMessage());
 
-        resp.put("success", response.getSuccess());
-        resp.put("message", response.getMessage());
-
-        return resp;
+        return responseMap;
     }
 }

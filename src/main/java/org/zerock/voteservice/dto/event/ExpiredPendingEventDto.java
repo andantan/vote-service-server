@@ -7,14 +7,14 @@ import java.util.Map;
 
 @Data
 public class ExpiredPendingEventDto {
-    @JsonProperty("voting_id")
-    private String votingId;
+    @JsonProperty("vote_id")
+    private String voteId;
 
-    @JsonProperty("submits_length")
-    private int submitsLength;
+    @JsonProperty("vote_count")
+    private int voteCount;
 
-    @JsonProperty("submits_option")
-    private Map<String, Integer> submitsOption;
+    @JsonProperty("vote_option_counts")
+    private Map<String, Long> voteOptionCounts;
 }
 
 

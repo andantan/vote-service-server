@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class BlockCreatedEventDto {
-    @JsonProperty("voting_id")
-    private String votingId;
+    @JsonProperty("vote_id")
+    private String voteId;
 
     @JsonProperty("height")
     private int height;

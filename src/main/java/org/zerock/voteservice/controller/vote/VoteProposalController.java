@@ -2,8 +2,8 @@ package org.zerock.voteservice.controller.vote;
 
 import org.springframework.web.bind.annotation.*;
 import org.zerock.voteservice.dto.vote.VoteProposalDto;
-import org.zerock.voteservice.grpc.GrpcVoteProposalClient;
-import org.zerock.voteservice.property.GrpcVoteProposalConnectionProperties;
+import org.zerock.voteservice.grpc.vote.GrpcVoteProposalClient;
+import org.zerock.voteservice.property.vote.GrpcVoteProposalConnectionProperties;
 
 import java.util.Map;
 

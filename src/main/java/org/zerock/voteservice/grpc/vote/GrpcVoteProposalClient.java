@@ -1,4 +1,4 @@
-package org.zerock.voteservice.grpc;
+package org.zerock.voteservice.grpc.vote;
 
 import domain.vote.proposal.protocol.BlockchainVoteProposalServiceGrpc;
 import domain.vote.proposal.protocol.VoteProposalRequest;
