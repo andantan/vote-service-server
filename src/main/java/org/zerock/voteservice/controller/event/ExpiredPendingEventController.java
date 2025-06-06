@@ -25,13 +25,8 @@ public class ExpiredPendingEventController extends EventRequestMapper {
 
     @PostMapping("/expired-pending")
     public Map<String, Object> eventNewBlock(@RequestBody ExpiredPendingEventDto dto) {
-        log.info("[REST-Blockchain-Node-Server] Pending event received: vote_id='{}', vote_count={}, vote_option_counts={}",
-                dto.getVoteId(),
-                dto.getVoteCount(),
-                dto.getVoteOptionCounts()
-        );
-
-        log.info("[gRPC-MongoDB-Cache-Server] ReportExpiredPendingEvent request: topic='{}', count={}, options={}",
+        log.info("===================================================================================================");
+        log.info("#[REST]#[From: Blockchain-Node-Server] Pending event received: vote_id='{}', vote_count={}, vote_option_counts={}",
                 dto.getVoteId(),
                 dto.getVoteCount(),
                 dto.getVoteOptionCounts()
@@ -43,23 +38,20 @@ public class ExpiredPendingEventController extends EventRequestMapper {
                 dto.getVoteOptionCounts()
         );
 
-        log.info("[gRPC-MongoDB-Cache-Server] ReportExpiredPendingEvent Response: Success={}, Message='{}'",
-                grpcResponse.get("success"),
-                grpcResponse.get("message")
-        );
-
-//        if (dto.getVoteOptionCounts() != null && !dto.getVoteOptionCounts().isEmpty()) {
-//            log.info("  Submits Option Details:");
-//            dto.getVoteOptionCounts().forEach((key, value) ->
-//                    log.info("    Option '{}': {} submissions", key, value));
-//        }
-
         Map<String, Object> result = new HashMap<>();
 
         result.put("caching", grpcResponse.get("success"));
         result.put("message", grpcResponse.get("message"));
         result.put("vote_id", dto.getVoteId());
         result.put("vote_count", dto.getVoteCount());
+
+        log.info("#[REST]#[To  : Blockchain-Node-Server] Pending event response: vote_id='{}', vote_count={}, caching={}, Message='{}'",
+                result.get("vote_id"),
+                result.get("vote_count"),
+                result.get("caching"),
+                result.get("message")
+        );
+        log.info("===================================================================================================");
 
         return result;
     }

@@ -24,12 +24,9 @@ public class CreatedBlockEventController extends EventRequestMapper {
 
     @PostMapping("/new-block")
     public Map<String, Object> eventNewBlock(@RequestBody BlockCreatedEventDto dto) {
-        log.info("[REST-Blockchain-Node-Server] Block event received: vote_id='{}', height={}",
-                dto.getVoteId(),
-                dto.getHeight()
-        );
+        log.info("===================================================================================================");
 
-        log.info("[gRPC-MongoDB-Cache-Server] ReportCreatedBlockEvent request: topic='{}', height={}",
+        log.info("#[REST]#[From: Blockchain-Node-Server] Block event received: vote_id='{}', height={}",
                 dto.getVoteId(),
                 dto.getHeight()
         );
@@ -39,11 +36,6 @@ public class CreatedBlockEventController extends EventRequestMapper {
                 dto.getHeight()
         );
 
-        log.info("[gRPC-MongoDB-Cache-Server] ReportCreatedBlockEvent Response: Success={}, Message='{}'",
-                grpcResponse.get("success"),
-                grpcResponse.get("message")
-        );
-
         Map<String, Object> result = new HashMap<>();
 
         result.put("caching", grpcResponse.get("success"));
@@ -51,12 +43,13 @@ public class CreatedBlockEventController extends EventRequestMapper {
         result.put("vote_id", dto.getVoteId());
         result.put("height", dto.getHeight());
 
-        log.info("[REST-Blockchain-Node-Server] Block event response: vote_id='{}', height={}, caching={}, Message='{}'",
+        log.info("#[REST]#[To  : Blockchain-Node-Server] Block event response: vote_id='{}', height={}, caching={}, Message='{}'",
                 result.get("vote_id"),
                 result.get("height"),
                 result.get("caching"),
                 result.get("message")
         );
+        log.info("===================================================================================================");
 
         return result;
     }

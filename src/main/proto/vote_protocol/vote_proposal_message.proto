@@ -12,7 +12,7 @@ service BlockchainVoteProposalService {
 
 message VoteProposalRequest {
   string topic = 1;
-  int64 duration = 2;
+  uint32 duration = 2;
 }
 
 message VoteProposalResponse {
