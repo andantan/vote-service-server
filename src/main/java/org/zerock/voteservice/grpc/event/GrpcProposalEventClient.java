@@ -24,7 +24,7 @@ public class GrpcProposalEventClient {
     }
 
     public Map<String, Object> validateNewProposalEvent(String topic, int duration) {
-        log.info("#[gRPC]#[To  : MongoDB-Cache-Server] ValidateNewProposalEvent request: topic='{}', duration={}",
+        log.info("#[gRPC]#[To  : MongoDB-Cache-Server] ValidateNewProposalEvent request: topic={}, duration={}",
                 topic, duration
         );
 
@@ -35,7 +35,7 @@ public class GrpcProposalEventClient {
 
         ValidateProposalEventResponse response = stub.validateNewProposalEvent(request);
 
-        log.info("#[gRPC]#[From: MongoDB-Cache-Server] ValidateNewProposalEvent response: Success={}, Message='{}'",
+        log.info("#[gRPC]#[From: MongoDB-Cache-Server] ValidateNewProposalEvent response: Success={}, Message={}",
                 response.getSuccess(),
                 response.getMessage()
         );
