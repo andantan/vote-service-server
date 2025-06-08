@@ -6,10 +6,12 @@ import domain.vote.submit.protocol.VoteSubmitResponse;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Log4j2
 public class GrpcVoteSubmitClient {
     private final BlockchainVoteSubmitServiceGrpc.BlockchainVoteSubmitServiceBlockingStub stub;
 
@@ -23,6 +25,10 @@ public class GrpcVoteSubmitClient {
     }
 
     public Map<String, String> submitVote(String hash, String option, String topic) {
+        log.info("#[gRPC]#[To  : Blockchain-Node-Server] SubmitVote request:  topic='{}', hash={}, option={}",
+                topic, hash, option
+        );
+
         VoteSubmitRequest request = VoteSubmitRequest.newBuilder()
                 .setHash(hash)
                 .setOption(option)
@@ -30,6 +36,12 @@ public class GrpcVoteSubmitClient {
                 .build();
 
         VoteSubmitResponse response = stub.submitVote(request);
+
+        log.info("#[gRPC]#[From: Blockchain-Node-Server] SubmitVote response: Success={}, Message='{}', Status={}",
+                String.valueOf(response.getSuccess()),
+                response.getMessage(),
+                response.getStatus()
+        );
 
         Map<String, String> resp = new HashMap<>();
 
