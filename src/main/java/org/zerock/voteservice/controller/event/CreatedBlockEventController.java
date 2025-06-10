@@ -26,13 +26,15 @@ public class CreatedBlockEventController extends EventRequestMapper {
     public Map<String, Object> eventNewBlock(@RequestBody BlockCreatedEventDto dto) {
         log.info("===================================================================================================");
 
-        log.info("#[REST]#[From: Blockchain-Node-Server] Block event received: vote_id='{}', height={}",
+        log.info("#[REST]#[From: Blockchain-Node-Server] Block event received: vote_id='{}', length={}, height={}",
                 dto.getVoteId(),
+                dto.getLength(),
                 dto.getHeight()
         );
 
         Map<String, Object> grpcResponse = grpcBlockEventClient.reportCreatedBlockEvent(
                 dto.getVoteId(),
+                dto.getLength(),
                 dto.getHeight()
         );
 

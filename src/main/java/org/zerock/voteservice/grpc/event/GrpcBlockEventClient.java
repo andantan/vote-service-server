@@ -23,13 +23,14 @@ public class GrpcBlockEventClient {
         stub = CreatedBlockEventServiceGrpc.newBlockingStub(channel);
     }
 
-    public Map<String, Object> reportCreatedBlockEvent(String topic, int height) {
-        log.info("#[gRPC]#[To  : MongoDB-Cache-Server] ReportCreatedBlockEvent request: topic='{}', height={}",
-                topic, height
+    public Map<String, Object> reportCreatedBlockEvent(String topic, int length, int height) {
+        log.info("#[gRPC]#[To  : MongoDB-Cache-Server] ReportCreatedBlockEvent request: topic='{}', length={}, height={}",
+                topic, length, height
         );
 
         CreatedBlockEvent request = CreatedBlockEvent.newBuilder()
                 .setTopic(topic)
+                .setLength(length)
                 .setHeight(height)
                 .build();
 

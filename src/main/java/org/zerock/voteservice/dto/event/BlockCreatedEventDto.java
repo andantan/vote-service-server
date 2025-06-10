@@ -8,6 +8,9 @@ public class BlockCreatedEventDto {
     @JsonProperty("vote_id")
     private String voteId;
 
+    @JsonProperty("length")
+    private int length;
+
     @JsonProperty("height")
     private int height;
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "grpc.server.vote.proposal")
 @Data
-public class GrpcVoteProposalConnectionProperties {
+public class GrpcProposalPendingConnectionProperties {
     private String host;
     private int port;
 }

@@ -1,58 +1,50 @@
 package org.zerock.voteservice.controller.vote;
 
+import domain.event.proposal.protocol.CacheProposalEventResponse;
+import domain.vote.proposal.protocol.OpenProposalResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
+
+import domain.event.proposal.protocol.ValidateProposalEventResponse;
+
 import org.zerock.voteservice.dto.vote.VoteProposalDto;
-import org.zerock.voteservice.grpc.event.GrpcProposalEventClient;
-import org.zerock.voteservice.grpc.vote.GrpcVoteProposalClient;
-import org.zerock.voteservice.property.event.GrpcProposalEventConnectionProperties;
-import org.zerock.voteservice.property.vote.GrpcVoteProposalConnectionProperties;
+import org.zerock.voteservice.controller.vote.process.VoteProposalProcessor;
 
 import java.util.Map;
 
 @Log4j2
 @RestController
 public class VoteProposalController extends VoteRequestMapper {
-    private final GrpcVoteProposalClient grpcVoteProposalClient;
-    private final GrpcProposalEventClient grpcProposalEventClient;
+    private final VoteProposalProcessor voteProposalProcessor;
 
-    public VoteProposalController(
-            GrpcVoteProposalConnectionProperties grpcTopicConnectionProperties,
-            GrpcProposalEventConnectionProperties grpcProposalEventConnectionProperties
-    ) {
-        this.grpcVoteProposalClient = new GrpcVoteProposalClient(
-                grpcTopicConnectionProperties.getHost(), grpcTopicConnectionProperties.getPort()
-        );
-        this.grpcProposalEventClient = new GrpcProposalEventClient(
-                grpcProposalEventConnectionProperties.getHost(), grpcProposalEventConnectionProperties.getPort()
-        );
+    public VoteProposalController(VoteProposalProcessor voteProposalProcessor) {
+        this.voteProposalProcessor = voteProposalProcessor;
     }
 
     @PostMapping("/proposal")
     public Map<String, String> proposalVote(@RequestBody VoteProposalDto dto) {
-        log.info("===================================================================================================");
-        log.info("#[REST]#[From: WEB-Client] Proposal-vote request received: topic='{}', duration={}",
-                dto.getTopic(),
-                dto.getDuration()
-        );
+        // Cache server: request validate proposal
+        ValidateProposalEventResponse validatedProposal = this.voteProposalProcessor.validateProposal(dto);
 
-        Map<String, Object> grpcProposalValidationResponse = grpcProposalEventClient.validateNewProposalEvent(
-                dto.getTopic(),
-                dto.getDuration()
-        );
+        if (!validatedProposal.getValidation()) {
+            return this.voteProposalProcessor.getErrorResponse(dto, validatedProposal.getStatus());
+        }
 
-        Map<String, String> grpcProposalVoteResponse = grpcVoteProposalClient.proposalVote(
-                dto.getTopic(),
-                dto.getDuration()
-        );
+        // Blockchain server: request open pending
+        OpenProposalResponse pendedProposal = this.voteProposalProcessor.requestOpenPending(dto);
 
-        log.info("#[REST]#[To  : WEB-Client] Proposal vote response: Success={}, Message='{}', Status={}",
-                grpcProposalVoteResponse.get("success"),
-                grpcProposalVoteResponse.get("message"),
-                grpcProposalVoteResponse.get("status")
-        );
-        log.info("===================================================================================================");
+        if (!pendedProposal.getSuccess()) {
+            return this.voteProposalProcessor.getErrorResponse(dto, pendedProposal.getStatus());
+        }
 
-        return grpcProposalVoteResponse;
+        // Cache server: request cache proposal
+        CacheProposalEventResponse cachedProposal = this.voteProposalProcessor.requestCacheProposal(dto);
+
+        if (!cachedProposal.getCached()) {
+            return this.voteProposalProcessor.getErrorResponse(dto, cachedProposal.getStatus());
+        }
+
+        // All steps get fine
+        return this.voteProposalProcessor.getSuccessResponse(dto);
     }
 }

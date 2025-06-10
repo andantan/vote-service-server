@@ -1,14 +1,13 @@
 package org.zerock.voteservice.grpc.event;
 
 import domain.event.proposal.protocol.NewProposalEventServiceGrpc;
-import domain.event.proposal.protocol.NewProposalEvent;
+import domain.event.proposal.protocol.ValidateProposalEventRequest;
 import domain.event.proposal.protocol.ValidateProposalEventResponse;
+import domain.event.proposal.protocol.CacheProposalEventRequest;
+import domain.event.proposal.protocol.CacheProposalEventResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Log4j2
 public class GrpcProposalEventClient {
@@ -23,28 +22,20 @@ public class GrpcProposalEventClient {
         stub = NewProposalEventServiceGrpc.newBlockingStub(channel);
     }
 
-    public Map<String, Object> validateNewProposalEvent(String topic, int duration) {
-        log.info("#[gRPC]#[To  : MongoDB-Cache-Server] ValidateNewProposalEvent request: topic={}, duration={}",
-                topic, duration
-        );
+    public ValidateProposalEventResponse validateProposal(String topic) {
+        ValidateProposalEventRequest request = ValidateProposalEventRequest.newBuilder()
+                .setTopic(topic)
+                .build();
 
-        NewProposalEvent request = NewProposalEvent.newBuilder()
+        return stub.validateNewProposalEvent(request);
+    }
+
+    public CacheProposalEventResponse cacheProposal(String topic, int duration) {
+        CacheProposalEventRequest request = CacheProposalEventRequest.newBuilder()
                 .setTopic(topic)
                 .setDuration(duration)
                 .build();
 
-        ValidateProposalEventResponse response = stub.validateNewProposalEvent(request);
-
-        log.info("#[gRPC]#[From: MongoDB-Cache-Server] ValidateNewProposalEvent response: Success={}, Message={}",
-                response.getSuccess(),
-                response.getMessage()
-        );
-
-        Map<String, Object> responseMap = new HashMap<>();
-
-        responseMap.put("success", response.getSuccess());
-        responseMap.put("message", response.getMessage());
-
-        return responseMap;
+        return stub.cacheNewProposalEvent(request);
     }
 }
