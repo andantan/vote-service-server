@@ -13,8 +13,8 @@ public class ExpiredPendingEventDto {
     @JsonProperty("vote_count")
     private int voteCount;
 
-    @JsonProperty("vote_option_counts")
-    private Map<String, Integer> voteOptionCounts;
+    @JsonProperty("vote_options")
+    private Map<String, Integer> voteOptions;
 }
 
 

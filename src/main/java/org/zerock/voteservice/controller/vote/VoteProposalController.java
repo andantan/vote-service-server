@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import domain.event.proposal.protocol.ValidateProposalEventResponse;
 
 import org.zerock.voteservice.dto.vote.VoteProposalDto;
-import org.zerock.voteservice.controller.vote.process.VoteProposalProcessor;
+import org.zerock.voteservice.controller.vote.processor.VoteProposalProcessor;
 
 import java.util.Map;
 
@@ -23,28 +23,28 @@ public class VoteProposalController extends VoteRequestMapper {
 
     @PostMapping("/proposal")
     public Map<String, String> proposalVote(@RequestBody VoteProposalDto dto) {
-        // Cache server: request validate proposal
+        // Cache server: request validate proposal [gRPC]
         ValidateProposalEventResponse validatedProposal = this.voteProposalProcessor.validateProposal(dto);
 
         if (!validatedProposal.getValidation()) {
             return this.voteProposalProcessor.getErrorResponse(dto, validatedProposal.getStatus());
         }
 
-        // Blockchain server: request open pending
+        // Blockchain server: request open pending [gRPC]
         OpenProposalResponse pendedProposal = this.voteProposalProcessor.requestOpenPending(dto);
 
         if (!pendedProposal.getSuccess()) {
             return this.voteProposalProcessor.getErrorResponse(dto, pendedProposal.getStatus());
         }
 
-        // Cache server: request cache proposal
+        // Cache server: request cache proposal [gRPC]
         CacheProposalEventResponse cachedProposal = this.voteProposalProcessor.requestCacheProposal(dto);
 
         if (!cachedProposal.getCached()) {
             return this.voteProposalProcessor.getErrorResponse(dto, cachedProposal.getStatus());
         }
 
-        // All steps get fine
+        // All steps passed
         return this.voteProposalProcessor.getSuccessResponse(dto);
     }
 }

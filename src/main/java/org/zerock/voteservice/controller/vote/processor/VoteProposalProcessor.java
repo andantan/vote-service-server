@@ -1,4 +1,4 @@
-package org.zerock.voteservice.controller.vote.process;
+package org.zerock.voteservice.controller.vote.processor;
 
 import domain.vote.proposal.protocol.OpenProposalResponse;
 import lombok.extern.log4j.Log4j2;
@@ -39,11 +39,11 @@ public class VoteProposalProcessor {
     }
 
     public OpenProposalResponse requestOpenPending(VoteProposalDto dto) {
-         return grpcProposalPendingClient.openProposalPending(dto.getTopic(), dto.getDuration());
+         return this.grpcProposalPendingClient.openProposalPending(dto.getTopic(), dto.getDuration());
     }
 
     public CacheProposalEventResponse requestCacheProposal(VoteProposalDto dto) {
-        return grpcProposalEventClient.cacheProposal(dto.getTopic(), dto.getDuration());
+        return this.grpcProposalEventClient.cacheProposal(dto.getTopic(), dto.getDuration());
     }
 
     public Map<String, String> getSuccessResponse(VoteProposalDto dto) {
