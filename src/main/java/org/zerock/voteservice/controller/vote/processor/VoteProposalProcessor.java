@@ -1,11 +1,12 @@
 package org.zerock.voteservice.controller.vote.processor;
 
-import domain.vote.proposal.protocol.OpenProposalResponse;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import domain.event.proposal.protocol.ValidateProposalEventResponse;
 import domain.event.proposal.protocol.CacheProposalEventResponse;
+import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 
 import org.zerock.voteservice.dto.vote.VoteProposalDto;
 import org.zerock.voteservice.grpc.event.GrpcProposalEventClient;
@@ -38,7 +39,7 @@ public class VoteProposalProcessor {
         return this.grpcProposalEventClient.validateProposal(dto.getTopic());
     }
 
-    public OpenProposalResponse requestOpenPending(VoteProposalDto dto) {
+    public OpenProposalPendingResponse requestOpenPending(VoteProposalDto dto) {
          return this.grpcProposalPendingClient.openProposalPending(dto.getTopic(), dto.getDuration());
     }
 

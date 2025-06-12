@@ -1,7 +1,7 @@
 package org.zerock.voteservice.controller.vote;
 
 import domain.event.proposal.protocol.CacheProposalEventResponse;
-import domain.vote.proposal.protocol.OpenProposalResponse;
+import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +31,7 @@ public class VoteProposalController extends VoteRequestMapper {
         }
 
         // Blockchain server: request open pending [gRPC]
-        OpenProposalResponse pendedProposal = this.voteProposalProcessor.requestOpenPending(dto);
+        OpenProposalPendingResponse pendedProposal = this.voteProposalProcessor.requestOpenPending(dto);
 
         if (!pendedProposal.getSuccess()) {
             return this.voteProposalProcessor.getErrorResponse(dto, pendedProposal.getStatus());

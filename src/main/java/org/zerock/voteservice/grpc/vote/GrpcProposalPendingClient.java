@@ -1,8 +1,8 @@
 package org.zerock.voteservice.grpc.vote;
 
 import domain.vote.proposal.protocol.BlockchainVoteProposalServiceGrpc;
-import domain.vote.proposal.protocol.OpenProposalRequest;
-import domain.vote.proposal.protocol.OpenProposalResponse;
+import domain.vote.proposal.protocol.OpenProposalPendingRequest;
+import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -21,8 +21,8 @@ public class GrpcProposalPendingClient {
         stub = BlockchainVoteProposalServiceGrpc.newBlockingStub(channel);
     }
 
-    public OpenProposalResponse openProposalPending(String topic, int duration) {
-        OpenProposalRequest request = OpenProposalRequest.newBuilder()
+    public OpenProposalPendingResponse openProposalPending(String topic, int duration) {
+        OpenProposalPendingRequest request = OpenProposalPendingRequest.newBuilder()
                 .setTopic(topic)
                 .setDuration(duration)
                 .build();

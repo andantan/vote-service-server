@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "grpc.server.vote.submit")
 @Data
-public class GrpcVoteSubmitConnectionProperties {
+public class GrpcBallotTransactionConnectionProperties {
     private String host;
     private int port;
 }

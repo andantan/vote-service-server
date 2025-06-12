@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class VoteSubmitDto {
+public class VoteBallotDto {
     @JsonProperty("hash")
-    private String hash;
-
-    @JsonProperty("option")
-    private String option;
+    private String userHash;
 
     @JsonProperty("topic")
     private String topic;
+
+    @JsonProperty("option")
+    private String option;
 }
