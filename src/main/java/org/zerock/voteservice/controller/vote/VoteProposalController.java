@@ -1,12 +1,16 @@
 package org.zerock.voteservice.controller.vote;
 
-import domain.event.proposal.protocol.CacheProposalEventResponse;
 import domain.vote.proposal.protocol.OpenProposalPendingResponse;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.*;
-
+import domain.event.proposal.protocol.CacheProposalEventResponse;
 import domain.event.proposal.protocol.ValidateProposalEventResponse;
 
+import lombok.extern.log4j.Log4j2;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import org.zerock.voteservice.controller.docs.VoteProposalApiDoc;
 import org.zerock.voteservice.dto.vote.VoteProposalDto;
 import org.zerock.voteservice.controller.vote.processor.VoteProposalProcessor;
 
@@ -21,8 +25,11 @@ public class VoteProposalController extends VoteRequestMapper {
         this.voteProposalProcessor = voteProposalProcessor;
     }
 
+    @VoteProposalApiDoc
     @PostMapping("/proposal")
     public Map<String, String> proposalVote(@RequestBody VoteProposalDto dto) {
+        log.info("{}, {}", dto.getTopic(), dto.getDuration());
+
         // Cache server: request validate proposal [gRPC]
         ValidateProposalEventResponse validatedProposal = this.voteProposalProcessor.validateProposal(dto);
 
