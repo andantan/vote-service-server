@@ -11,6 +11,8 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 
 import org.zerock.voteservice.dto.vote.VoteProposalRequestDto;
 import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
+import org.zerock.voteservice.dto.vote.VoteErrorResponseDto;
+import org.zerock.voteservice.dto.vote.error.VoteProposalErrorStatus;
 import org.zerock.voteservice.grpc.event.GrpcProposalEventClient;
 import org.zerock.voteservice.grpc.vote.GrpcProposalPendingClient;
 
@@ -39,7 +41,7 @@ public class VoteProposalProcessor {
     }
 
     public CacheProposalEventResponse requestCacheProposal(VoteProposalRequestDto dto) {
-        return this.grpcProposalEventClient.cacheProposal(dto.getTopic(), dto.getDuration());
+        return this.grpcProposalEventClient.cacheProposal(dto.getTopic(), dto.getDuration(), dto.getOptions());
     }
 
 public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, String internalStatus) {
@@ -55,38 +57,10 @@ public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRe
         return new ResponseEntity<>(successDto, Objects.requireNonNull(HttpStatus.resolve(successDto.getHttpStatusCode())));
     }
 
-    public ResponseEntity<VoteProposalResponseDto> getErrorResponse(VoteProposalRequestDto requestDto, String internalStatus) {
-        String message;
-        HttpStatus httpStatus;
+    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(String internalStatus) {
+        VoteProposalErrorStatus errorStatus = VoteProposalErrorStatus.fromCode(internalStatus);
+        VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
 
-        switch (internalStatus) {
-            case "PROPOSAL_EXPIRED" -> {
-                message = "이미 진행되었던 투표입니다.";
-                httpStatus = HttpStatus.BAD_REQUEST; // 400
-            }
-            case "PROPOSAL_ALREADY_OPEN" -> {
-                message = "현재 진행 중인 투표입니다.";
-                httpStatus = HttpStatus.CONFLICT; // 409
-            }
-            case "UNKNOWN_ERROR" -> {
-                message = "알 수 없는 오류가 발생했습니다.";
-                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; // 500
-            }
-            default -> {
-                message = "요청 처리 중 오류가 발생했습니다.";
-                httpStatus = HttpStatus.BAD_REQUEST; // 400
-            }
-        }
-
-        VoteProposalResponseDto errorDto = VoteProposalResponseDto.builder()
-                .success(false)
-                .topic(requestDto.getTopic())
-                .message(message)
-                .status(internalStatus)
-                .httpStatusCode(httpStatus.value())
-                .duration(requestDto.getDuration())
-                .build();
-
-        return new ResponseEntity<>(errorDto, Objects.requireNonNull(HttpStatus.resolve(errorDto.getHttpStatusCode())));
+        return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());
     }
 }

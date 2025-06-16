@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.zerock.voteservice.dto.ResponseDto;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public abstract class BaseVoteResponse {
+public abstract class BaseVoteResponse implements ResponseDto {
     @JsonProperty("success")
     @Schema(
             description = "요청 처리 여부",

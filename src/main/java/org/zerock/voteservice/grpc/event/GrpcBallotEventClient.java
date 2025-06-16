@@ -29,10 +29,11 @@ public class GrpcBallotEventClient {
         stub = NewBallotEventServiceGrpc.newBlockingStub(channel);
     }
 
-    public ValidateBallotEventResponse validateBallot(String userHash, String topic) {
+    public ValidateBallotEventResponse validateBallot(String userHash, String topic, String option) {
         ValidateBallotEventRequest request = ValidateBallotEventRequest.newBuilder()
                 .setUserHash(userHash)
                 .setTopic(topic)
+                .setOption(option)
                 .build();
 
         return stub.validateNewBallotEvent(request);

@@ -14,6 +14,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.List;
+
 @Log4j2
 @Service
 public class GrpcProposalEventClient {
@@ -39,10 +41,11 @@ public class GrpcProposalEventClient {
         return stub.validateNewProposalEvent(request);
     }
 
-    public CacheProposalEventResponse cacheProposal(String topic, int duration) {
+    public CacheProposalEventResponse cacheProposal(String topic, int duration, List<String> options) {
         CacheProposalEventRequest request = CacheProposalEventRequest.newBuilder()
                 .setTopic(topic)
                 .setDuration(duration)
+                .addAllOptions(options)
                 .build();
 
         return stub.cacheNewProposalEvent(request);

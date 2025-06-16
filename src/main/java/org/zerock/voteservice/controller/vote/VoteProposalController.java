@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.zerock.voteservice.controller.docs.VoteProposalApiDoc;
 
+import org.zerock.voteservice.dto.ResponseDto;
 import org.zerock.voteservice.dto.vote.VoteProposalRequestDto;
-import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
 import org.zerock.voteservice.controller.vote.processor.VoteProposalProcessor;
 
 @Log4j2
@@ -28,26 +28,26 @@ public class VoteProposalController extends VoteRequestMapper {
 
     @VoteProposalApiDoc
     @PostMapping("/proposal")
-    public ResponseEntity<VoteProposalResponseDto> proposalVote(@RequestBody VoteProposalRequestDto dto) {
+    public ResponseEntity<? extends ResponseDto> proposalVote(@RequestBody VoteProposalRequestDto dto) {
         // Cache server: request validate proposal [gRPC]
         ValidateProposalEventResponse validatedProposal = this.voteProposalProcessor.validateProposal(dto);
 
         if (!validatedProposal.getValidation()) {
-            return this.voteProposalProcessor.getErrorResponse(dto, validatedProposal.getStatus());
+            return this.voteProposalProcessor.getErrorResponse(validatedProposal.getStatus());
         }
 
         // Blockchain server: request open pending [gRPC]
         OpenProposalPendingResponse pendedProposal = this.voteProposalProcessor.requestOpenPending(dto);
 
         if (!pendedProposal.getSuccess()) {
-            return this.voteProposalProcessor.getErrorResponse(dto, pendedProposal.getStatus());
+            return this.voteProposalProcessor.getErrorResponse(pendedProposal.getStatus());
         }
 
         // Cache server: request cache proposal [gRPC]
         CacheProposalEventResponse cachedProposal = this.voteProposalProcessor.requestCacheProposal(dto);
 
         if (!cachedProposal.getCached()) {
-            return this.voteProposalProcessor.getErrorResponse(dto, cachedProposal.getStatus());
+            return this.voteProposalProcessor.getErrorResponse(cachedProposal.getStatus());
         }
 
         // All steps passed

@@ -26,11 +26,11 @@ public class VoteProposalRequestDto extends BaseVoteRequest {
     )
     private int duration;
 
-//    @JsonProperty("options")
-//    @Schema(
-//            description = "투표 가능한 선택지 목록",
-//            example = "[\"찬성\", \"반대\", \"기권\"]",
-//            requiredMode = Schema.RequiredMode.REQUIRED
-//    )
-//    private List<String> options;
+    @JsonProperty("options")
+    @Schema(
+            description = "투표 가능한 선택지 목록",
+            example = "[\"찬성\", \"반대\", \"기권\"]",
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private List<String> options;
 }

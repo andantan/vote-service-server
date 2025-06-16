@@ -7,12 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.zerock.voteservice.dto.ResponseDto;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public abstract class BaseVoteRequest {
+public abstract class BaseVoteRequest implements ResponseDto {
     @JsonProperty("topic")
     @Schema(
             description = "투표의 주제",
