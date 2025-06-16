@@ -5,7 +5,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.dto.event.BlockCreatedEventDto;
 import org.zerock.voteservice.grpc.event.GrpcBlockEventClient;
-import org.zerock.voteservice.property.event.GrpcBlockEventConnectionProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +14,8 @@ import java.util.Map;
 public class BlockEventProcessor {
     private final GrpcBlockEventClient grpcBlockEventClient;
 
-    public BlockEventProcessor(GrpcBlockEventConnectionProperties grpcTopicConnectionProperties) {
-        this.grpcBlockEventClient = new GrpcBlockEventClient(
-                grpcTopicConnectionProperties.getHost(), grpcTopicConnectionProperties.getPort()
-        );
+    public BlockEventProcessor(GrpcBlockEventClient grpcBlockEventClient) {
+        this.grpcBlockEventClient = grpcBlockEventClient;
     }
 
     public ReportBlockEventResponse reportCreatedBlockEvent(BlockCreatedEventDto dto) {

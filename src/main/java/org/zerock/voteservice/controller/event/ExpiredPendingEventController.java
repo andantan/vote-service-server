@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.controller.event.processor.PendingEventProcessor;
 import org.zerock.voteservice.dto.event.ExpiredPendingEventDto;
-import org.zerock.voteservice.grpc.event.GrpcPendingEventClient;
-import org.zerock.voteservice.property.event.GrpcPendingEventConnectionProperties;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2

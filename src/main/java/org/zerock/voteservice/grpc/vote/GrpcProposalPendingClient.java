@@ -6,13 +6,21 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+
 import lombok.extern.log4j.Log4j2;
 
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+
 @Log4j2
+@Service
 public class GrpcProposalPendingClient {
     private final BlockchainVoteProposalServiceGrpc.BlockchainVoteProposalServiceBlockingStub stub;
 
-    public GrpcProposalPendingClient(String grpcTopicConnectionHost, int grpcTopicConnectionPort) {
+    public GrpcProposalPendingClient(
+            @Value("${grpc.server.vote.proposal.host}") String grpcTopicConnectionHost,
+            @Value("${grpc.server.vote.proposal.port}") int grpcTopicConnectionPort
+    ) {
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcTopicConnectionHost, grpcTopicConnectionPort)
                 .usePlaintext()

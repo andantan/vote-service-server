@@ -40,7 +40,8 @@ import java.lang.annotation.RetentionPolicy;
                                 value = """
                                     {
                                       "topic": "법률 개정안 찬반 투표",
-                                      "duration": 24
+                                      "duration": 24,
+                                      "options": ["찬성", "반대", "기권"]
                                     }"""
                         )
                 )

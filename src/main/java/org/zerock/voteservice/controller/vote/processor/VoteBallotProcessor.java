@@ -9,8 +9,6 @@ import org.zerock.voteservice.dto.vote.VoteBallotRequestDto;
 import org.zerock.voteservice.dto.vote.VoteBallotResponseDto;
 import org.zerock.voteservice.grpc.event.GrpcBallotEventClient;
 import org.zerock.voteservice.grpc.vote.GrpcBallotTransactionClient;
-import org.zerock.voteservice.property.event.GrpcBallotEventConnectionProperties;
-import org.zerock.voteservice.property.vote.GrpcBallotTransactionConnectionProperties;
 
 import domain.event.ballot.protocol.ValidateBallotEventResponse;
 import domain.event.ballot.protocol.CacheBallotEventResponse;
@@ -27,15 +25,11 @@ public class VoteBallotProcessor {
 
 
     public VoteBallotProcessor(
-            GrpcBallotTransactionConnectionProperties grpcBallotTransactionConnectionProperties,
-            GrpcBallotEventConnectionProperties grpcBallotEventConnectionProperties
+            GrpcBallotTransactionClient grpcBallotTransactionClient,
+            GrpcBallotEventClient grpcBallotEventClient
     ) {
-        this.grpcBallotTransactionClient = new GrpcBallotTransactionClient(
-                grpcBallotTransactionConnectionProperties.getHost(), grpcBallotTransactionConnectionProperties.getPort()
-        );
-        this.grpcBallotEventClient = new GrpcBallotEventClient(
-                grpcBallotEventConnectionProperties.getHost(), grpcBallotEventConnectionProperties.getPort()
-        );
+        this.grpcBallotTransactionClient = grpcBallotTransactionClient;
+        this.grpcBallotEventClient = grpcBallotEventClient;
     }
 
     public ValidateBallotEventResponse validateBallot(VoteBallotRequestDto dto) {

@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-public class UserRegisterController implements UserRequestMapper {
+public class UserRegisterController extends UserRequestMapper {
 }

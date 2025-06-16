@@ -9,12 +9,18 @@ import domain.event.ballot.protocol.ValidateBallotEventRequest;
 import domain.event.ballot.protocol.ValidateBallotEventResponse;
 import domain.event.ballot.protocol.CacheBallotEventRequest;
 import domain.event.ballot.protocol.CacheBallotEventResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Log4j2
+@Service
 public class GrpcBallotEventClient {
     private final NewBallotEventServiceGrpc.NewBallotEventServiceBlockingStub stub;
 
-    public GrpcBallotEventClient(String grpcBallotEventConnectionHost, int grpcBallotEventConnectionPort) {
+    public GrpcBallotEventClient(
+            @Value("${grpc.server.event.ballot.host}") String grpcBallotEventConnectionHost,
+            @Value("${grpc.server.event.ballot.port}") int grpcBallotEventConnectionPort
+    ) {
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcBallotEventConnectionHost, grpcBallotEventConnectionPort)
                 .usePlaintext()

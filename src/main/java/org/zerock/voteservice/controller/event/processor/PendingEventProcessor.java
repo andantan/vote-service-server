@@ -5,7 +5,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.dto.event.ExpiredPendingEventDto;
 import org.zerock.voteservice.grpc.event.GrpcPendingEventClient;
-import org.zerock.voteservice.property.event.GrpcPendingEventConnectionProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +14,8 @@ import java.util.Map;
 public class PendingEventProcessor {
     private final GrpcPendingEventClient grpcPendingEventClient;
 
-    public PendingEventProcessor(GrpcPendingEventConnectionProperties grpcPendingEventConnectionProperties) {
-        this.grpcPendingEventClient = new GrpcPendingEventClient(
-                grpcPendingEventConnectionProperties.getHost(), grpcPendingEventConnectionProperties.getPort()
-        );
+    public PendingEventProcessor(GrpcPendingEventClient grpcPendingEventClient) {
+        this.grpcPendingEventClient = grpcPendingEventClient;
     }
 
     public ReportPendingEventResponse reportExpiredPendingEvent(ExpiredPendingEventDto dto) {

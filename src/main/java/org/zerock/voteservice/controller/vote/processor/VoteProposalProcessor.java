@@ -1,6 +1,5 @@
 package org.zerock.voteservice.controller.vote.processor;
 
-
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,6 @@ import org.zerock.voteservice.dto.vote.VoteProposalRequestDto;
 import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
 import org.zerock.voteservice.grpc.event.GrpcProposalEventClient;
 import org.zerock.voteservice.grpc.vote.GrpcProposalPendingClient;
-import org.zerock.voteservice.property.event.GrpcProposalEventConnectionProperties;
-import org.zerock.voteservice.property.vote.GrpcProposalPendingConnectionProperties;
 
 import java.util.Objects;
 
@@ -26,15 +23,11 @@ public class VoteProposalProcessor {
     private final GrpcProposalEventClient grpcProposalEventClient;
 
     public VoteProposalProcessor(
-            GrpcProposalPendingConnectionProperties grpcProposalPendingConnectionProperties,
-            GrpcProposalEventConnectionProperties grpcProposalEventConnectionProperties
+            GrpcProposalPendingClient grpcProposalPendingClient,
+            GrpcProposalEventClient grpcProposalEventClient
     ) {
-        this.grpcProposalPendingClient = new GrpcProposalPendingClient(
-                grpcProposalPendingConnectionProperties.getHost(), grpcProposalPendingConnectionProperties.getPort()
-        );
-        this.grpcProposalEventClient = new GrpcProposalEventClient(
-                grpcProposalEventConnectionProperties.getHost(), grpcProposalEventConnectionProperties.getPort()
-        );
+        this.grpcProposalPendingClient = grpcProposalPendingClient;
+        this.grpcProposalEventClient = grpcProposalEventClient;
     }
 
     public ValidateProposalEventResponse validateProposal(VoteProposalRequestDto dto) {

@@ -7,12 +7,18 @@ import lombok.extern.log4j.Log4j2;
 import domain.vote.submit.protocol.BlockchainVoteSubmitServiceGrpc;
 import domain.vote.submit.protocol.SubmitBallotTransactionRequest;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Log4j2
+@Service
 public class GrpcBallotTransactionClient {
     private final BlockchainVoteSubmitServiceGrpc.BlockchainVoteSubmitServiceBlockingStub stub;
 
-    public GrpcBallotTransactionClient(String grpcVoteConnectionHost, int grpcVoteConnectionPort) {
+    public GrpcBallotTransactionClient(
+            @Value("${grpc.server.vote.submit.host}") String grpcVoteConnectionHost,
+            @Value("${grpc.server.vote.submit.port}") int grpcVoteConnectionPort
+    ) {
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcVoteConnectionHost, grpcVoteConnectionPort)
                 .usePlaintext()
