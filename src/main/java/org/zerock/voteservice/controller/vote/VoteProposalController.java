@@ -6,15 +6,16 @@ import domain.event.proposal.protocol.ValidateProposalEventResponse;
 
 import lombok.extern.log4j.Log4j2;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.zerock.voteservice.controller.docs.VoteProposalApiDoc;
-import org.zerock.voteservice.dto.vote.VoteProposalDto;
-import org.zerock.voteservice.controller.vote.processor.VoteProposalProcessor;
 
-import java.util.Map;
+import org.zerock.voteservice.dto.vote.VoteProposalRequestDto;
+import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
+import org.zerock.voteservice.controller.vote.processor.VoteProposalProcessor;
 
 @Log4j2
 @RestController
@@ -27,9 +28,7 @@ public class VoteProposalController extends VoteRequestMapper {
 
     @VoteProposalApiDoc
     @PostMapping("/proposal")
-    public Map<String, String> proposalVote(@RequestBody VoteProposalDto dto) {
-        log.info("{}, {}", dto.getTopic(), dto.getDuration());
-
+    public ResponseEntity<VoteProposalResponseDto> proposalVote(@RequestBody VoteProposalRequestDto dto) {
         // Cache server: request validate proposal [gRPC]
         ValidateProposalEventResponse validatedProposal = this.voteProposalProcessor.validateProposal(dto);
 
@@ -52,6 +51,6 @@ public class VoteProposalController extends VoteRequestMapper {
         }
 
         // All steps passed
-        return this.voteProposalProcessor.getSuccessResponse(dto);
+        return this.voteProposalProcessor.getSuccessResponse(dto, cachedProposal.getStatus());
     }
 }

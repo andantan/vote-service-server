@@ -1,9 +1,12 @@
 package org.zerock.voteservice.controller.vote.processor;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import org.zerock.voteservice.dto.vote.VoteBallotDto;
+import org.zerock.voteservice.dto.vote.VoteBallotRequestDto;
+import org.zerock.voteservice.dto.vote.VoteBallotResponseDto;
 import org.zerock.voteservice.grpc.event.GrpcBallotEventClient;
 import org.zerock.voteservice.grpc.vote.GrpcBallotTransactionClient;
 import org.zerock.voteservice.property.event.GrpcBallotEventConnectionProperties;
@@ -13,14 +16,15 @@ import domain.event.ballot.protocol.ValidateBallotEventResponse;
 import domain.event.ballot.protocol.CacheBallotEventResponse;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 @Log4j2
 @Service
 public class VoteBallotProcessor {
+
     private final GrpcBallotTransactionClient grpcBallotTransactionClient;
     private final GrpcBallotEventClient grpcBallotEventClient;
+
 
     public VoteBallotProcessor(
             GrpcBallotTransactionConnectionProperties grpcBallotTransactionConnectionProperties,
@@ -34,56 +38,86 @@ public class VoteBallotProcessor {
         );
     }
 
-    public ValidateBallotEventResponse validateBallot(VoteBallotDto dto) {
+    public ValidateBallotEventResponse validateBallot(VoteBallotRequestDto dto) {
         return this.grpcBallotEventClient.validateBallot(dto.getUserHash(), dto.getTopic());
     }
 
-    public SubmitBallotTransactionResponse submitBallotTransaction(VoteBallotDto dto) {
+    public SubmitBallotTransactionResponse submitBallotTransaction(VoteBallotRequestDto dto) {
         return this.grpcBallotTransactionClient.submitBallotTransaction(
                 dto.getUserHash(), dto.getTopic(), dto.getOption()
         );
     }
 
-    public CacheBallotEventResponse cacheBallot(VoteBallotDto dto, String voteHash) {
+    public CacheBallotEventResponse cacheBallot(VoteBallotRequestDto dto, String voteHash) {
         return this.grpcBallotEventClient.cacheBallot(
                 dto.getUserHash(), voteHash, dto.getTopic(), dto.getOption()
         );
     }
 
-    public Map<String, String> getSuccessResponse(VoteBallotDto dto, String voteHash) {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<VoteBallotResponseDto> getSuccessResponse(VoteBallotRequestDto requestDto, String internalStatus, String voteHash) {
+        String successMessage = "투표 참여가 완료되었습니다.";
 
-        response.put("success", "true");
-        response.put("status", "OK");
-        response.put("message", "투표 참여가 완료되었습니다.");
-        response.put("user_hash", dto.getUserHash());
-        response.put("vote_hash", voteHash);
-        response.put("topic", dto.getTopic());
-        response.put("option", dto.getOption());
+        VoteBallotResponseDto successDto = VoteBallotResponseDto.builder()
+                .success(true)
+                .topic(requestDto.getTopic())
+                .message(successMessage)
+                .status(internalStatus)
+                .httpStatusCode(HttpStatus.OK.value())
+                .userHash(requestDto.getUserHash())
+                .voteHash(voteHash)
+                .voteOption(requestDto.getOption())
+                .build();
 
-        return response;
+        return new ResponseEntity<>(successDto, Objects.requireNonNull(HttpStatus.resolve(successDto.getHttpStatusCode())));
     }
 
-    public Map<String, String> getErrorResponse(VoteBallotDto dto, String status) {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<VoteBallotResponseDto> getErrorResponse(VoteBallotRequestDto requestDto, String internalStatus) {
+        String errorVoteHash = "0000000000000000000000000000000000000000000000000000000000000000";
+        String message;
+        HttpStatus httpStatus;
 
-        response.put("success", "false");
-        response.put("status", status);
-
-        switch (status) {
-            case "DUPLICATE_VOTE_SUBMISSION" -> response.put("message", "이미 참가한 투표입니다. (재투표 불가)");
-            case "PROPOSAL_NOT_OPEN" -> response.put("message", "현재 존재하지 않는 투표입니다.");
-            case "TIMEOUT_PROPOSAL" -> response.put("message", "투표가 마감되어 정산 중입니다.");
-            case "INVALID_HASH_LENGTH" -> response.put("message", "비정상적인 해시값입니다. (해시 길이 오류)");
-            case "DECODE_ERROR" -> response.put("message", "배정상적인 해시값입니다. (해시 해독 오류)");
-            case "UNKNOWN_ERROR" -> response.put("message", "알수 없는 오류");
-            default -> response.put("message", "");
+        switch (internalStatus) {
+            case "DUPLICATE_VOTE_SUBMISSION" -> {
+                message = "이미 참가한 투표입니다. (재투표 불가)";
+                httpStatus = HttpStatus.CONFLICT; // 409
+            }
+            case "PROPOSAL_NOT_OPEN" -> {
+                message = "현재 존재하지 않는 투표입니다.";
+                httpStatus = HttpStatus.NOT_FOUND; // 404
+            }
+            case "TIMEOUT_PROPOSAL" -> {
+                message = "투표가 마감되어 정산 중입니다.";
+                httpStatus = HttpStatus.NOT_ACCEPTABLE; // 406
+            }
+            case "INVALID_HASH_LENGTH" -> {
+                message = "비정상적인 해시값입니다. (해시 길이 오류)";
+                httpStatus = HttpStatus.BAD_REQUEST; // 400
+            }
+            case "DECODE_ERROR" -> {
+                message = "비정상적인 해시값입니다. (해시 해독 오류)";
+                httpStatus = HttpStatus.BAD_REQUEST; // 400
+            }
+            case "UNKNOWN_ERROR" -> {
+                message = "알 수 없는 오류가 발생했습니다.";
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; // 500
+            }
+            default -> {
+                message = "요청 처리 중 오류가 발생했습니다.";
+                httpStatus = HttpStatus.BAD_REQUEST; // 400
+            }
         }
 
-        response.put("user_hash", dto.getUserHash());
-        response.put("topic", dto.getTopic());
-        response.put("option", dto.getOption());
+        VoteBallotResponseDto successDto = VoteBallotResponseDto.builder()
+                .success(false)
+                .topic(requestDto.getTopic())
+                .message(message)
+                .status(internalStatus)
+                .httpStatusCode(httpStatus.value())
+                .userHash(requestDto.getUserHash())
+                .voteHash(errorVoteHash)
+                .voteOption(requestDto.getOption())
+                .build();
 
-        return response;
+        return new ResponseEntity<>(successDto, java.util.Objects.requireNonNull(HttpStatus.resolve(successDto.getHttpStatusCode())));
     }
 }

@@ -21,7 +21,8 @@ public class CorsConfig implements WebMvcConfigurer {
         String reactClientOrigin = String.format("%s://%s:%d",
                 reactWebServerProtocol,
                 reactWebServerHost,
-                reactWebServerPort);
+                reactWebServerPort
+        );
 
         registry.addMapping("/**")
                 .allowedOrigins(reactClientOrigin)
