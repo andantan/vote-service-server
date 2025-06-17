@@ -11,10 +11,10 @@ import java.util.Map;
 
 @Log4j2
 @Service
-public class BlockEventProcessor {
+public class BlockProcessor {
     private final GrpcBlockEventClient grpcBlockEventClient;
 
-    public BlockEventProcessor(GrpcBlockEventClient grpcBlockEventClient) {
+    public BlockProcessor(GrpcBlockEventClient grpcBlockEventClient) {
         this.grpcBlockEventClient = grpcBlockEventClient;
     }
 

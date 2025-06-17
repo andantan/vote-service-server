@@ -1,9 +1,8 @@
 package org.zerock.voteservice.dto.vote.error;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@Getter
+@lombok.Getter
 public enum VoteBallotErrorStatus {
     OK(
             "OK",

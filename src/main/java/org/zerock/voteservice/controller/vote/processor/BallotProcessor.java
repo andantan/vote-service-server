@@ -9,33 +9,31 @@ import org.zerock.voteservice.dto.vote.VoteErrorResponseDto;
 import org.zerock.voteservice.dto.vote.VoteBallotRequestDto;
 import org.zerock.voteservice.dto.vote.VoteBallotResponseDto;
 import org.zerock.voteservice.dto.vote.error.VoteBallotErrorStatus;
-import org.zerock.voteservice.grpc.event.GrpcBallotEventClient;
+import org.zerock.voteservice.grpc.event.GrpcBallotCreateEventClient;
 import org.zerock.voteservice.grpc.vote.GrpcBallotTransactionClient;
 
-import domain.event.ballot.protocol.ValidateBallotEventResponse;
-import domain.event.ballot.protocol.CacheBallotEventResponse;
+import domain.event.ballot.create.protocol.ValidateBallotEventResponse;
+import domain.event.ballot.create.protocol.CacheBallotEventResponse;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
-
-import java.util.Objects;
 
 @Log4j2
 @Service
-public class VoteBallotProcessor {
+public class BallotProcessor {
 
     private final GrpcBallotTransactionClient grpcBallotTransactionClient;
-    private final GrpcBallotEventClient grpcBallotEventClient;
+    private final GrpcBallotCreateEventClient grpcBallotCreateEventClient;
 
 
-    public VoteBallotProcessor(
+    public BallotProcessor(
             GrpcBallotTransactionClient grpcBallotTransactionClient,
-            GrpcBallotEventClient grpcBallotEventClient
+            GrpcBallotCreateEventClient grpcBallotCreateEventClient
     ) {
         this.grpcBallotTransactionClient = grpcBallotTransactionClient;
-        this.grpcBallotEventClient = grpcBallotEventClient;
+        this.grpcBallotCreateEventClient = grpcBallotCreateEventClient;
     }
 
     public ValidateBallotEventResponse validateBallot(VoteBallotRequestDto dto) {
-        return this.grpcBallotEventClient.validateBallot(dto.getUserHash(), dto.getTopic(), dto.getOption());
+        return this.grpcBallotCreateEventClient.validateBallot(dto.getUserHash(), dto.getTopic(), dto.getOption());
     }
 
     public SubmitBallotTransactionResponse submitBallotTransaction(VoteBallotRequestDto dto) {
@@ -45,7 +43,7 @@ public class VoteBallotProcessor {
     }
 
     public CacheBallotEventResponse cacheBallot(VoteBallotRequestDto dto, String voteHash) {
-        return this.grpcBallotEventClient.cacheBallot(
+        return this.grpcBallotCreateEventClient.cacheBallot(
                 dto.getUserHash(), voteHash, dto.getTopic(), dto.getOption()
         );
     }
@@ -64,7 +62,7 @@ public class VoteBallotProcessor {
                 .voteOption(requestDto.getOption())
                 .build();
 
-        return new ResponseEntity<>(successDto, Objects.requireNonNull(HttpStatus.resolve(successDto.getHttpStatusCode())));
+        return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
     public ResponseEntity<VoteErrorResponseDto> getErrorResponse(String internalStatus) {

@@ -1,4 +1,4 @@
-package org.zerock.voteservice.dto.vote.base;
+package org.zerock.voteservice.dto.query.Base;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,25 +12,18 @@ import org.zerock.voteservice.dto.ResponseDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public abstract class BaseVoteResponse implements ResponseDto {
+public abstract class BaseQueryResponse implements ResponseDto {
     @JsonProperty("success")
     @Schema(
-            description = "투표 API 요청 처리 여부",
+            description = "조회 API 요청 처리 여부",
             example = "true"
     )
     private Boolean success;
 
-    @JsonProperty("topic")
-    @Schema(
-            description = "투표 주제",
-            example = "법률 개정안 찬반 투표"
-    )
-    private String topic;
-
     @JsonProperty("message")
     @Schema(
             description = "응답 메세지",
-            example = "투표 등록이 완료되었습니다."
+            example = "조회가 완료 되었습니다."
     )
     private String message;
 

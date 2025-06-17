@@ -11,10 +11,10 @@ import java.util.Map;
 
 @Log4j2
 @Service
-public class PendingEventProcessor {
+public class PendingProcessor {
     private final GrpcPendingEventClient grpcPendingEventClient;
 
-    public PendingEventProcessor(GrpcPendingEventClient grpcPendingEventClient) {
+    public PendingProcessor(GrpcPendingEventClient grpcPendingEventClient) {
         this.grpcPendingEventClient = grpcPendingEventClient;
     }
 

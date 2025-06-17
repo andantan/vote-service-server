@@ -1,10 +1,10 @@
 package org.zerock.voteservice.grpc.event;
 
-import domain.event.proposal.protocol.NewProposalEventServiceGrpc;
-import domain.event.proposal.protocol.ValidateProposalEventRequest;
-import domain.event.proposal.protocol.ValidateProposalEventResponse;
-import domain.event.proposal.protocol.CacheProposalEventRequest;
-import domain.event.proposal.protocol.CacheProposalEventResponse;
+import domain.event.proposal.create.protocol.NewProposalEventServiceGrpc;
+import domain.event.proposal.create.protocol.ValidateProposalEventRequest;
+import domain.event.proposal.create.protocol.ValidateProposalEventResponse;
+import domain.event.proposal.create.protocol.CacheProposalEventRequest;
+import domain.event.proposal.create.protocol.CacheProposalEventResponse;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -18,15 +18,15 @@ import java.util.List;
 
 @Log4j2
 @Service
-public class GrpcProposalEventClient {
+public class GrpcProposalCreateEventClient {
     private final NewProposalEventServiceGrpc.NewProposalEventServiceBlockingStub stub;
 
-    public GrpcProposalEventClient(
-            @Value("${grpc.server.event.proposal.host}") String grpcProposalEventConnectionHost,
-            @Value("${grpc.server.event.proposal.port}") int grpcProposalEventConnectionPort
+    public GrpcProposalCreateEventClient(
+            @Value("${grpc.server.event.proposal.create.host}") String grpcProposalCreateEventConnectionHost,
+            @Value("${grpc.server.event.proposal.create.port}") int grpcProposalCreateEventConnectionPort
     ) {
         ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(grpcProposalEventConnectionHost, grpcProposalEventConnectionPort)
+                .forAddress(grpcProposalCreateEventConnectionHost, grpcProposalCreateEventConnectionPort)
                 .usePlaintext()
                 .build();
 

@@ -1,12 +1,10 @@
-package org.zerock.voteservice.dto.vote;
+package org.zerock.voteservice.dto.query;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import lombok.*;
 import org.zerock.voteservice.dto.ResponseDto;
-import org.zerock.voteservice.dto.vote.error.VoteBallotErrorStatus;
-import org.zerock.voteservice.dto.vote.error.VoteProposalErrorStatus;
+import org.zerock.voteservice.dto.query.error.BallotQueryErrorStatus;
 
 @Getter
 @NoArgsConstructor
@@ -15,9 +13,9 @@ import org.zerock.voteservice.dto.vote.error.VoteProposalErrorStatus;
 @EqualsAndHashCode
 @Builder
 @Schema(
-        description = "투표 API 오류 응답 공통 형식"
+        description = "조회 API 오류 응답 공통 형식"
 )
-public class VoteErrorResponseDto implements ResponseDto {
+public class QueryErrorResponseDto implements ResponseDto {
     @JsonProperty("success")
     @Schema(
             description = "요청 처리 성공 여부",
@@ -28,35 +26,26 @@ public class VoteErrorResponseDto implements ResponseDto {
     @JsonProperty("message")
     @Schema(
             description = "오류 상세 메시지",
-            example = "비정상적인 투표 선택 사항입니다."
+            example = "해당 유권자를 찾을 수 없습니다."
     )
     private String message;
 
     @JsonProperty("status")
     @Schema(
             description = "내부 오류 코드",
-            example = "INVALID_OPTION"
+            example = "USER_NOT_FOUND"
     )
     private String status;
 
     @JsonProperty("http_status_code")
     @Schema(
             description = "HTTP 응답 상태 코드",
-            example = "400"
+            example = "404"
     )
     private Integer httpStatusCode;
 
-    public static VoteErrorResponseDto from(VoteBallotErrorStatus errorStatus) {
-        return VoteErrorResponseDto.builder()
-                .success(false)
-                .message(errorStatus.getMessage())
-                .status(errorStatus.getCode())
-                .httpStatusCode(errorStatus.getHttpStatusCode().value())
-                .build();
-    }
-
-    public static VoteErrorResponseDto from(VoteProposalErrorStatus errorStatus) {
-        return VoteErrorResponseDto.builder()
+    public static QueryErrorResponseDto from(BallotQueryErrorStatus errorStatus) {
+        return QueryErrorResponseDto.builder()
                 .success(false)
                 .message(errorStatus.getMessage())
                 .status(errorStatus.getCode())

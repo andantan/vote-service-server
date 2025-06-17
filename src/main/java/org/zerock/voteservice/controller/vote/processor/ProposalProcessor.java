@@ -5,35 +5,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import domain.event.proposal.protocol.ValidateProposalEventResponse;
-import domain.event.proposal.protocol.CacheProposalEventResponse;
+import domain.event.proposal.create.protocol.ValidateProposalEventResponse;
+import domain.event.proposal.create.protocol.CacheProposalEventResponse;
 import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 
 import org.zerock.voteservice.dto.vote.VoteProposalRequestDto;
 import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
 import org.zerock.voteservice.dto.vote.VoteErrorResponseDto;
 import org.zerock.voteservice.dto.vote.error.VoteProposalErrorStatus;
-import org.zerock.voteservice.grpc.event.GrpcProposalEventClient;
+import org.zerock.voteservice.grpc.event.GrpcProposalCreateEventClient;
 import org.zerock.voteservice.grpc.vote.GrpcProposalPendingClient;
 
-import java.util.Objects;
 
 @Log4j2
 @Service
-public class VoteProposalProcessor {
+public class ProposalProcessor {
     private final GrpcProposalPendingClient grpcProposalPendingClient;
-    private final GrpcProposalEventClient grpcProposalEventClient;
+    private final GrpcProposalCreateEventClient grpcProposalCreateEventClient;
 
-    public VoteProposalProcessor(
+    public ProposalProcessor(
             GrpcProposalPendingClient grpcProposalPendingClient,
-            GrpcProposalEventClient grpcProposalEventClient
+            GrpcProposalCreateEventClient grpcProposalCreateEventClient
     ) {
         this.grpcProposalPendingClient = grpcProposalPendingClient;
-        this.grpcProposalEventClient = grpcProposalEventClient;
+        this.grpcProposalCreateEventClient = grpcProposalCreateEventClient;
     }
 
     public ValidateProposalEventResponse validateProposal(VoteProposalRequestDto dto) {
-        return this.grpcProposalEventClient.validateProposal(dto.getTopic());
+        return this.grpcProposalCreateEventClient.validateProposal(dto.getTopic());
     }
 
     public OpenProposalPendingResponse requestOpenPending(VoteProposalRequestDto dto) {
@@ -41,7 +40,7 @@ public class VoteProposalProcessor {
     }
 
     public CacheProposalEventResponse requestCacheProposal(VoteProposalRequestDto dto) {
-        return this.grpcProposalEventClient.cacheProposal(dto.getTopic(), dto.getDuration(), dto.getOptions());
+        return this.grpcProposalCreateEventClient.cacheProposal(dto.getTopic(), dto.getDuration(), dto.getOptions());
     }
 
 public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, String internalStatus) {
@@ -54,7 +53,7 @@ public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRe
                 .duration(requestDto.getDuration())
                 .build();
 
-        return new ResponseEntity<>(successDto, Objects.requireNonNull(HttpStatus.resolve(successDto.getHttpStatusCode())));
+    return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
     public ResponseEntity<VoteErrorResponseDto> getErrorResponse(String internalStatus) {
