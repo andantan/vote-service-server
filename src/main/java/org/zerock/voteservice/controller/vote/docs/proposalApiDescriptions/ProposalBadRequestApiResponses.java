@@ -1,4 +1,4 @@
-package org.zerock.voteservice.controller.docs.proposalApiResponses;
+package org.zerock.voteservice.controller.vote.docs.proposalApiDescriptions;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;

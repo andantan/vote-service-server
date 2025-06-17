@@ -22,6 +22,14 @@ import java.util.List;
 )
 public class BallotQueryResponseDto extends BaseQueryResponse {
     @JsonProperty("ballots")
-    @Schema(description = "사용자가 참여한 투표 기록 목록")
+    @Schema(
+            description = "사용자가 참여한 투표 기록 목록"
+    )
     private List<BallotSchema> ballots;
+
+    @JsonProperty("ballot_length")
+    @Schema(
+            description = "사용자가 참여한 총 투표지 개수"
+    )
+    private Integer ballotLength;
 }

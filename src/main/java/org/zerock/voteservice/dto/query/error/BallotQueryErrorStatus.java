@@ -9,6 +9,11 @@ public enum BallotQueryErrorStatus {
             "요청 처리 성공",
             HttpStatus.OK // 200
     ),
+    INVALID_USER_HASH(
+            "INVALID_USER_HASH",
+            "유효하지 않은 해시입니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
     USER_NOT_FOUND(
             "USER_NOT_FOUND",
             "해당 유권자를 찾을 수 없습니다.",

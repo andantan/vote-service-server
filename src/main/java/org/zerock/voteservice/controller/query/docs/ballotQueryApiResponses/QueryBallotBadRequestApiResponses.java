@@ -1,4 +1,4 @@
-package org.zerock.voteservice.controller.docs.submitApiResponses;
+package org.zerock.voteservice.controller.query.docs.ballotQueryApiResponses;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
-import org.zerock.voteservice.dto.vote.VoteErrorResponseDto;
+import org.zerock.voteservice.dto.query.QueryErrorResponseDto;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,23 +17,28 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "404",
-                description = "요청한 투표를 찾을 수 없음",
+                responseCode = "400",
+                description = """
+                            잘못된 요청 (예: 유효하지 않은 userHash 형식)\n
+                             - userHash가 null인 경우
+                             - userHash의 길이가 64가 아닌 경우
+                            """,
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = VoteErrorResponseDto.class),
+                        schema = @Schema(implementation = QueryErrorResponseDto.class),
                         examples = @ExampleObject(
-                                name = "투표가 진행 중이 아님",
-                                summary = "PROPOSAL_NOT_OPEN 오류",
+                                name = "잘못된 요청 예시",
+                                summary = "유효하지 않은 userHash",
                                 value = """
                                         {
                                           "success": false,
-                                          "message": "현재 존재하지 않는 투표입니다.",
-                                          "status": "PROPOSAL_NOT_OPEN",
-                                          "http_status_code": 404
+                                          "message": "유효하지 않은 해시입니다.",
+                                          "status": "INVALID_USER_HASH",
+                                          "http_status_code": 400
                                         }"""
                         )
                 )
-        )
+        ),
 })
-public @interface SubmitNotFoundApiResponses { }
+public @interface QueryBallotBadRequestApiResponses {
+}

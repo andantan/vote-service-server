@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.zerock.voteservice.controller.docs.VoteProposalApiDoc;
+import org.zerock.voteservice.controller.vote.docs.VoteProposalApiDoc;
 
 import org.zerock.voteservice.controller.mapper.ApiVoteEndpointMapper;
 import org.zerock.voteservice.dto.ResponseDto;

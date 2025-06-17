@@ -2,17 +2,19 @@ package org.zerock.voteservice.controller.query;
 
 import domain.event.ballot.query.protocol.GetUserBallotsResponse;
 
-import lombok.extern.log4j.Log4j2;
+import io.swagger.v3.oas.annotations.Parameter;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.controller.mapper.ApiQueryEndpointMapper;
+import org.zerock.voteservice.controller.query.docs.QueryBallotApiDoc;
 import org.zerock.voteservice.controller.query.processor.BallotQueryProcessor;
 import org.zerock.voteservice.dto.ResponseDto;
 import org.zerock.voteservice.dto.query.BallotQueryRequestDto;
 
-@Log4j2
 @RestController
 public class ApiQueryBallotController extends ApiQueryEndpointMapper {
 
@@ -22,10 +24,19 @@ public class ApiQueryBallotController extends ApiQueryEndpointMapper {
         this.ballotQueryProcessor = ballotQueryProcessor;
     }
 
+    @QueryBallotApiDoc
     @GetMapping("/{userHash}/votes")
     public ResponseEntity<? extends ResponseDto> getUserVotes(
-            @ModelAttribute final BallotQueryRequestDto dto
+            @PathVariable("userHash") final String userHash
     ) {
+        if (userHash == null || userHash.length() != 64) {
+            return this.ballotQueryProcessor.getErrorResponse("INVALID_USER_HASH");
+        }
+
+        BallotQueryRequestDto dto = BallotQueryRequestDto.builder()
+                .userHash(userHash)
+                .build();
+
         GetUserBallotsResponse userBallots = this.ballotQueryProcessor.getUserBallots(dto);
 
         if (!userBallots.getQueried()) {

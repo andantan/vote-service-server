@@ -1,4 +1,4 @@
-package org.zerock.voteservice.controller.docs.submitApiResponses;
+package org.zerock.voteservice.controller.vote.docs.proposalApiDescriptions;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
-import org.zerock.voteservice.dto.vote.VoteErrorResponseDto;
+import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,23 +17,26 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "406",
-                description = "투표가 이미 마감되어 제출할 수 없음",
+                responseCode = "200",
+                description = "투표 제안 성공",
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = VoteErrorResponseDto.class),
+                        schema = @Schema(implementation = VoteProposalResponseDto.class),
                         examples = @ExampleObject(
-                                name = "투표 마감",
-                                summary = "TIMEOUT_PROPOSAL 오류",
+                                name = "성공 응답 예시",
+                                summary = "투표 등록 완료",
                                 value = """
                                         {
-                                          "success": false,
-                                          "message": "투표가 마감되어 정산 중입니다.",
-                                          "status": "TIMEOUT_PROPOSAL",
-                                          "http_status_code": 406
+                                          "success": true,
+                                          "topic": "법률 개정안 찬반 투표",
+                                          "duration": 60,
+                                          "message": "투표 등록이 완료되었습니다.",
+                                          "status": "OK",
+                                          "http_status_code": 200
                                         }"""
                         )
                 )
         )
 })
-public @interface SubmitNotAcceptableApiResponses { }
+public @interface ProposalOkApiResponses {
+}

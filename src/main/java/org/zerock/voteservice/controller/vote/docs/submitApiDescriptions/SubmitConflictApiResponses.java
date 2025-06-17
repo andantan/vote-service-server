@@ -1,4 +1,4 @@
-package org.zerock.voteservice.controller.docs.proposalApiResponses;
+package org.zerock.voteservice.controller.vote.docs.submitApiDescriptions;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -18,22 +18,22 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "409",
-                description = "투표 제안 실패 (이미 진행 중인 투표)",
+                description = "이미 투표에 참여하여 재투표가 불가능함",
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
                         schema = @Schema(implementation = VoteErrorResponseDto.class),
                         examples = @ExampleObject(
-                                name = "현재 진행 중인 투표",
-                                summary = "PROPOSAL_ALREADY_OPEN 오류",
+                                name = "중복 투표",
+                                summary = "DUPLICATE_VOTE_SUBMISSION 오류",
                                 value = """
                                         {
                                           "success": false,
-                                          "message": "현재 진행 중인 투표입니다.",
-                                          "status": "PROPOSAL_ALREADY_OPEN",
+                                          "message": "이미 참가한 투표입니다. (재투표 불가)",
+                                          "status": "DUPLICATE_VOTE_SUBMISSION",
                                           "http_status_code": 409
                                         }"""
                         )
                 )
         )
 })
-public @interface ProposalConflictApiResponses { }
+public @interface SubmitConflictApiResponses { }

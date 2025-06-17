@@ -1,27 +1,20 @@
-package org.zerock.voteservice.controller.docs;
+package org.zerock.voteservice.controller.vote.docs.proposalApiDescriptions;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
-
-import org.zerock.voteservice.controller.docs.proposalApiResponses.ProposalBadRequestApiResponses;
-import org.zerock.voteservice.controller.docs.proposalApiResponses.ProposalConflictApiResponses;
-import org.zerock.voteservice.controller.docs.proposalApiResponses.ProposalInternalServerErrorApiResponses;
 import org.zerock.voteservice.dto.vote.VoteProposalRequestDto;
-import org.zerock.voteservice.dto.vote.VoteProposalResponseDto;
 
-import java.lang.annotation.Target;
-import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Tag(name = "투표 관리", description = "투표 생성 관련 API")
 @Operation(
@@ -50,30 +43,5 @@ import java.lang.annotation.RetentionPolicy;
                 )
         )
 )
-@ApiResponses(value = {
-        @ApiResponse(
-                responseCode = "200",
-                description = "투표 제안 성공",
-                content = @Content(
-                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = VoteProposalResponseDto.class),
-                        examples = @ExampleObject(
-                                name = "성공 응답 예시",
-                                summary = "투표 등록 완료",
-                                value = """
-                                        {
-                                          "success": true,
-                                          "topic": "법률 개정안 찬반 투표",
-                                          "duration": 60,
-                                          "message": "투표 등록이 완료되었습니다.",
-                                          "status": "OK",
-                                          "http_status_code": 200
-                                        }"""
-                        )
-                )
-        )
-})
-@ProposalBadRequestApiResponses
-@ProposalConflictApiResponses
-@ProposalInternalServerErrorApiResponses
-public @interface VoteProposalApiDoc { }
+public @interface ProposalApiOperation {
+}

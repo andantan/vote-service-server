@@ -1,4 +1,4 @@
-package org.zerock.voteservice.controller.docs.submitApiResponses;
+package org.zerock.voteservice.controller.vote.docs.submitApiDescriptions;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -17,23 +17,23 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "409",
-                description = "이미 투표에 참여하여 재투표가 불가능함",
+                responseCode = "404",
+                description = "요청한 투표를 찾을 수 없음",
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
                         schema = @Schema(implementation = VoteErrorResponseDto.class),
                         examples = @ExampleObject(
-                                name = "중복 투표",
-                                summary = "DUPLICATE_VOTE_SUBMISSION 오류",
+                                name = "투표가 진행 중이 아님",
+                                summary = "PROPOSAL_NOT_OPEN 오류",
                                 value = """
                                         {
                                           "success": false,
-                                          "message": "이미 참가한 투표입니다. (재투표 불가)",
-                                          "status": "DUPLICATE_VOTE_SUBMISSION",
-                                          "http_status_code": 409
+                                          "message": "현재 존재하지 않는 투표입니다.",
+                                          "status": "PROPOSAL_NOT_OPEN",
+                                          "http_status_code": 404
                                         }"""
                         )
                 )
         )
 })
-public @interface SubmitConflictApiResponses { }
+public @interface SubmitNotFoundApiResponses { }

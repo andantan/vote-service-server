@@ -43,7 +43,7 @@ public class BallotQueryProcessor {
                 .map(this::mappingSchema)
                 .toList();
 
-        String successMessage = String.format("조회가 완료되었습니다. (총 투표지 개수: %d)", ballotSchemas.size());
+        String successMessage = "조회가 완료되었습니다.";
 
         BallotQueryResponseDto successDto = BallotQueryResponseDto.builder()
                 .success(true)
@@ -51,13 +51,14 @@ public class BallotQueryProcessor {
                 .status(internalStatus)
                 .httpStatusCode(HttpStatus.OK.value())
                 .ballots(ballotSchemas)
+                .ballotLength(ballotSchemas.size())
                 .build();
 
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
     public ResponseEntity<QueryErrorResponseDto> getErrorResponse(String internalStatus) {
-        BallotQueryErrorStatus errorStatus = BallotQueryErrorStatus.valueOf(internalStatus);
+        BallotQueryErrorStatus errorStatus = BallotQueryErrorStatus.fromCode(internalStatus);
         QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
 
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
