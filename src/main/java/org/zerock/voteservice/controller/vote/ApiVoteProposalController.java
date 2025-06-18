@@ -21,37 +21,37 @@ import org.zerock.voteservice.controller.vote.processor.ProposalProcessor;
 @Log4j2
 @RestController
 public class ApiVoteProposalController extends ApiVoteEndpointMapper {
-    private final ProposalProcessor proposalProcessor;
+    private final ProposalProcessor processor;
 
-    public ApiVoteProposalController(ProposalProcessor proposalProcessor) {
-        this.proposalProcessor = proposalProcessor;
+    public ApiVoteProposalController(ProposalProcessor processor) {
+        this.processor = processor;
     }
 
     @VoteProposalApiDoc
     @PostMapping("/proposal")
     public ResponseEntity<? extends ResponseDto> proposalVote(@RequestBody VoteProposalRequestDto dto) {
         // Cache server: request validate proposal [gRPC]
-        ValidateProposalEventResponse validatedProposal = this.proposalProcessor.validateProposal(dto);
+        ValidateProposalEventResponse validatedProposal = this.processor.validateProposal(dto);
 
         if (!validatedProposal.getValidation()) {
-            return this.proposalProcessor.getErrorResponse(validatedProposal.getStatus());
+            return this.processor.getErrorResponse(validatedProposal.getStatus());
         }
 
         // Blockchain server: request open pending [gRPC]
-        OpenProposalPendingResponse pendedProposal = this.proposalProcessor.requestOpenPending(dto);
+        OpenProposalPendingResponse pendedProposal = this.processor.requestOpenPending(dto);
 
         if (!pendedProposal.getSuccess()) {
-            return this.proposalProcessor.getErrorResponse(pendedProposal.getStatus());
+            return this.processor.getErrorResponse(pendedProposal.getStatus());
         }
 
         // Cache server: request cache proposal [gRPC]
-        CacheProposalEventResponse cachedProposal = this.proposalProcessor.requestCacheProposal(dto);
+        CacheProposalEventResponse cachedProposal = this.processor.requestCacheProposal(dto);
 
         if (!cachedProposal.getCached()) {
-            return this.proposalProcessor.getErrorResponse(cachedProposal.getStatus());
+            return this.processor.getErrorResponse(cachedProposal.getStatus());
         }
 
         // All steps passed
-        return this.proposalProcessor.getSuccessResponse(dto, cachedProposal.getStatus());
+        return this.processor.getSuccessResponse(dto, cachedProposal.getStatus());
     }
 }

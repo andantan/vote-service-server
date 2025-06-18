@@ -20,30 +20,30 @@ import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 @Service
 public class BallotProcessor {
 
-    private final GrpcBallotTransactionClient grpcBallotTransactionClient;
-    private final GrpcBallotCreateEventClient grpcBallotCreateEventClient;
+    private final GrpcBallotTransactionClient grpcTransactionClient;
+    private final GrpcBallotCreateEventClient grpcEventClient;
 
 
     public BallotProcessor(
-            GrpcBallotTransactionClient grpcBallotTransactionClient,
-            GrpcBallotCreateEventClient grpcBallotCreateEventClient
+            GrpcBallotTransactionClient grpcTransactionClient,
+            GrpcBallotCreateEventClient grpcEventClient
     ) {
-        this.grpcBallotTransactionClient = grpcBallotTransactionClient;
-        this.grpcBallotCreateEventClient = grpcBallotCreateEventClient;
+        this.grpcTransactionClient = grpcTransactionClient;
+        this.grpcEventClient = grpcEventClient;
     }
 
     public ValidateBallotEventResponse validateBallot(VoteBallotRequestDto dto) {
-        return this.grpcBallotCreateEventClient.validateBallot(dto.getUserHash(), dto.getTopic(), dto.getOption());
+        return this.grpcEventClient.validateBallot(dto.getUserHash(), dto.getTopic(), dto.getOption());
     }
 
     public SubmitBallotTransactionResponse submitBallotTransaction(VoteBallotRequestDto dto) {
-        return this.grpcBallotTransactionClient.submitBallotTransaction(
+        return this.grpcTransactionClient.submitBallotTransaction(
                 dto.getUserHash(), dto.getTopic(), dto.getOption()
         );
     }
 
     public CacheBallotEventResponse cacheBallot(VoteBallotRequestDto dto, String voteHash) {
-        return this.grpcBallotCreateEventClient.cacheBallot(
+        return this.grpcEventClient.cacheBallot(
                 dto.getUserHash(), voteHash, dto.getTopic(), dto.getOption()
         );
     }

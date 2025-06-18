@@ -1,6 +1,5 @@
 package org.zerock.voteservice.controller.query.processor;
 
-import com.google.protobuf.Timestamp;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,15 +8,15 @@ import org.springframework.stereotype.Service;
 import domain.event.ballot.query.protocol.Ballot;
 import domain.event.ballot.query.protocol.GetUserBallotsResponse;
 
+import org.zerock.voteservice.grpc.event.GrpcBallotQueryEventClient;
 import org.zerock.voteservice.dto.query.schema.BallotSchema;
 import org.zerock.voteservice.dto.query.BallotQueryRequestDto;
 import org.zerock.voteservice.dto.query.BallotQueryResponseDto;
 import org.zerock.voteservice.dto.query.QueryErrorResponseDto;
 import org.zerock.voteservice.dto.query.error.BallotQueryErrorStatus;
-import org.zerock.voteservice.grpc.event.GrpcBallotQueryEventClient;
 
-import java.time.ZoneId;
-import java.time.Instant;
+import org.zerock.voteservice.tool.date.Converter;
+
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -26,21 +25,21 @@ import java.util.List;
 @Service
 public class BallotQueryProcessor {
 
-    private final GrpcBallotQueryEventClient ballotQueryEventClient;
+    private final GrpcBallotQueryEventClient grpcEventClient;
 
     public BallotQueryProcessor(
-            GrpcBallotQueryEventClient ballotQueryEventClient
+            GrpcBallotQueryEventClient grpcEventClient
     ) {
-        this.ballotQueryEventClient = ballotQueryEventClient;
+        this.grpcEventClient = grpcEventClient;
     }
 
     public GetUserBallotsResponse getUserBallots(BallotQueryRequestDto dto) {
-        return this.ballotQueryEventClient.getUserBallots(dto.getUserHash());
+        return this.grpcEventClient.getUserBallots(dto.getUserHash());
     }
 
     public ResponseEntity<BallotQueryResponseDto> getSuccessResponse(String internalStatus, List<Ballot> userBallots) {
         List<BallotSchema> ballotSchemas = userBallots.stream()
-                .map(this::mappingSchema)
+                .map(this::mappingBallotSchema)
                 .toList();
 
         String successMessage = "조회가 완료되었습니다.";
@@ -64,16 +63,12 @@ public class BallotQueryProcessor {
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
     }
 
-    private BallotSchema mappingSchema(Ballot ballot) {
+    private BallotSchema mappingBallotSchema(Ballot ballot) {
         LocalDateTime kstSubmittedAt = null;
 
-        if (ballot.hasSubmittedAt()) {
-            Timestamp submittedTimestamp = ballot.getSubmittedAt();
-
-            Instant instant = Instant.ofEpochSecond(submittedTimestamp.getSeconds(), submittedTimestamp.getNanos());
-
-            kstSubmittedAt = LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Seoul"));
-        } else {
+        try {
+            kstSubmittedAt = Converter.toKstLocalDateTime(ballot.getSubmittedAt());
+        } catch (NullPointerException ignorable) {
             log.warn("submitted_at field is missing for voteHash: {}", ballot.getVoteHash());
         }
 

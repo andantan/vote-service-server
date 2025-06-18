@@ -3,20 +3,15 @@ package org.zerock.voteservice.dto.query.error;
 import org.springframework.http.HttpStatus;
 
 @lombok.Getter
-public enum BallotQueryErrorStatus {
+public enum ProposalQueryErrorStatus {
     OK(
             "OK",
             "요청 처리 성공",
             HttpStatus.OK // 200
     ),
-    INVALID_USER_HASH(
-            "INVALID_USER_HASH",
-            "유효하지 않은 해시입니다.",
-            HttpStatus.BAD_REQUEST // 400
-    ),
-    USER_NOT_FOUND(
-            "USER_NOT_FOUND",
-            "해당 유권자를 찾을 수 없습니다.",
+    PROPOSAL_NOT_FOUND(
+            "PROPOSAL_NOT_FOUND",
+            "해당 투표를 찾을 수 없습니다.",
             HttpStatus.NOT_FOUND // 404
     ),
     DATABASE_ACCESS_ERROR(
@@ -34,14 +29,14 @@ public enum BallotQueryErrorStatus {
     private final String message;
     private final HttpStatus httpStatusCode;
 
-    BallotQueryErrorStatus(String code, String message, HttpStatus httpStatusCode) {
+    ProposalQueryErrorStatus(String code, String message, HttpStatus httpStatusCode) {
         this.code = code;
         this.message = message;
         this.httpStatusCode = httpStatusCode;
     }
 
-    public static BallotQueryErrorStatus fromCode(String code) {
-        for (BallotQueryErrorStatus status : BallotQueryErrorStatus.values()) {
+    public static ProposalQueryErrorStatus fromCode(String code) {
+        for (ProposalQueryErrorStatus status : ProposalQueryErrorStatus.values()) {
             if (status.getCode().equals(code)) {
                 return status;
             }

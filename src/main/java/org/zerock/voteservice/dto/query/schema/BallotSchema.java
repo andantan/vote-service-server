@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Schema(
-        description = "투표지 조회 응답 데이터 인터페이스"
+        description = "투표지 데이터 인터페이스"
 )
 public class BallotSchema {
     @JsonProperty("vote_hash")

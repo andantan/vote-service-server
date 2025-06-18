@@ -19,9 +19,9 @@ public enum VoteProposalErrorStatus {
             "알 수 없는 오류가 발생했습니다.",
             HttpStatus.INTERNAL_SERVER_ERROR // 500
     ),
-    CACHE_ACCESS_ERROR(
-            "CACHE_ACCESS_ERROR",
-            "캐시 서버에서 알 수 없는 오류가 발생했습니다.",
+    DATABASE_ACCESS_ERROR(
+            "DATABASE_ACCESS_ERROR",
+            "데이터베이스 서버에서 알 수 없는 오류가 발생했습니다.",
             HttpStatus.INTERNAL_SERVER_ERROR // 500
     );
 

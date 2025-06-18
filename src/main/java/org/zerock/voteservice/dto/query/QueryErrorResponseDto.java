@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.zerock.voteservice.dto.ResponseDto;
 import org.zerock.voteservice.dto.query.error.BallotQueryErrorStatus;
+import org.zerock.voteservice.dto.query.error.ProposalQueryErrorStatus;
 
 @Getter
 @NoArgsConstructor
@@ -45,6 +46,15 @@ public class QueryErrorResponseDto implements ResponseDto {
     private Integer httpStatusCode;
 
     public static QueryErrorResponseDto from(BallotQueryErrorStatus errorStatus) {
+        return QueryErrorResponseDto.builder()
+                .success(false)
+                .message(errorStatus.getMessage())
+                .status(errorStatus.getCode())
+                .httpStatusCode(errorStatus.getHttpStatusCode().value())
+                .build();
+    }
+
+    public static QueryErrorResponseDto from(ProposalQueryErrorStatus errorStatus) {
         return QueryErrorResponseDto.builder()
                 .success(false)
                 .message(errorStatus.getMessage())

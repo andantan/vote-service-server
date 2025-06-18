@@ -18,36 +18,36 @@ import org.zerock.voteservice.dto.ResponseDto;
 
 @RestController
 public class ApiVoteSubmitController extends ApiVoteEndpointMapper {
-    private final BallotProcessor ballotProcessor;
+    private final BallotProcessor processor;
 
-    public ApiVoteSubmitController(BallotProcessor ballotProcessor) {
-        this.ballotProcessor = ballotProcessor;
+    public ApiVoteSubmitController(BallotProcessor processor) {
+        this.processor = processor;
     }
 
     @VoteSubmitApiDoc
     @PostMapping("/submit")
     public ResponseEntity<? extends ResponseDto> submitVote(@RequestBody VoteBallotRequestDto dto) {
         // Cache server: request validate ballot [gRPC]
-        ValidateBallotEventResponse validatedBallot = this.ballotProcessor.validateBallot(dto);
+        ValidateBallotEventResponse validatedBallot = this.processor.validateBallot(dto);
 
         if (!validatedBallot.getValidation()) {
-            return this.ballotProcessor.getErrorResponse(validatedBallot.getStatus());
+            return this.processor.getErrorResponse(validatedBallot.getStatus());
         }
 
         // Blockchain server: request submit transaction [gRPC]
-        SubmitBallotTransactionResponse submittedBallot = this.ballotProcessor.submitBallotTransaction(dto);
+        SubmitBallotTransactionResponse submittedBallot = this.processor.submitBallotTransaction(dto);
 
         if (!submittedBallot.getSuccess()) {
-            return this.ballotProcessor.getErrorResponse(submittedBallot.getStatus());
+            return this.processor.getErrorResponse(submittedBallot.getStatus());
         }
 
         // Cache server: request cache ballot [gRPC]
-        CacheBallotEventResponse cachedBallot = this.ballotProcessor.cacheBallot(dto, submittedBallot.getVoteHash());
+        CacheBallotEventResponse cachedBallot = this.processor.cacheBallot(dto, submittedBallot.getVoteHash());
 
         if (!cachedBallot.getCached()) {
-            return this.ballotProcessor.getErrorResponse(cachedBallot.getStatus());
+            return this.processor.getErrorResponse(cachedBallot.getStatus());
         }
 
-        return this.ballotProcessor.getSuccessResponse(dto, cachedBallot.getStatus(), submittedBallot.getVoteHash());
+        return this.processor.getSuccessResponse(dto, cachedBallot.getStatus(), submittedBallot.getVoteHash());
     }
 }

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
                         schema = @Schema(implementation = VoteErrorResponseDto.class),
                         examples = {
                                 @ExampleObject(
-                                        name = "알 수 없는 오류",
+                                        name = "서버 오류 예시 (알 수 없음)",
                                         summary = "UNKNOWN_ERROR 오류",
                                         value = """
                                                 {
@@ -35,13 +35,13 @@ import java.lang.annotation.Target;
                                                 }"""
                                 ),
                                 @ExampleObject(
-                                        name = "캐시 서버 접근 오류",
-                                        summary = "CACHE_ACCESS_ERROR 오류",
+                                        name = "데이터베이스 접근 오류 예시",
+                                        summary = "DATABASE_ACCESS_ERROR 오류",
                                         value = """
                                                 {
                                                   "success": false,
-                                                  "message": "캐시 서버에서 알 수 없는 오류가 발생했습니다.",
-                                                  "status": "CACHE_ACCESS_ERROR",
+                                                  "message": "데이터베이스 서버에서 알 수 없는 오류가 발생했습니다.",
+                                                  "status": "DATABASE_ACCESS_ERROR",
                                                   "http_status_code": 500
                                                 }"""
                                 )

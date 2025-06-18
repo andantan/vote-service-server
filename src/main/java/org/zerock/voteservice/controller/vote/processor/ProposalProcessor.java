@@ -20,27 +20,27 @@ import org.zerock.voteservice.grpc.vote.GrpcProposalPendingClient;
 @Log4j2
 @Service
 public class ProposalProcessor {
-    private final GrpcProposalPendingClient grpcProposalPendingClient;
-    private final GrpcProposalCreateEventClient grpcProposalCreateEventClient;
+    private final GrpcProposalPendingClient grpcPendingClient;
+    private final GrpcProposalCreateEventClient grpcEventClient;
 
     public ProposalProcessor(
-            GrpcProposalPendingClient grpcProposalPendingClient,
-            GrpcProposalCreateEventClient grpcProposalCreateEventClient
+            GrpcProposalPendingClient grpcPendingClient,
+            GrpcProposalCreateEventClient grpcEventClient
     ) {
-        this.grpcProposalPendingClient = grpcProposalPendingClient;
-        this.grpcProposalCreateEventClient = grpcProposalCreateEventClient;
+        this.grpcPendingClient = grpcPendingClient;
+        this.grpcEventClient = grpcEventClient;
     }
 
     public ValidateProposalEventResponse validateProposal(VoteProposalRequestDto dto) {
-        return this.grpcProposalCreateEventClient.validateProposal(dto.getTopic());
+        return this.grpcEventClient.validateProposal(dto.getTopic());
     }
 
     public OpenProposalPendingResponse requestOpenPending(VoteProposalRequestDto dto) {
-         return this.grpcProposalPendingClient.openProposalPending(dto.getTopic(), dto.getDuration());
+         return this.grpcPendingClient.openProposalPending(dto.getTopic(), dto.getDuration());
     }
 
     public CacheProposalEventResponse requestCacheProposal(VoteProposalRequestDto dto) {
-        return this.grpcProposalCreateEventClient.cacheProposal(dto.getTopic(), dto.getDuration(), dto.getOptions());
+        return this.grpcEventClient.cacheProposal(dto.getTopic(), dto.getDuration(), dto.getOptions());
     }
 
 public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, String internalStatus) {

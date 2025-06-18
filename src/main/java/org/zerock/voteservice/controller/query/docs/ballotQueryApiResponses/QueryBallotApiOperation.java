@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
                         name = "userHash",
                         in = ParameterIn.PATH,
                         description = "조회할 사용자의 고유 해시값",
-                        example = "1303522e0b59179b948c1713105ac8f9d13c62080a743118617fecef799e92e5",
+                        example = "e78ee58ca6cd9b4e9d167332845fb458f444f62bc9ac35b0b3c3d6079dfbbed9",
                         required = true,
                         schema = @Schema(type = "string", format = "hex")
                 )
