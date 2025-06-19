@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.out.grpc.mongodbServer.voteData;
+package org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData;
 
 import domain.event.proposal.create.protocol.ProposalCreateEventServiceGrpc;
 import domain.event.proposal.create.protocol.ProposalValidateEventRequest;

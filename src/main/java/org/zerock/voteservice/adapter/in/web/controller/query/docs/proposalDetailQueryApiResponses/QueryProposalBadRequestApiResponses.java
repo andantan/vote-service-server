@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.in.web.controller.query.docs.ballotQueryApiResponses;
+package org.zerock.voteservice.adapter.in.web.controller.query.docs.proposalDetailQueryApiResponses;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -19,10 +19,9 @@ import java.lang.annotation.Target;
         @ApiResponse(
                 responseCode = "400",
                 description = """
-                            잘못된 요청 (예: 유효하지 않은 userHash 형식)
+                            잘못된 요청 (예: 유효하지 않은 topic 형식)
                             
-                             - userHash가 null인 경우
-                             - userHash의 길이가 64가 아닌 경우
+                             - topic이 null인 경우
                             """,
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -30,23 +29,12 @@ import java.lang.annotation.Target;
                         examples = {
                                 @ExampleObject(
                                         name = "잘못된 요청 예시 1",
-                                        summary = "userHash가 null인 경우",
+                                        summary = "topic이 null인 경우",
                                         value = """
                                         {
                                           "success": false,
-                                          "message": "유효하지 않은 해시입니다.",
-                                          "status": "DECODE_ERROR",
-                                          "http_status_code": 400
-                                        }"""
-                                ),
-                                @ExampleObject(
-                                        name = "잘못된 요청 예시 2",
-                                        summary = "userHash의 길이가 64가 아닌 경우",
-                                        value = """
-                                        {
-                                          "success": false,
-                                          "message": "유효하지 않은 해시 길이입니다.",
-                                          "status": "INVALID_HASH_LENGTH",
+                                          "message": "유효하지 않은 투표 이름입니다.",
+                                          "status": "INVALID_PARAMETER",
                                           "http_status_code": 400
                                         }"""
                                 )
@@ -54,5 +42,5 @@ import java.lang.annotation.Target;
                 )
         ),
 })
-public @interface QueryBallotBadRequestApiResponses {
+public @interface QueryProposalBadRequestApiResponses {
 }

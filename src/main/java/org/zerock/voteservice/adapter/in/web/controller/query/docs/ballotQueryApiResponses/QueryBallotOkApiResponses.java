@@ -35,6 +35,7 @@ import java.lang.annotation.Target;
                                               "message": "조회가 완료되었습니다.",
                                               "status": "OK",
                                               "http_status_code": 200,
+                                              "user_hash": "e78ee58ca6cd9b4e9d167332845fb458f444f62bc9ac35b0b3c3d6079dfbbed9",
                                               "ballots": [
                                                  {
                                                    "voteHash": "eb2c748fea3a68d724ae50f8a98528fd9ff5d1fa6cc686bd2fac8e9b64d9ef35",
@@ -203,6 +204,7 @@ import java.lang.annotation.Target;
                                               "message": "조회가 완료되었습니다.",
                                               "status": "OK",
                                               "http_status_code": 200,
+                                              "user_hash": "e78ee58ca6cd9b4e9d167332845fb458f444f62bc9ac35b0b3c3d6079dfbbed9",
                                               "ballots": [],
                                               "ballot_length": 0
                                             }"""

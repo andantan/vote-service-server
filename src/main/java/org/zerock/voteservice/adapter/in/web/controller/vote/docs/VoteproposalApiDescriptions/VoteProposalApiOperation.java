@@ -20,8 +20,10 @@ import java.lang.annotation.Target;
 @Operation(
         summary = "새로운 투표 제안 생성",
         description = """
-                    새로운 투표 제안 및 등록\n
-                    - 투표 생성 요청 interface: Schemas [ VoteProposalRequestDto ] 참조\n
+                    새로운 투표 제안 및 등록
+                    
+                    - 투표 생성 요청 interface: Schemas [ VoteProposalRequestDto ] 참조
+                    
                     - 투표 생성 응답 interface: Schemas [ VoteProposalResponseDto ] 참조
                     """,
         requestBody = @RequestBody(

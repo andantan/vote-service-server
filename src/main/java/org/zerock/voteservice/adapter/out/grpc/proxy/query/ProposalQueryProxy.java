@@ -1,0 +1,24 @@
+package org.zerock.voteservice.adapter.out.grpc.proxy.query;
+
+import domain.event.proposal.query.protocol.GetProposalResponse;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+import org.zerock.voteservice.adapter.in.web.dto.query.QueryProposalDetailRequestDto;
+import org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData.ProposalQueryEventServiceGrpcStub;
+
+@Log4j2
+@Service
+public class ProposalQueryProxy {
+
+    private final ProposalQueryEventServiceGrpcStub proposalQueryEventServiceGrpcStub;
+
+    public ProposalQueryProxy(
+            ProposalQueryEventServiceGrpcStub proposalQueryEventServiceGrpcStub
+    ) {
+        this.proposalQueryEventServiceGrpcStub = proposalQueryEventServiceGrpcStub;
+    }
+
+    public GetProposalResponse getProposal(QueryProposalDetailRequestDto dto) {
+        return this.proposalQueryEventServiceGrpcStub.getProposal(dto.getTopic());
+    }
+}

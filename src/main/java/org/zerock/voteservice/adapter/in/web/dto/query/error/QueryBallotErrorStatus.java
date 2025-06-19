@@ -9,9 +9,14 @@ public enum QueryBallotErrorStatus {
             "요청 처리 성공",
             HttpStatus.OK // 200
     ),
-    INVALID_USER_HASH(
-            "INVALID_USER_HASH",
+    DECODE_ERROR(
+            "DECODE_ERROR",
             "유효하지 않은 해시입니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
+    INVALID_HASH_LENGTH(
+            "INVALID_HASH_LENGTH",
+            "유효하지 않은 해시 길이입니다.",
             HttpStatus.BAD_REQUEST // 400
     ),
     USER_NOT_FOUND(

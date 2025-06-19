@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @QueryProposalApiOperation
 @QueryProposalOkApiResponses
+@QueryProposalBadRequestApiResponses
 @QueryProposalNotFoundApiResponses
 @QueryProposalInternalServerErrorApiResponses
 public @interface QueryProposalApiDoc {

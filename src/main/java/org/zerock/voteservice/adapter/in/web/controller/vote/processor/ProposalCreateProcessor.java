@@ -9,56 +9,63 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
 import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 
+import org.zerock.voteservice.adapter.out.grpc.proxy.vote.ProposalCreateProxy;
 import org.zerock.voteservice.adapter.in.web.dto.vote.VoteProposalRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.VoteProposalResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.VoteErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.error.VoteProposalErrorStatus;
 
-import org.zerock.voteservice.adapter.out.grpc.mongodbServer.voteData.ProposalCreateEventServiceGrpcStub;
-import org.zerock.voteservice.adapter.out.grpc.blockchainNode.ProposalPendingServiceGrpcStub;
-
 
 @Log4j2
 @Service
 public class ProposalCreateProcessor {
-    private final ProposalCreateEventServiceGrpcStub proposalCreateEventServiceGrpcStub;
-    private final ProposalPendingServiceGrpcStub proposalPendingServiceGrpcStub;
+    private final ProposalCreateProxy proposalCreateProxy;
 
-    public ProposalCreateProcessor(
-            ProposalPendingServiceGrpcStub proposalPendingServiceGrpcStub,
-            ProposalCreateEventServiceGrpcStub proposalCreateEventServiceGrpcStub
-    ) {
-        this.proposalCreateEventServiceGrpcStub = proposalCreateEventServiceGrpcStub;
-        this.proposalPendingServiceGrpcStub = proposalPendingServiceGrpcStub;
+    public ProposalCreateProcessor(ProposalCreateProxy proposalCreateProxy) {
+        this.proposalCreateProxy = proposalCreateProxy;
     }
 
-    public ProposalValidateEventResponse validateProposal(VoteProposalRequestDto dto) {
-        return this.proposalCreateEventServiceGrpcStub.validateProposal(dto.getTopic());
+    public ProposalCreateResult processProposalCreation(VoteProposalRequestDto dto) {
+        // Cache server: request validate proposal [gRPC]
+        ProposalValidateEventResponse validatedProposal = this.proposalCreateProxy.validateProposal(dto);
+
+        if (!validatedProposal.getValidation()) {
+            return ProposalCreateResult.failure(validatedProposal.getStatus());
+        }
+
+        // Blockchain server: request open pending [gRPC]
+        OpenProposalPendingResponse pendedProposal = this.proposalCreateProxy.requestOpenPending(dto);
+
+        if (!pendedProposal.getSuccess()) {
+            return ProposalCreateResult.failure(pendedProposal.getStatus());
+        }
+
+        // Cache server: request cache proposal [gRPC]
+        ProposalCacheEventResponse cachedProposal = this.proposalCreateProxy.requestCacheProposal(dto);
+
+        if (!cachedProposal.getCached()) {
+            return ProposalCreateResult.failure(cachedProposal.getStatus());
+        }
+
+        return ProposalCreateResult.success(cachedProposal.getStatus(), dto.getTopic());
+
     }
 
-    public OpenProposalPendingResponse requestOpenPending(VoteProposalRequestDto dto) {
-         return this.proposalPendingServiceGrpcStub.openProposalPending(dto.getTopic(), dto.getDuration());
+    public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, ProposalCreateResult result) {
+            VoteProposalResponseDto successDto = VoteProposalResponseDto.builder()
+                    .success(result.getSuccess())
+                    .topic(result.getTopic())
+                    .message(result.getMessage())
+                    .status(result.getStatus())
+                    .httpStatusCode(result.getHttpStatusCode())
+                    .duration(requestDto.getDuration())
+                    .build();
+
+        return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ProposalCacheEventResponse requestCacheProposal(VoteProposalRequestDto dto) {
-        return this.proposalCreateEventServiceGrpcStub.cacheProposal(dto.getTopic(), dto.getDuration(), dto.getOptions());
-    }
-
-public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, String internalStatus) {
-        VoteProposalResponseDto successDto = VoteProposalResponseDto.builder()
-                .success(true)
-                .topic(requestDto.getTopic())
-                .message("투표 등록이 완료되었습니다.")
-                .status(internalStatus)
-                .httpStatusCode(HttpStatus.OK.value())
-                .duration(requestDto.getDuration())
-                .build();
-
-    return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
-    }
-
-    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(String internalStatus) {
-        VoteProposalErrorStatus errorStatus = VoteProposalErrorStatus.fromCode(internalStatus);
+    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(ProposalCreateResult result) {
+        VoteProposalErrorStatus errorStatus = VoteProposalErrorStatus.fromCode(result.getStatus());
         VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
 
         return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());

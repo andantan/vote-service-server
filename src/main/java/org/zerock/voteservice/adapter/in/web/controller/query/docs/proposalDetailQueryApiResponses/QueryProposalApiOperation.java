@@ -15,8 +15,10 @@ import java.lang.annotation.Target;
 @Operation(
         summary = "주제(topic)로 투표 조회",
         description = """
-                    고유한 투표 주제(이름)를 기준으로 특정 투표 정보를 조회\n
-                    - 투표 조회 요청 interface: Schemas [ QueryProposalDetailRequestDto ] 참조\n
+                    고유한 투표 주제(이름)를 기준으로 특정 투표 정보를 조회
+                    
+                    - 투표 조회 요청 interface: Schemas [ QueryProposalDetailRequestDto ] 참조
+                    
                     - 투표 조회 응답 interface: Schemas [ QueryProposalDetailResponseDto ] 참조
                     """,
         tags = {"투표 조회"},

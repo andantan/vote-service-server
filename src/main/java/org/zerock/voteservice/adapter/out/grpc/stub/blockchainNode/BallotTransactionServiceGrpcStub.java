@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.out.grpc.blockchainNode;
+package org.zerock.voteservice.adapter.out.grpc.stub.blockchainNode;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

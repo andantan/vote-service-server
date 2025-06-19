@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.out.grpc.blockchainNode;
+package org.zerock.voteservice.adapter.out.grpc.stub.blockchainNode;
 
 import domain.vote.proposal.protocol.BlockchainVoteProposalServiceGrpc;
 import domain.vote.proposal.protocol.OpenProposalPendingRequest;

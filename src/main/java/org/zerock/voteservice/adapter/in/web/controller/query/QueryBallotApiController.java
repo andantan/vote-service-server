@@ -1,11 +1,10 @@
 package org.zerock.voteservice.adapter.in.web.controller.query;
 
-import domain.event.ballot.query.protocol.GetUserBallotsResponse;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.voteservice.adapter.in.web.controller.query.processor.BallotQueryResult;
 import org.zerock.voteservice.adapter.in.web.mapper.QueryApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.controller.query.docs.QueryBallotApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.query.processor.BallotQueryProcessor;
@@ -26,20 +25,22 @@ public class QueryBallotApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getUserVotes(
             @PathVariable(value = "userHash") final String userHash
     ) {
-        if (userHash == null || userHash.length() != 64) {
-            return this.ballotQueryProcessor.getErrorResponse("INVALID_USER_HASH");
+        BallotQueryResult hashValidationResult = this.ballotQueryProcessor.validateUserHash(userHash);
+
+        if (!hashValidationResult.getSuccess()) {
+            return this.ballotQueryProcessor.getErrorResponse(hashValidationResult);
         }
 
         QueryBallotRequestDto dto = QueryBallotRequestDto.builder()
                 .userHash(userHash)
                 .build();
 
-        GetUserBallotsResponse userBallots = this.ballotQueryProcessor.getUserBallots(dto);
+        BallotQueryResult result = this.ballotQueryProcessor.processBallotQuery(dto);
 
-        if (!userBallots.getQueried()) {
-            return this.ballotQueryProcessor.getErrorResponse(userBallots.getStatus());
+        if (!result.getSuccess()) {
+            return this.ballotQueryProcessor.getErrorResponse(result);
         }
 
-        return this.ballotQueryProcessor.getSuccessResponse(userBallots.getStatus(), userBallots.getBallotsList());
+        return this.ballotQueryProcessor.getSuccessResponse(dto, result);
     }
 }

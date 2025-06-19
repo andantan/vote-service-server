@@ -4,7 +4,7 @@ import domain.event.block.protocol.BlockCreatedEventResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.blockchain.dto.block.BlockCreatedEventDto;
-import org.zerock.voteservice.adapter.out.grpc.mongodbServer.blockchainData.BlockEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.blockchainData.BlockEventServiceGrpcStub;
 
 import java.util.HashMap;
 import java.util.Map;

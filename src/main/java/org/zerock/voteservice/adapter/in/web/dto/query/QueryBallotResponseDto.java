@@ -21,6 +21,12 @@ import java.util.List;
         description = "유저의 투표 기록 조회 응답 데이터 인터페이스"
 )
 public class QueryBallotResponseDto extends BaseQueryResponse {
+    @JsonProperty("user_hash")
+    @Schema(
+            description = "사용자의 고유 해시"
+    )
+    private String userHash;
+
     @JsonProperty("ballots")
     @Schema(
             description = "사용자가 참여한 투표 기록 목록"

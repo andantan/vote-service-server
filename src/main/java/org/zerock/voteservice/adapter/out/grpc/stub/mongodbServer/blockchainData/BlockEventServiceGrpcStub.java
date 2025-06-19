@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.out.grpc.mongodbServer.blockchainData;
+package org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.blockchainData;
 
 import domain.event.block.protocol.BlockEventServiceGrpc;
 import domain.event.block.protocol.BlockCreatedEventRequest;

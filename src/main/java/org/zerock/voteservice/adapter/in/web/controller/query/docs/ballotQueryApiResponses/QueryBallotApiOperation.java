@@ -15,8 +15,10 @@ import java.lang.annotation.Target;
 @Operation(
         summary = "유저의 투표지 조회",
         description =         """
-                   특정 사용자의 고유 해시값을 기반으로, 해당 사용자가 참여한 투표 기록 목록을 조회\n
-                    - 유저의 투표지 조회 요청 interface: Schemas [ QueryBallotRequestDto ] 참조\n
+                   특정 사용자의 고유 해시값을 기반으로, 해당 사용자가 참여한 투표 기록 목록을 조회
+                   
+                    - 유저의 투표지 조회 요청 interface: Schemas [ QueryBallotRequestDto ] 참조
+                   
                     - 유저의 투표지 조회 응답 interface: Schemas [ QueryBallotResponseDto ] 참조
                     """,
         tags = {"투표지 조회"},

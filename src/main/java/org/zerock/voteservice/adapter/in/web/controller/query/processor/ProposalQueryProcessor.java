@@ -16,7 +16,7 @@ import org.zerock.voteservice.adapter.in.web.dto.query.QueryErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.error.QueryProposalErrorStatus;
 import org.zerock.voteservice.adapter.in.web.dto.query.schema.BlockHeightSchema;
 import org.zerock.voteservice.adapter.in.web.dto.query.schema.ResultSchema;
-import org.zerock.voteservice.adapter.out.grpc.mongodbServer.voteData.ProposalQueryEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.proxy.query.ProposalQueryProxy;
 import org.zerock.voteservice.tool.date.Converter;
 
 import java.time.LocalDateTime;
@@ -26,20 +26,32 @@ import java.util.List;
 @Service
 public class ProposalQueryProcessor {
 
-    private final ProposalQueryEventServiceGrpcStub proposalQueryEventServiceGrpcStub;
+    private final ProposalQueryProxy proposalQueryProxy;
 
-    public ProposalQueryProcessor(
-            ProposalQueryEventServiceGrpcStub proposalQueryEventServiceGrpcStub
-    ) {
-        this.proposalQueryEventServiceGrpcStub = proposalQueryEventServiceGrpcStub;
+    public ProposalQueryProcessor(ProposalQueryProxy proposalQueryProxy) {
+        this.proposalQueryProxy = proposalQueryProxy;
     }
 
-    public GetProposalResponse getProposal(QueryProposalDetailRequestDto dto) {
-        return this.proposalQueryEventServiceGrpcStub.getProposal(dto.getTopic());
+    public ProposalQueryResult validateTopic(String topic) {
+        if (topic == null || topic.isEmpty()) {
+            return ProposalQueryResult.failure("INVALID_PARAMETER");
+        }
+
+        return ProposalQueryResult.successWithoutData();
     }
 
-    public ResponseEntity<QueryProposalDetailResponseDto> getSuccessResponse(String internalStatus, Proposal proposal) {
-        String successMessage = "조회가 완료되었습니다.";
+    public ProposalQueryResult processProposalDetailQuery(QueryProposalDetailRequestDto dto) {
+        GetProposalResponse proposalDetail = this.proposalQueryProxy.getProposal(dto);
+
+        if (!proposalDetail.getQueried()) {
+            return ProposalQueryResult.failure(proposalDetail.getStatus());
+        }
+
+        return ProposalQueryResult.success(proposalDetail.getStatus(), proposalDetail.getProposals());
+    }
+
+    public ResponseEntity<QueryProposalDetailResponseDto> getSuccessResponse(QueryProposalDetailRequestDto dto, ProposalQueryResult result) {
+        Proposal proposal = result.getProposal();
 
         List<BlockHeightSchema> blockHeightSchemas = proposal.getBlockHeightsList().stream()
                 .map(this::mappingBlockHeightSchema)
@@ -53,11 +65,11 @@ public class ProposalQueryProcessor {
         List<String> options = proposal.getOptionsList();
 
         QueryProposalDetailResponseDto successDto = QueryProposalDetailResponseDto.builder()
-                .success(true)
-                .message(successMessage)
-                .status(internalStatus)
-                .httpStatusCode(HttpStatus.OK.value())
-                .topic(proposal.getTopic())
+                .success(result.getSuccess())
+                .message(result.getMessage())
+                .status(result.getStatus())
+                .httpStatusCode(result.getHttpStatusCode())
+                .topic(dto.getTopic())
                 .duration(proposal.getDuration())
                 .expired(proposal.getExpired())
                 .blockHeights(blockHeightSchemas)
@@ -70,8 +82,8 @@ public class ProposalQueryProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(String internalStatus) {
-        QueryProposalErrorStatus errorStatus = QueryProposalErrorStatus.fromCode(internalStatus);
+    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(ProposalQueryResult result) {
+        QueryProposalErrorStatus errorStatus = QueryProposalErrorStatus.fromCode(result.getStatus());
         QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
 
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));

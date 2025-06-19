@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import domain.event.ballot.query.protocol.Ballot;
 import domain.event.ballot.query.protocol.GetUserBallotsResponse;
 
-import org.zerock.voteservice.adapter.out.grpc.mongodbServer.voteData.BallotQueryEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.proxy.query.BallotQueryProxy;
+
 import org.zerock.voteservice.adapter.in.web.dto.query.schema.BallotSchema;
 import org.zerock.voteservice.adapter.in.web.dto.query.QueryBallotRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.QueryBallotResponseDto;
@@ -25,30 +26,45 @@ import java.util.List;
 @Service
 public class BallotQueryProcessor {
 
-    private final BallotQueryEventServiceGrpcStub ballotQueryEventServiceGrpcStub;
+    private final BallotQueryProxy ballotQueryProxy;
 
-    public BallotQueryProcessor(
-            BallotQueryEventServiceGrpcStub ballotQueryEventServiceGrpcStub
-    ) {
-        this.ballotQueryEventServiceGrpcStub = ballotQueryEventServiceGrpcStub;
+    public BallotQueryProcessor(BallotQueryProxy ballotQueryProxy) {
+        this.ballotQueryProxy = ballotQueryProxy;
     }
 
-    public GetUserBallotsResponse getUserBallots(QueryBallotRequestDto dto) {
-        return this.ballotQueryEventServiceGrpcStub.getUserBallots(dto.getUserHash());
+    public BallotQueryResult validateUserHash(String userHash) {
+        if (userHash == null) {
+            return BallotQueryResult.failure("DECODE_ERROR");
+        }
+
+        if (userHash.length() != 64) {
+            return BallotQueryResult.failure("INVALID_HASH_LENGTH");
+        }
+
+        return BallotQueryResult.successWithoutData();
     }
 
-    public ResponseEntity<QueryBallotResponseDto> getSuccessResponse(String internalStatus, List<Ballot> userBallots) {
-        List<BallotSchema> ballotSchemas = userBallots.stream()
+    public BallotQueryResult processBallotQuery(QueryBallotRequestDto dto) {
+        GetUserBallotsResponse userBallots = this.ballotQueryProxy.getUserBallots(dto);
+
+        if (!userBallots.getQueried()) {
+            return BallotQueryResult.failure(userBallots.getStatus());
+        }
+
+        return BallotQueryResult.success(userBallots.getStatus(), userBallots.getBallotsList());
+    }
+
+    public ResponseEntity<QueryBallotResponseDto> getSuccessResponse(QueryBallotRequestDto dto, BallotQueryResult result) {
+        List<BallotSchema> ballotSchemas = result.getBallots().stream()
                 .map(this::mappingBallotSchema)
                 .toList();
 
-        String successMessage = "조회가 완료되었습니다.";
-
         QueryBallotResponseDto successDto = QueryBallotResponseDto.builder()
-                .success(true)
-                .message(successMessage)
-                .status(internalStatus)
-                .httpStatusCode(HttpStatus.OK.value())
+                .success(result.getSuccess())
+                .message(result.getMessage())
+                .status(result.getStatus())
+                .httpStatusCode(result.getHttpStatusCode())
+                .userHash(dto.getUserHash())
                 .ballots(ballotSchemas)
                 .ballotLength(ballotSchemas.size())
                 .build();
@@ -56,8 +72,8 @@ public class BallotQueryProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(String internalStatus) {
-        QueryBallotErrorStatus errorStatus = QueryBallotErrorStatus.fromCode(internalStatus);
+    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(BallotQueryResult result) {
+        QueryBallotErrorStatus errorStatus = QueryBallotErrorStatus.fromCode(result.getStatus());
         QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
 
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));

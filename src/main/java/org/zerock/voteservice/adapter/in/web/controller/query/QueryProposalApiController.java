@@ -1,11 +1,10 @@
 package org.zerock.voteservice.adapter.in.web.controller.query;
 
-import domain.event.proposal.query.protocol.GetProposalResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.voteservice.adapter.in.web.controller.query.processor.ProposalQueryResult;
 import org.zerock.voteservice.adapter.in.web.mapper.QueryApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.controller.query.docs.QueryProposalApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.query.processor.ProposalQueryProcessor;
@@ -26,24 +25,25 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getProposalDetail(
             @PathVariable(value = "topic") final String topic
     ) {
+        ProposalQueryResult topicValidationResult = this.proposalQueryProcessor.validateTopic(topic);
+
+        if (!topicValidationResult.getSuccess()) {
+            return this.proposalQueryProcessor.getErrorResponse(topicValidationResult);
+        }
+
         QueryProposalDetailRequestDto dto = QueryProposalDetailRequestDto.builder()
                 .topic(topic)
                 .build();
 
-        GetProposalResponse proposal = this.proposalQueryProcessor.getProposal(dto);
+        ProposalQueryResult result = this.proposalQueryProcessor.processProposalDetailQuery(dto);
 
-        if (!proposal.getQueried()) {
-            return this.proposalQueryProcessor.getErrorResponse(proposal.getStatus());
+        if (!result.getSuccess()) {
+            return this.proposalQueryProcessor.getErrorResponse(result);
         }
 
-        return this.proposalQueryProcessor.getSuccessResponse(proposal.getStatus(), proposal.getProposals());
+        return this.proposalQueryProcessor.getSuccessResponse(dto, result);
     }
 
-    @GetMapping("/proposal/list")
-    public ResponseEntity<? extends ResponseDto> getFilteredProposals (
-            @RequestParam(value = "summarize") final Boolean summarize
-
-    ) {
-        return null;
-    }
+    //@GetMapping("/proposal/list")
+    //public ResponseEntity<? extends ResponseDto> getFilteredProposals
 }
