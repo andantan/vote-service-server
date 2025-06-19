@@ -6,17 +6,18 @@ option java_multiple_files = true;
 
 package block_event_message;
 
-service CreatedBlockEventService {
-  rpc ReportCreatedBlockEvent(CreatedBlockEvent) returns (ReportBlockEventResponse);
+service BlockEventService {
+  rpc ReportBlockCreatedEvent(BlockCreatedEventRequest)
+      returns (BlockCreatedEventResponse);
 }
 
-message CreatedBlockEvent {
+message BlockCreatedEventRequest {
   string topic = 1;
-  uint32 length = 2;
+  uint32 transaction_count = 2;
   uint32 height = 3;
 }
 
-message ReportBlockEventResponse {
+message BlockCreatedEventResponse {
   bool cached = 1;
   string status = 2;
 }
