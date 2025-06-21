@@ -18,14 +18,20 @@ public class BlockHeightSchema {
     @JsonProperty("height")
     @Schema(
             description = "투표(Pending)의 투표지(Transaction)가 저장된 블록의 높이",
-            example = "1000"
+            example = "1000",
+            type = "integer",
+            format = "int32",
+            implementation = Integer.class
     )
     private Integer height;
 
     @JsonProperty("length")
     @Schema(
             description = "해당 블록에 저장된 투표지(Transaction)의 개수",
-            example = "9500"
+            example = "9500",
+            type = "integer",
+            format = "int32",
+            implementation = Integer.class
     )
     private Integer length;
 }

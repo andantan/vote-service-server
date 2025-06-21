@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import domain.event.block.protocol.BlockCreatedEventResponse;
 
 import org.zerock.voteservice.adapter.in.blockchain.controller.block.processor.BlockProcessor;
-import org.zerock.voteservice.adapter.in.blockchain.mapper.UnicastNotificationEndpointMapper;
+import org.zerock.voteservice.adapter.in.blockchain.controller.mapper.UnicastNotificationEndpointMapper;
 import org.zerock.voteservice.adapter.in.blockchain.dto.block.BlockCreatedEventDto;
 
 import java.util.Map;

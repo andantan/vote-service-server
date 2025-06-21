@@ -4,9 +4,13 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.log4j.Log4j2;
 
+import domain.event.proposal.query.protocol.Filter;
+import domain.event.proposal.query.protocol.Paging;
 import domain.event.proposal.query.protocol.ProposalQueryEventServiceGrpc;
-import domain.event.proposal.query.protocol.GetProposalRequest;
-import domain.event.proposal.query.protocol.GetProposalResponse;
+import domain.event.proposal.query.protocol.GetProposalDetailRequest;
+import domain.event.proposal.query.protocol.GetProposalDetailResponse;
+import domain.event.proposal.query.protocol.GetFilteredProposalListRequest;
+import domain.event.proposal.query.protocol.GetFilteredProposalListResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,11 +33,20 @@ public class ProposalQueryEventServiceGrpcStub {
         stub = ProposalQueryEventServiceGrpc.newBlockingStub(channel);
     }
 
-    public GetProposalResponse getProposal(String topic) {
-        GetProposalRequest request = GetProposalRequest.newBuilder()
+    public GetProposalDetailResponse getProposalDetail(String topic) {
+        GetProposalDetailRequest request = GetProposalDetailRequest.newBuilder()
                 .setTopic(topic)
                 .build();
 
-        return stub.getProposal(request);
+        return stub.getProposalDetail(request);
+    }
+
+    public GetFilteredProposalListResponse getFilteredProposalList(Filter filter, Paging paging) {
+        GetFilteredProposalListRequest request = GetFilteredProposalListRequest.newBuilder()
+                .setFilter(filter)
+                .setPaging(paging)
+                .build();
+
+        return stub.getFilteredProposalList(request);
     }
 }

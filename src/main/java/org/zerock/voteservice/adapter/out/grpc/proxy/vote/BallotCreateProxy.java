@@ -5,7 +5,7 @@ import domain.event.ballot.create.protocol.BallotValidateEventResponse;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.in.web.dto.vote.VoteSubmitRequestDto;
+import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.blockchainNode.BallotTransactionServiceGrpcStub;
 import org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData.BallotCreateEventServiceGrpcStub;
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.adapter.in.blockchain.controller.pending.processor.PendingProcessor;
-import org.zerock.voteservice.adapter.in.blockchain.mapper.UnicastNotificationEndpointMapper;
+import org.zerock.voteservice.adapter.in.blockchain.controller.mapper.UnicastNotificationEndpointMapper;
 import org.zerock.voteservice.adapter.in.blockchain.dto.pending.PendingExpiredEventDto;
 
 import java.util.Map;

@@ -16,35 +16,46 @@ public abstract class BaseVoteResponse implements ResponseDto {
     @JsonProperty("success")
     @Schema(
             description = "투표 API 요청 처리 여부",
-            example = "true"
+            example = "true",
+            type = "boolean",
+            implementation = Boolean.class
     )
     private Boolean success;
 
     @JsonProperty("topic")
     @Schema(
             description = "투표 주제",
-            example = "법률 개정안 찬반 투표"
+            example = "법률 개정안 찬반 투표",
+            type = "string",
+            implementation = String.class
     )
     private String topic;
 
     @JsonProperty("message")
     @Schema(
             description = "응답 메세지",
-            example = "투표 등록이 완료되었습니다."
+            example = "투표 등록이 완료되었습니다.",
+            type = "string",
+            implementation = String.class
     )
     private String message;
 
     @JsonProperty("status")
     @Schema(
             description = "요청 처리 내부 응답 상태 코드",
-            example = "OK"
+            example = "OK",
+            type = "string",
+            implementation = String.class
     )
     private String status;
 
     @JsonProperty("http_status_code")
     @Schema(
             description = "HTTP 응답 상태 코드",
-            example = "200"
+            example = "200",
+            type = "integer",
+            format = "int32",
+            implementation = Integer.class
     )
     private Integer httpStatusCode;
 }

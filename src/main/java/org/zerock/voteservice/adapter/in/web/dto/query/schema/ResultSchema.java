@@ -21,7 +21,10 @@ public class ResultSchema {
     @JsonProperty("count")
     @Schema(
             description = "총 투표 참여자 수 (또는 총 유효 투표 수)",
-            example = "11285"
+            example = "11285",
+            type = "integer",
+            format = "int32",
+            implementation = Integer.class
     )
     private Integer count;
 
@@ -35,7 +38,10 @@ public class ResultSchema {
                       "3": 2253,
                       "4": 2254,
                       "5": 2321
-                    }"""
+                    }""",
+            type = "object",
+            implementation = Map.class,
+            additionalProperties = Schema.AdditionalPropertiesValue.TRUE
     )
     private Map<String, Integer> options;
 }

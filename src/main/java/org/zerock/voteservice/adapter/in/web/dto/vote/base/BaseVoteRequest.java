@@ -17,6 +17,8 @@ public abstract class BaseVoteRequest {
     @Schema(
             description = "투표의 주제",
             example = "법률 개정안 찬반 투표",
+            type = "string",
+            implementation = String.class,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     private String topic;
