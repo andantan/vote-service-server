@@ -43,10 +43,35 @@ public class QueryProposalFilteredListResponseDto extends BaseQueryResponse {
                     """,
             example = "true",
             type = "boolean",
-            nullable = true,
             implementation = Boolean.class
     )
     private Boolean expired = null;
+
+    @JsonProperty("sort_order")
+    @Schema(
+            description = """
+                    투표 조회 리스트 나열 순서
+                     - asc: Filter [ 오름차순: expiredAt 기준 ]
+                     - desc: Filter [ 내림차순: expiredAt 기준 ]
+                     - null: Non-Filter [ 순서 상관 없이 모든 투표 반환 ]
+                    """,
+            example = "true",
+            type = "string",
+            implementation = String.class
+    )
+    private String sortOrder;
+
+    @JsonProperty("sort_by")
+    @Schema(
+            description = """
+                    투표 조회 리스트 나열 순서 기준 필드
+                     - 사용 가능한 필드는 Schema [ ProposalDetailSchema ] 참조
+                    """,
+            example = "true",
+            type = "string",
+            implementation = String.class
+    )
+    private String sortBy;
 
     @JsonProperty("skip")
     @Schema(

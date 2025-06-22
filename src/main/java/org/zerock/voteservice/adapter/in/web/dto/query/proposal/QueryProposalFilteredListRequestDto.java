@@ -45,6 +45,50 @@ public class QueryProposalFilteredListRequestDto extends BaseQueryRequest {
     )
     private Boolean expired = null;
 
+    public Boolean isExpiredFiltered() {
+        return this.expired != null;
+    }
+
+    @JsonProperty("sort_order")
+    @Schema(
+            description = """
+                    투표 조회 리스트 나열 순서
+                     - asc: Filter [ 오름차순: expiredAt 기준 ]
+                     - desc: Filter [ 내림차순: expiredAt 기준 ]
+                     - null: Non-Filter [ 순서 상관 없이 모든 투표 반환 ]
+                    """,
+            example = "true",
+            type = "string",
+            implementation = String.class,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private String sortOrder;
+
+    public Boolean isSortOrderFiltered() {
+        return this.sortOrder != null;
+    }
+
+    @JsonProperty("sort_by")
+    @Schema(
+            description = """
+                    투표 조회 리스트 나열 순서 기준 필드
+                     - 사용 가능한 필드는 Schema [ ProposalDetailSchema ] 참조
+                    """,
+            example = "true",
+            type = "string",
+            implementation = String.class,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private String sortBy;
+
+    public Boolean isSortByFiltered() {
+        return this.sortBy != null;
+    }
+
+    public Boolean isSortFiltered() {
+        return this.isSortOrderFiltered() && this.isSortByFiltered();
+    }
+
     @JsonProperty("skip")
     @Schema(
             description = "조회 결과에서 건너뛸 항목 수 (페이징)",
@@ -66,8 +110,4 @@ public class QueryProposalFilteredListRequestDto extends BaseQueryRequest {
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     private Integer limit;
-
-    public Boolean isExpiredFiltered() {
-        return this.expired != null;
-    }
 }

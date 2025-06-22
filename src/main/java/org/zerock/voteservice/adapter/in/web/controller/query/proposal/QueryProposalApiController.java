@@ -54,6 +54,8 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getFilteredProposals(
             @RequestParam(name = "summarize", defaultValue = "false") Boolean summarize,
             @RequestParam(name = "expired", required = false) Boolean expired,
+            @RequestParam(name = "sortOrder", defaultValue = "desc") String sortOrder,
+            @RequestParam(name = "sortBy", defaultValue = "expiredAt") String sortBy,
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "15") Integer limit
     ) {
@@ -62,6 +64,8 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
         QueryProposalFilteredListRequestDto dto = QueryProposalFilteredListRequestDto.builder()
                 .summarize(summarize)
                 .expired(expired)
+                .sortOrder(sortOrder)
+                .sortBy(sortBy)
                 .skip(skip)
                 .limit(limit)
                 .build();

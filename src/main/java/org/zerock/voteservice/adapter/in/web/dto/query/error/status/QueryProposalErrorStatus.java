@@ -14,6 +14,16 @@ public enum QueryProposalErrorStatus {
       "유효하지 않은 투표 제목입니다.",
             HttpStatus.BAD_REQUEST // 400
     ),
+    INVALID_SORT_ORDER_PARAM(
+            "INVALID_SORT_ORDER_PARAM",
+            "sortOrder 값은 'asc' 또는 'desc'만 가능합니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
+    INVALID_SORT_BY_PARAM(
+            "INVALID_SORT_BY_PARAM",
+            "sortOrder와 sortBy 파라미터는 함께 사용하거나 모두 생략해야 합니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
     PAGING_OUT_OF_BOUNDS(
             "PAGING_OUT_OF_BOUNDS",
             "조회 가능한 페이지 범위를 벗어났습니다.",

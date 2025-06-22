@@ -36,6 +36,8 @@ import java.lang.annotation.Target;
                                                   "http_status_code": 200,
                                                   "summarize": false,
                                                   "expired": true,
+                                                  "sort_order": "desc",
+                                                  "sort_by": "expiredAt",
                                                   "skip": 4,
                                                   "limit": 2,
                                                   "proposal_list": [
@@ -126,6 +128,8 @@ import java.lang.annotation.Target;
                                                   "http_status_code": 200,
                                                   "summarize": true,
                                                   "expired": true,
+                                                  "sort_order": "desc",
+                                                  "sort_by": "expiredAt",
                                                   "skip": 10,
                                                   "limit": 10,
                                                   "proposal_list": [

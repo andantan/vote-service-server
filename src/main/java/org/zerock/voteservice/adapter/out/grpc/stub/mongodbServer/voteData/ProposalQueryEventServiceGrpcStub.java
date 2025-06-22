@@ -1,16 +1,9 @@
 package org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData;
 
+import domain.event.proposal.query.protocol.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.log4j.Log4j2;
-
-import domain.event.proposal.query.protocol.Filter;
-import domain.event.proposal.query.protocol.Paging;
-import domain.event.proposal.query.protocol.ProposalQueryEventServiceGrpc;
-import domain.event.proposal.query.protocol.GetProposalDetailRequest;
-import domain.event.proposal.query.protocol.GetProposalDetailResponse;
-import domain.event.proposal.query.protocol.GetFilteredProposalListRequest;
-import domain.event.proposal.query.protocol.GetFilteredProposalListResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,9 +34,10 @@ public class ProposalQueryEventServiceGrpcStub {
         return stub.getProposalDetail(request);
     }
 
-    public GetFilteredProposalListResponse getFilteredProposalList(Filter filter, Paging paging) {
+    public GetFilteredProposalListResponse getFilteredProposalList(Filter filter, Sort sort, Paging paging) {
         GetFilteredProposalListRequest request = GetFilteredProposalListRequest.newBuilder()
                 .setFilter(filter)
+                .setSort(sort)
                 .setPaging(paging)
                 .build();
 

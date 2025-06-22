@@ -30,7 +30,6 @@ import java.lang.annotation.Target;
                         description = "요약 정보만 포함할지 여부",
                         example = "true",
                         required = true,
-
                         schema = @Schema(type = "boolean", defaultValue = "false")
                 ),
                 @Parameter(
@@ -39,6 +38,26 @@ import java.lang.annotation.Target;
                         description = "만료된 투표 포함 여부 (생략 시 전체 포함)",
                         example = "true",
                         schema = @Schema(type = "boolean", nullable = true)
+                ),
+                @Parameter(
+                        name = "sortOrder",
+                        in = ParameterIn.QUERY,
+                        description = "정렬 순서 ('asc' 또는 'desc')",
+                        example = "desc",
+                        required = true,
+                        schema = @Schema(type = "string", defaultValue = "desc", allowableValues = {
+                                "asc", "desc"
+                        })
+                ),
+                @Parameter(
+                        name = "sortBy",
+                        in = ParameterIn.QUERY,
+                        description = "정렬 기준 필드",
+                        example = "expiredAt",
+                        required = true,
+                        schema = @Schema(type = "string", defaultValue = "expiredAt", allowableValues = {
+                                "topic", "expiredAt", "createdAt", "result.count",
+                        })
                 ),
                 @Parameter(
                         name = "page",

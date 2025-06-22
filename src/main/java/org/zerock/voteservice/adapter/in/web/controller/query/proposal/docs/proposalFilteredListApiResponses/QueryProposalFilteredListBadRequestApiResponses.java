@@ -58,6 +58,28 @@ import java.lang.annotation.Target;
                                                   "status": "PAGING_OUT_OF_BOUNDS",
                                                   "http_status_code": 400
                                                 }"""
+                                ),
+                                @ExampleObject(
+                                        name = "잘못된 Sort 파라미터 예시",
+                                        summary = "sortOrder이 잘못된 경우",
+                                        value = """
+                                        {
+                                          "success": false,
+                                          "message": "sortOrder 값은 'asc' 또는 'desc'만 가능합니다.",
+                                          "status": "INVALID_SORT_ORDER_PARAM",
+                                          "http_status_code": 400
+                                        }"""
+                                ),
+                                @ExampleObject(
+                                        name = "잘못된 Sort 파라미터 세트 예시",
+                                        summary = "sort 파라미터 셋이 잘못된 경우",
+                                        value = """
+                                        {
+                                          "success": false,
+                                          "message": "sortOrder와 sortBy 파라미터는 함께 사용하거나 모두 생략해야 합니다.",
+                                          "status": "INVALID_SORT_BY_PARAM",
+                                          "http_status_code": 400
+                                        }"""
                                 )
                         }
                 )

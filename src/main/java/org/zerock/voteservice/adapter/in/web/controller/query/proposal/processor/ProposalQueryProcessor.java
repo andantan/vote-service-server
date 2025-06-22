@@ -86,6 +86,8 @@ public class ProposalQueryProcessor {
                 .httpStatusCode(result.getHttpStatusCode())
                 .summarize(dto.getSummarize())
                 .expired(dto.getExpired())
+                .sortOrder(dto.getSortOrder())
+                .sortBy(dto.getSortBy())
                 .skip(dto.getSkip())
                 .limit(dto.getLimit())
                 .proposalList(proposalList)
