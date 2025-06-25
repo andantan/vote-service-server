@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import org.zerock.voteservice.adapter.in.web.dto.query.Base.BaseQueryResponse;
+import org.zerock.voteservice.adapter.in.web.dto.query.base.BaseQueryResponse;
 import org.zerock.voteservice.adapter.in.web.dto.query.schema.BallotSchema;
 
 import java.util.List;

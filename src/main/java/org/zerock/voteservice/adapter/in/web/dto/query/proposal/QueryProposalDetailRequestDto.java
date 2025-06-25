@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.zerock.voteservice.adapter.in.web.dto.query.Base.BaseQueryRequest;
+import org.zerock.voteservice.adapter.in.web.dto.query.base.BaseQueryRequest;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

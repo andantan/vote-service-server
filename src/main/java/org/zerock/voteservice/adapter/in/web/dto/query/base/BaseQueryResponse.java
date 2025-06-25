@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.in.web.dto.query.Base;
+package org.zerock.voteservice.adapter.in.web.dto.query.base;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

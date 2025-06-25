@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.in.web.dto.query.Base;
+package org.zerock.voteservice.adapter.in.web.dto.query.base;
 
 //import lombok.AllArgsConstructor;
 import lombok.Data;

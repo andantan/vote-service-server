@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.in.web.controller.user;
+package org.zerock.voteservice.adapter.in.web.controller.user.mapper;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
