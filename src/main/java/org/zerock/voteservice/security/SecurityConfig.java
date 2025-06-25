@@ -1,6 +1,7 @@
 package org.zerock.voteservice.security;
 
 import lombok.extern.log4j.Log4j2;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -43,8 +44,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public LoginFilter loginFilter(AuthenticationManager authenticationManager) {
-        LoginFilter filter = new LoginFilter();
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public LoginFilter loginFilter(
+            AuthenticationManager authenticationManager, ObjectMapper objectMapper
+    ) {
+        LoginFilter filter = new LoginFilter(objectMapper);
         filter.setAuthenticationManager(authenticationManager);
         filter.setFilterProcessesUrl("/api/v1/user/login");
         filter.setUsernameParameter("username");
@@ -73,7 +81,8 @@ public class SecurityConfig {
 
     private void securityCustomizeFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.addFilterAt(loginFilter(
-                authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class))
+                authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class)),
+                objectMapper()
         ), UsernamePasswordAuthenticationFilter.class);
     }
 }

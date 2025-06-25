@@ -16,7 +16,7 @@ import org.zerock.voteservice.adapter.in.web.dto.user.base.BaseUserRequest;
         description = "회원 가입 요청 데이터 인터페이스"
 )
 public class UserRegisterRequestDto extends BaseUserRequest {
-    @JsonProperty("name")
+    @JsonProperty("real_name")
     @Schema(
             description = "사용자 이름",
             example = "홍길동",
@@ -24,7 +24,7 @@ public class UserRegisterRequestDto extends BaseUserRequest {
             implementation = String.class,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String name;
+    private String realName;
 
     @JsonProperty("birth_date")
     @Schema(

@@ -24,13 +24,13 @@ public class UserAuthenticationDetails implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return this.userEntity.getPassword();
+    public String getUsername() {
+        return this.userEntity.getUsername();
     }
 
     @Override
-    public String getUsername() {
-        return this.userEntity.getUsername();
+    public String getPassword() {
+        return this.userEntity.getPassword();
     }
 
     @Override

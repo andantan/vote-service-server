@@ -19,7 +19,7 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(
-            name = "user_id",
+            name = "id",
             nullable = false,
             updatable = false
     )
@@ -41,11 +41,11 @@ public class UserEntity {
     private String password;
 
     @Column(
-            name = "name",
+            name = "real_name",
             nullable = false,
             length = 100
     )
-    private String name;
+    private String realName;
 
     @Column(
             name = "birth_date",
@@ -109,7 +109,7 @@ public class UserEntity {
         return UserEntity.builder()
                 .username(dto.getUsername())
                 .password(encoder.encode(dto.getPassword()))
-                .name(dto.getName())
+                .realName(dto.getRealName())
                 .birthDate(dto.getBirthDate())
                 .email(dto.getEmail())
                 .phoneNumber(dto.getPhoneNumber())

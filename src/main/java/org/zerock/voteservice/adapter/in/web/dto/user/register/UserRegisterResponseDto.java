@@ -13,7 +13,7 @@ import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 public class UserRegisterResponseDto {
     private Integer id;
     private String username;
-    private String name;
+    private String realName;
     private String birthDate;
     private String email;
     private String phoneNumber;
@@ -24,7 +24,7 @@ public class UserRegisterResponseDto {
         return UserRegisterResponseDto.builder()
                 .id(userEntity.getId())
                 .username(userEntity.getUsername())
-                .name(userEntity.getName())
+                .realName(userEntity.getRealName())
                 .birthDate(userEntity.getBirthDate())
                 .email(userEntity.getEmail())
                 .phoneNumber(userEntity.getPhoneNumber())
