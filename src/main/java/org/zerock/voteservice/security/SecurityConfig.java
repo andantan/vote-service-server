@@ -10,12 +10,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
-import org.zerock.voteservice.security.jwt.LoginFilter;
+import org.zerock.voteservice.security.jwt.UserAuthenticationFilter;
 import org.zerock.voteservice.security.property.AuthorizationEndpointProperties;
 
 @Log4j2
@@ -49,10 +50,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public LoginFilter loginFilter(
+    public UserAuthenticationFilter userAuthenticationFilter(
             AuthenticationManager authenticationManager, ObjectMapper objectMapper
     ) {
-        LoginFilter filter = new LoginFilter(objectMapper);
+        UserAuthenticationFilter filter = new UserAuthenticationFilter(objectMapper);
         filter.setAuthenticationManager(authenticationManager);
         filter.setFilterProcessesUrl("/api/v1/user/login");
         filter.setUsernameParameter("username");
@@ -80,9 +81,16 @@ public class SecurityConfig {
     }
 
     private void securityCustomizeFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.addFilterAt(loginFilter(
-                authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class)),
-                objectMapper()
-        ), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterAt(
+                this.getAuthenticationFilter(httpSecurity),
+                UsernamePasswordAuthenticationFilter.class
+        );
+    }
+
+    private UserAuthenticationFilter getAuthenticationFilter(HttpSecurity httpSecurity) throws Exception {
+        AuthenticationConfiguration authConfiguration = httpSecurity.getSharedObject(
+                AuthenticationConfiguration.class);
+
+        return userAuthenticationFilter(authenticationManager(authConfiguration), objectMapper());
     }
 }

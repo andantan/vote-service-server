@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.LocalDateTime;
 
-public class Converter {
+public class DateConverter {
     private static final String SOUTH_KOREA_TIME_ZONE_ID = "Asia/Seoul";
     private static final ZoneId KST_ZONE_ID = ZoneId.of(SOUTH_KOREA_TIME_ZONE_ID);
 

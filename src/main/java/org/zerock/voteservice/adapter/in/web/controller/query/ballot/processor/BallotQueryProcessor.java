@@ -16,7 +16,7 @@ import org.zerock.voteservice.adapter.in.web.dto.query.ballot.QueryBallotRespons
 import org.zerock.voteservice.adapter.in.web.dto.query.error.QueryErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.error.status.QueryBallotErrorStatus;
 
-import org.zerock.voteservice.tool.date.Converter;
+import org.zerock.voteservice.tool.date.DateConverter;
 
 import java.time.LocalDateTime;
 
@@ -83,7 +83,7 @@ public class BallotQueryProcessor {
         LocalDateTime kstSubmittedAt = null;
 
         try {
-            kstSubmittedAt = Converter.toKstLocalDateTime(ballot.getSubmittedAt());
+            kstSubmittedAt = DateConverter.toKstLocalDateTime(ballot.getSubmittedAt());
         } catch (NullPointerException ignorable) {
             log.warn("submitted_at field is missing for voteHash: {}", ballot.getVoteHash());
         }

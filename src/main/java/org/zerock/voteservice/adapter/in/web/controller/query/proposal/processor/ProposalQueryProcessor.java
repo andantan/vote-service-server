@@ -17,7 +17,7 @@ import org.zerock.voteservice.adapter.in.web.dto.query.schema.*;
 
 import org.zerock.voteservice.adapter.out.grpc.proxy.query.ProposalQueryProxy;
 
-import org.zerock.voteservice.tool.date.Converter;
+import org.zerock.voteservice.tool.date.DateConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -115,7 +115,7 @@ public class ProposalQueryProcessor {
     }
 
     private ProposalSummarizedSchema mappingProposalSummarizedSchema(Proposal proposal) {
-        LocalDateTime kstExpiredAt = Converter.toKstLocalDateTime(proposal.getExpiredAt());
+        LocalDateTime kstExpiredAt = DateConverter.toKstLocalDateTime(proposal.getExpiredAt());
 
         return ProposalSummarizedSchema.builder()
                 .topic(proposal.getTopic())
@@ -131,8 +131,8 @@ public class ProposalQueryProcessor {
 
         ResultSchema resultSchema = this.mappingResultSchema(proposal.getResult());
 
-        LocalDateTime kstCreatedAt = Converter.toKstLocalDateTime(proposal.getCreatedAt());
-        LocalDateTime kstExpiredAt = Converter.toKstLocalDateTime(proposal.getExpiredAt());
+        LocalDateTime kstCreatedAt = DateConverter.toKstLocalDateTime(proposal.getCreatedAt());
+        LocalDateTime kstExpiredAt = DateConverter.toKstLocalDateTime(proposal.getExpiredAt());
 
         List<String> options = proposal.getOptionsList();
 

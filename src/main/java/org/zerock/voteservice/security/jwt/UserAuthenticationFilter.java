@@ -1,7 +1,5 @@
 package org.zerock.voteservice.security.jwt;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import jakarta.servlet.FilterChain;
@@ -17,11 +15,11 @@ import org.zerock.voteservice.adapter.in.web.dto.user.login.LoginRequestDto;
 import java.io.IOException;
 
 @Log4j2
-public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
 
-    public LoginFilter(ObjectMapper objectMapper) {
+    public UserAuthenticationFilter(ObjectMapper objectMapper) {
         super();
         this.objectMapper = objectMapper;
     }
@@ -39,9 +37,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             throw new AuthenticationServiceException("Error parsing authentication request JSON", e);
         }
 
-//        String username = obtainUsername(request);
-//        String password = obtainPassword(request);
-
         log.info("username: ${}, password: ${}", dto.getUsername(), dto.getPassword());
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
@@ -54,6 +49,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request, HttpServletResponse response,
             FilterChain chain, Authentication authResult
     ) {
+
         log.info("success");
     }
 
