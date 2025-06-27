@@ -1,12 +1,11 @@
-package org.zerock.voteservice.adapter.in.web.dto.vote.error;
+package org.zerock.voteservice.adapter.in.web.dto.user.error;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import lombok.*;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteBallotErrorStatus;
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteProposalErrorStatus;
+import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
+import org.zerock.voteservice.adapter.in.web.dto.vote.error.VoteErrorResponseDto;
 
 @Getter
 @NoArgsConstructor
@@ -15,13 +14,13 @@ import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteProposalE
 @EqualsAndHashCode
 @Builder
 @Schema(
-        description = "Vote API 오류 응답 공통 형식"
+        description = "User API 오류 응답 공통 형식"
 )
-public class VoteErrorResponseDto implements ResponseDto {
+public class UserErrorResponseDto implements ResponseDto {
     @JsonProperty("success")
     @Schema(
             description = "요청 처리 성공 여부",
-            example = "false",
+            example = "true",
             type = "boolean",
             implementation = Boolean.class
     )
@@ -30,7 +29,7 @@ public class VoteErrorResponseDto implements ResponseDto {
     @JsonProperty("message")
     @Schema(
             description = "오류 상세 메시지",
-            example = "비정상적인 투표 선택 사항입니다.",
+            example = "존재하는 회원 아이디 입니다.",
             type = "string",
             implementation = String.class
     )
@@ -39,7 +38,7 @@ public class VoteErrorResponseDto implements ResponseDto {
     @JsonProperty("status")
     @Schema(
             description = "내부 오류 코드",
-            example = "INVALID_OPTION",
+            example = "EXIST_USERNAME",
             type = "string",
             implementation = String.class
     )
@@ -54,8 +53,8 @@ public class VoteErrorResponseDto implements ResponseDto {
     )
     private Integer httpStatusCode;
 
-    public static VoteErrorResponseDto from(VoteBallotErrorStatus errorStatus) {
-        return VoteErrorResponseDto.builder()
+    public static UserErrorResponseDto from(UserRegisterErrorStatus errorStatus) {
+        return UserErrorResponseDto.builder()
                 .success(false)
                 .message(errorStatus.getMessage())
                 .status(errorStatus.getCode())
@@ -63,10 +62,10 @@ public class VoteErrorResponseDto implements ResponseDto {
                 .build();
     }
 
-    public static VoteErrorResponseDto from(VoteProposalErrorStatus errorStatus) {
-        return VoteErrorResponseDto.builder()
+    public static UserErrorResponseDto fromWithCustomMessage(UserRegisterErrorStatus errorStatus, String errorMessage) {
+        return UserErrorResponseDto.builder()
                 .success(false)
-                .message(errorStatus.getMessage())
+                .message(errorMessage)
                 .status(errorStatus.getCode())
                 .httpStatusCode(errorStatus.getHttpStatusCode().value())
                 .build();

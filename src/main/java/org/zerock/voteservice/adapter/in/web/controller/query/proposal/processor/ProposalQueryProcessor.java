@@ -33,35 +33,35 @@ public class ProposalQueryProcessor {
         this.proposalQueryProxy = proposalQueryProxy;
     }
 
-    public ProposalQueryResult validateTopic(String topic) {
+    public ProposalQueryProcessorResult validateTopic(String topic) {
         if (topic == null || topic.isEmpty()) {
-            return ProposalQueryResult.failure("INVALID_PARAMETER");
+            return ProposalQueryProcessorResult.failure("INVALID_PARAMETER");
         }
 
-        return ProposalQueryResult.successWithoutData();
+        return ProposalQueryProcessorResult.successWithoutData();
     }
 
-    public ProposalQueryResult processProposalDetailQuery(QueryProposalDetailRequestDto dto) {
+    public ProposalQueryProcessorResult processProposalDetailQuery(QueryProposalDetailRequestDto dto) {
         GetProposalDetailResponse proposalDetail = this.proposalQueryProxy.getProposalDetail(dto);
 
         if (!proposalDetail.getQueried()) {
-            return ProposalQueryResult.failure(proposalDetail.getStatus());
+            return ProposalQueryProcessorResult.failure(proposalDetail.getStatus());
         }
 
-        return ProposalQueryResult.success(proposalDetail.getStatus(), proposalDetail.getProposal());
+        return ProposalQueryProcessorResult.success(proposalDetail.getStatus(), proposalDetail.getProposal());
     }
 
-    public ProposalQueryResult processFilteredProposalsQuery(QueryProposalFilteredListRequestDto dto) {
+    public ProposalQueryProcessorResult processFilteredProposalsQuery(QueryProposalFilteredListRequestDto dto) {
         GetFilteredProposalListResponse filteredProposalList = this.proposalQueryProxy.getFilteredProposalList(dto);
 
         if (!filteredProposalList.getQueried()) {
-            return ProposalQueryResult.failure(filteredProposalList.getStatus());
+            return ProposalQueryProcessorResult.failure(filteredProposalList.getStatus());
         }
 
-        return ProposalQueryResult.successForDetailList(filteredProposalList.getStatus(), filteredProposalList.getProposalListList());
+        return ProposalQueryProcessorResult.successForDetailList(filteredProposalList.getStatus(), filteredProposalList.getProposalListList());
     }
 
-    public ResponseEntity<QueryProposalDetailResponseDto> getSuccessResponse(QueryProposalDetailRequestDto dto, ProposalQueryResult result) {
+    public ResponseEntity<QueryProposalDetailResponseDto> getSuccessResponse(QueryProposalDetailRequestDto dto, ProposalQueryProcessorResult result) {
         ProposalDetailSchema proposalDetailSchema = this.mappingProposalDetailSchema(result.getProposal());
 
         QueryProposalDetailResponseDto successDto = QueryProposalDetailResponseDto.builder()
@@ -76,7 +76,7 @@ public class ProposalQueryProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<QueryProposalFilteredListResponseDto> getSuccessResponse(QueryProposalFilteredListRequestDto dto, ProposalQueryResult result) {
+    public ResponseEntity<QueryProposalFilteredListResponseDto> getSuccessResponse(QueryProposalFilteredListRequestDto dto, ProposalQueryProcessorResult result) {
         List<? extends ProposalResponseSchema> proposalList = this.mappingProposalResponseSchema(dto, result);
 
         QueryProposalFilteredListResponseDto successDto = QueryProposalFilteredListResponseDto.builder()
@@ -97,14 +97,14 @@ public class ProposalQueryProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(ProposalQueryResult result) {
+    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(ProposalQueryProcessorResult result) {
         QueryProposalErrorStatus errorStatus = QueryProposalErrorStatus.fromCode(result.getStatus());
         QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
 
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
     }
 
-    private List<? extends ProposalResponseSchema> mappingProposalResponseSchema(QueryProposalFilteredListRequestDto dto, ProposalQueryResult result) {
+    private List<? extends ProposalResponseSchema> mappingProposalResponseSchema(QueryProposalFilteredListRequestDto dto, ProposalQueryProcessorResult result) {
         Function<Proposal, ? extends ProposalResponseSchema> mapper = dto.getSummarize()
                 ? this::mappingProposalSummarizedSchema
                 : this::mappingProposalDetailSchema;

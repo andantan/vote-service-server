@@ -25,33 +25,33 @@ public class ProposalCreateProcessor {
         this.proposalCreateProxy = proposalCreateProxy;
     }
 
-    public ProposalCreateResult processProposalCreation(VoteProposalRequestDto dto) {
+    public ProposalCreateProcessorResult processProposalCreation(VoteProposalRequestDto dto) {
         // Cache server: request validate proposal [gRPC]
         ProposalValidateEventResponse validatedProposal = this.proposalCreateProxy.validateProposal(dto);
 
         if (!validatedProposal.getValidation()) {
-            return ProposalCreateResult.failure(validatedProposal.getStatus());
+            return ProposalCreateProcessorResult.failure(validatedProposal.getStatus());
         }
 
         // Blockchain server: request open pending [gRPC]
         OpenProposalPendingResponse pendedProposal = this.proposalCreateProxy.requestOpenPending(dto);
 
         if (!pendedProposal.getSuccess()) {
-            return ProposalCreateResult.failure(pendedProposal.getStatus());
+            return ProposalCreateProcessorResult.failure(pendedProposal.getStatus());
         }
 
         // Cache server: request cache proposal [gRPC]
         ProposalCacheEventResponse cachedProposal = this.proposalCreateProxy.requestCacheProposal(dto);
 
         if (!cachedProposal.getCached()) {
-            return ProposalCreateResult.failure(cachedProposal.getStatus());
+            return ProposalCreateProcessorResult.failure(cachedProposal.getStatus());
         }
 
-        return ProposalCreateResult.success(cachedProposal.getStatus(), dto.getTopic());
+        return ProposalCreateProcessorResult.success(cachedProposal.getStatus(), dto.getTopic());
 
     }
 
-    public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, ProposalCreateResult result) {
+    public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, ProposalCreateProcessorResult result) {
             VoteProposalResponseDto successDto = VoteProposalResponseDto.builder()
                     .success(result.getSuccess())
                     .topic(result.getTopic())
@@ -64,7 +64,7 @@ public class ProposalCreateProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(ProposalCreateResult result) {
+    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(ProposalCreateProcessorResult result) {
         VoteProposalErrorStatus errorStatus = VoteProposalErrorStatus.fromCode(result.getStatus());
         VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
 

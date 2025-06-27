@@ -12,14 +12,14 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BallotQueryResult {
+public class BallotQueryProcessorResult {
     private Boolean success;
     private String status;
     private String message;
     private List<Ballot> ballotList;
     private Integer httpStatusCode;
 
-    public static BallotQueryResult success(String status, List<Ballot> ballotList) {
+    public static BallotQueryProcessorResult success(String status, List<Ballot> ballotList) {
         String successMessage = "조회가 완료되었습니다.";
 
         return builder()
@@ -31,13 +31,13 @@ public class BallotQueryResult {
                 .build();
     }
 
-    public static BallotQueryResult successWithoutData() {
+    public static BallotQueryProcessorResult successWithoutData() {
         return builder()
                 .success(true)
                 .build();
     }
 
-    public static BallotQueryResult failure(String status) {
+    public static BallotQueryProcessorResult failure(String status) {
         return builder()
                 .success(false)
                 .status(status)

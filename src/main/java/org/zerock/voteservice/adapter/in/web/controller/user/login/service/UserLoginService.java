@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.in.web.controller.user.service;
+package org.zerock.voteservice.adapter.in.web.controller.user.login.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,10 +11,10 @@ import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
 
 @Service
-public class UserAuthenticationService implements UserDetailsService {
+public class UserLoginService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    public UserAuthenticationService(UserRepository userRepository) {
+    public UserLoginService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

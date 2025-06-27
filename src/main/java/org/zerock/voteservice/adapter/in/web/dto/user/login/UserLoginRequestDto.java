@@ -14,5 +14,5 @@ import org.zerock.voteservice.adapter.in.web.dto.user.base.BaseUserRequest;
 @Schema(
         description = "로그인 시도 요청 데이터 인터페이스"
 )
-public class LoginRequestDto extends BaseUserRequest {
+public class UserLoginRequestDto extends BaseUserRequest {
 }

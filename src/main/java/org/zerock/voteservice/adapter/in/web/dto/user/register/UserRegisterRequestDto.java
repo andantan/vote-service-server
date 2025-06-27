@@ -26,15 +26,15 @@ public class UserRegisterRequestDto extends BaseUserRequest {
     )
     private String realName;
 
-    @JsonProperty("birth_date")
+    @JsonProperty("resident_registration_number_part")
     @Schema(
-            description = "사용자 생년월일 (YYMMDD-G 형식)",
+            description = "사용자 주민번호 뒷자리 첫째까지 (YYMMDD-G 형식)",
             example = "001209-3",
             type = "string",
             implementation = String.class,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String birthDate;
+    private String residentRegistrationNumberPart;
 
     @JsonProperty("email")
     @Schema(

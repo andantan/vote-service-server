@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.docs.VoteProposalApiDoc;
-import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.processor.ProposalCreateResult;
+import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.processor.ProposalCreateProcessorResult;
 import org.zerock.voteservice.adapter.in.web.controller.vote.mapper.VoteApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.proposal.VoteProposalRequestDto;
@@ -26,7 +26,7 @@ public class VoteProposalApiController extends VoteApiEndpointMapper {
     @VoteProposalApiDoc
     @PostMapping("/proposal")
     public ResponseEntity<? extends ResponseDto> proposalVote(@RequestBody VoteProposalRequestDto dto) {
-        ProposalCreateResult result = this.proposalCreateProcessor.processProposalCreation(dto);
+        ProposalCreateProcessorResult result = this.proposalCreateProcessor.processProposalCreation(dto);
 
         if (!result.getSuccess()) {
             return this.proposalCreateProcessor.getErrorResponse(result);

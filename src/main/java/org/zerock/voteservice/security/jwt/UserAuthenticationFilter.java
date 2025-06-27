@@ -9,29 +9,38 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zerock.voteservice.adapter.in.web.dto.user.login.LoginRequestDto;
+import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
+import org.zerock.voteservice.adapter.in.web.dto.user.login.UserLoginRequestDto;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Log4j2
 public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
+    private final JwtUtil jwtUtil;
 
-    public UserAuthenticationFilter(ObjectMapper objectMapper) {
+    public UserAuthenticationFilter(
+            ObjectMapper objectMapper,
+            JwtUtil jwtUtil
+    ) {
         super();
         this.objectMapper = objectMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request, HttpServletResponse response
     ) throws AuthenticationException {
-        LoginRequestDto dto;
+        UserLoginRequestDto dto;
 
         try {
-            dto = this.objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
+            dto = this.objectMapper.readValue(request.getInputStream(), UserLoginRequestDto.class);
         } catch (IOException e) {
             log.error("Error parsing JSON authentication request", e);
             throw new AuthenticationServiceException("Error parsing authentication request JSON", e);
@@ -49,8 +58,18 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             HttpServletRequest request, HttpServletResponse response,
             FilterChain chain, Authentication authResult
     ) {
+        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authResult.getPrincipal();
 
-        log.info("success");
+        String username = userDetails.getUsername();
+        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+
+        GrantedAuthority authority = iterator.next();
+
+        String role = authority.getAuthority();
+        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+
+        response.addHeader("Authorization", "Bearer " + token);
     }
 
     @Override
@@ -58,6 +77,6 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             HttpServletRequest request, HttpServletResponse response,
             AuthenticationException failed
     ) {
-        log.info("failed");
+        response.setStatus(404);
     }
 }

@@ -1,21 +1,20 @@
 package org.zerock.voteservice.security;
 
-import lombok.extern.log4j.Log4j2;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
+import org.zerock.voteservice.security.jwt.JwtUtil;
 import org.zerock.voteservice.security.jwt.UserAuthenticationFilter;
 import org.zerock.voteservice.security.property.AuthorizationEndpointProperties;
 
@@ -25,11 +24,17 @@ import org.zerock.voteservice.security.property.AuthorizationEndpointProperties;
 public class SecurityConfig {
 
     private final AuthorizationEndpointProperties authorizationEndpointProperties;
+    private final ObjectMapper objectMapper;
+    private final JwtUtil jwtUtil;
 
     public SecurityConfig(
-            AuthorizationEndpointProperties authorizationEndpointProperties
+            AuthorizationEndpointProperties authorizationEndpointProperties,
+            ObjectMapper objectMapper,
+            JwtUtil jwtUtil
     ) {
         this.authorizationEndpointProperties = authorizationEndpointProperties;
+        this.objectMapper = objectMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -40,20 +45,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
-    @Bean
-    public UserAuthenticationFilter userAuthenticationFilter(
-            AuthenticationManager authenticationManager, ObjectMapper objectMapper
-    ) {
-        UserAuthenticationFilter filter = new UserAuthenticationFilter(objectMapper);
+    public UserAuthenticationFilter userAuthenticationFilter(AuthenticationManager authenticationManager) {
+        UserAuthenticationFilter filter = new UserAuthenticationFilter(objectMapper, jwtUtil);
         filter.setAuthenticationManager(authenticationManager);
         filter.setFilterProcessesUrl("/api/v1/user/login");
         filter.setUsernameParameter("username");
@@ -91,6 +84,6 @@ public class SecurityConfig {
         AuthenticationConfiguration authConfiguration = httpSecurity.getSharedObject(
                 AuthenticationConfiguration.class);
 
-        return userAuthenticationFilter(authenticationManager(authConfiguration), objectMapper());
+        return userAuthenticationFilter(authenticationManager(authConfiguration));
     }
 }

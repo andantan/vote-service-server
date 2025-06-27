@@ -32,29 +32,29 @@ public class BallotQueryProcessor {
         this.ballotQueryProxy = ballotQueryProxy;
     }
 
-    public BallotQueryResult validateUserHash(String userHash) {
+    public BallotQueryProcessorResult validateUserHash(String userHash) {
         if (userHash == null) {
-            return BallotQueryResult.failure("DECODE_ERROR");
+            return BallotQueryProcessorResult.failure("DECODE_ERROR");
         }
 
         if (userHash.length() != 64) {
-            return BallotQueryResult.failure("INVALID_HASH_LENGTH");
+            return BallotQueryProcessorResult.failure("INVALID_HASH_LENGTH");
         }
 
-        return BallotQueryResult.successWithoutData();
+        return BallotQueryProcessorResult.successWithoutData();
     }
 
-    public BallotQueryResult processBallotQuery(QueryBallotRequestDto dto) {
+    public BallotQueryProcessorResult processBallotQuery(QueryBallotRequestDto dto) {
         GetUserBallotsResponse userBallots = this.ballotQueryProxy.getUserBallots(dto);
 
         if (!userBallots.getQueried()) {
-            return BallotQueryResult.failure(userBallots.getStatus());
+            return BallotQueryProcessorResult.failure(userBallots.getStatus());
         }
 
-        return BallotQueryResult.success(userBallots.getStatus(), userBallots.getBallotsList());
+        return BallotQueryProcessorResult.success(userBallots.getStatus(), userBallots.getBallotsList());
     }
 
-    public ResponseEntity<QueryBallotResponseDto> getSuccessResponse(QueryBallotRequestDto dto, BallotQueryResult result) {
+    public ResponseEntity<QueryBallotResponseDto> getSuccessResponse(QueryBallotRequestDto dto, BallotQueryProcessorResult result) {
         List<BallotSchema> ballotSchemas = result.getBallotList().stream()
                 .map(this::mappingBallotSchema)
                 .toList();
@@ -72,7 +72,7 @@ public class BallotQueryProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(BallotQueryResult result) {
+    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(BallotQueryProcessorResult result) {
         QueryBallotErrorStatus errorStatus = QueryBallotErrorStatus.fromCode(result.getStatus());
         QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
 

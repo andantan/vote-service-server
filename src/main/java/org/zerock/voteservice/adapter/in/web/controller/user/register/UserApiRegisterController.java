@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.adapter.in.web.controller.user.mapper.UserApiEndpointMapper;
-import org.zerock.voteservice.adapter.in.web.controller.user.service.UserRegisterService;
+import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterService;
+import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterServiceResult;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
 
@@ -22,8 +23,24 @@ public class UserApiRegisterController extends UserApiEndpointMapper {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<? extends ResponseDto> register(@RequestBody UserRegisterRequestDto dto) {
-        userRegisterService.register(dto);
+    public ResponseEntity<? extends ResponseDto> register(
+            @RequestBody UserRegisterRequestDto dto
+    ) {
+        UserRegisterServiceResult userValidationResult = this.userRegisterService.validateUserExistence(
+                dto.getUsername(), dto.getEmail()
+        );
+
+        if (!userValidationResult.getSuccess()) {
+            return this.userRegisterService.getErrorResponse(userValidationResult);
+        }
+
+        UserRegisterServiceResult userSavedResult = userRegisterService.register(dto);
+
+        if (!userSavedResult.getSuccess()) {
+            return this.userRegisterService.getErrorResponse(userSavedResult);
+        }
+
+        log.info("User successfully registered: {} -> id:{}", dto.getUsername(), userSavedResult.getId());
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
