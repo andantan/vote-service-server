@@ -7,7 +7,7 @@ public class DateUtil {
         return new Date();
     }
 
-    public static Date after(long millis) {
-        return new Date(System.currentTimeMillis() + millis);
+    public static Date after(long seconds) {
+        return new Date(System.currentTimeMillis() + (seconds * 1000L));
     }
 }

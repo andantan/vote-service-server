@@ -9,6 +9,7 @@ import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterE
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
+import org.zerock.voteservice.tool.hash.Sha256;
 
 @Service
 public class UserRegisterService {
@@ -46,6 +47,9 @@ public class UserRegisterService {
         }
 
         UserEntity savedUserEntity = userRepository.save(newUserEntity);
+
+        // TODO: userHash
+        String userHash = Sha256.generateUserHash(savedUserEntity.getId(), dto);
 
         return UserRegisterServiceResult.success("OK", savedUserEntity.getId());
     }

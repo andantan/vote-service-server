@@ -1,4 +1,4 @@
-package org.zerock.voteservice.security.jwt;
+package org.zerock.voteservice.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -13,21 +13,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
 import org.zerock.voteservice.adapter.in.web.dto.user.login.UserLoginRequestDto;
+import org.zerock.voteservice.security.jwt.JwtUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 
 @Log4j2
 public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
-    public UserAuthenticationFilter(
-            ObjectMapper objectMapper,
-            JwtUtil jwtUtil
-    ) {
+    public UserAuthenticationFilter(ObjectMapper objectMapper, JwtUtil jwtUtil) {
         super();
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
@@ -37,6 +32,8 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     public Authentication attemptAuthentication(
             HttpServletRequest request, HttpServletResponse response
     ) throws AuthenticationException {
+        log.info("------------UserAuthenticationFilter------------");
+
         UserLoginRequestDto dto;
 
         try {
@@ -48,7 +45,8 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 
         log.info("username: ${}, password: ${}", dto.getUsername(), dto.getPassword());
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
 
         return getAuthenticationManager().authenticate(token);
     }
@@ -58,16 +56,17 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             HttpServletRequest request, HttpServletResponse response,
             FilterChain chain, Authentication authResult
     ) {
+        log.info("------------UserAuthenticationFilter::successfulAuthentication------------");
+
         UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authResult.getPrincipal();
 
         String username = userDetails.getUsername();
-        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        String role = authResult.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("사용자에게 할당된 권한이 없습니다."));
 
-        GrantedAuthority authority = iterator.next();
-
-        String role = authority.getAuthority();
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+        String token = jwtUtil.createJwt(username, role);
 
         response.addHeader("Authorization", "Bearer " + token);
     }
@@ -77,6 +76,7 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             HttpServletRequest request, HttpServletResponse response,
             AuthenticationException failed
     ) {
+        log.info("------------UserAuthenticationFilter::unsuccessfulAuthentication------------");
         response.setStatus(404);
     }
 }

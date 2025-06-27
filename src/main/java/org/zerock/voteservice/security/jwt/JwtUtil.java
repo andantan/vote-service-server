@@ -7,19 +7,24 @@ import io.jsonwebtoken.Jwts;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import org.zerock.voteservice.tool.date.DateUtil;
 
 @Component
 public class JwtUtil {
-
     private final SecretKey secretKey;
+    private final Long expireMinutes;
 
-    public JwtUtil(@Value("${spring.security.jwt.secret.key}") String secretKey) {
+    public JwtUtil(
+            @Value("${spring.security.jwt.secret.key}") String secretKey,
+            @Value("${spring.security.jwt.expire.delta}") Long expireMinutes
+    ) {
         this.secretKey = new SecretKeySpec(
                 secretKey.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm()
         );
+        this.expireMinutes = expireMinutes;
     }
 
     public String getUsername(String token) {
@@ -50,12 +55,12 @@ public class JwtUtil {
                 .before(DateUtil.now());
     }
 
-    public String createJwt(String username, String role, Long expireDelta) {
+    public String createJwt(String username, String role) {
         return Jwts.builder()
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(DateUtil.now())
-                .expiration(DateUtil.after(expireDelta))
+                .expiration(DateUtil.after(expireMinutes))
                 .signWith(this.secretKey)
                 .compact();
     }
