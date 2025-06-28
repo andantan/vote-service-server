@@ -35,6 +35,11 @@ public enum UserRegisterErrorStatus {
             "유효하지 않은 회원 정보가 존재합니다.",
             HttpStatus.BAD_REQUEST // 400
     ),
+    DATABASE_ACCESS_ERROR(
+            "DATABASE_ACCESS_ERROR",
+            "데이터베이스 서버에서 알 수 없는 오류가 발생했습니다.",
+            HttpStatus.INTERNAL_SERVER_ERROR // 500
+    ),
     UNKNOWN_ERROR(
             "UNKNOWN_ERROR",
             "알 수 없는 오류가 발생했습니다.",

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
 import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
@@ -13,9 +14,10 @@ import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterE
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserCacheRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterResponseDto;
+import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterServiceResult;
+
 import org.zerock.voteservice.adapter.out.grpc.proxy.user.UserCreateProxy;
 
-import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterServiceResult;
 import org.zerock.voteservice.tool.time.DateConverter;
 
 @Log4j2
@@ -30,6 +32,13 @@ public class UserRegisterProcessor {
 
     public UserRegisterProcessorResult processUserCreation(UserRegisterServiceResult serviceResult) {
         UserCacheRequestDto dto = this.extractCacheDto(serviceResult);
+
+        UserValidateEventResponse validatedUser = this.userCreateProxy.validateUser(dto);
+
+        if (!validatedUser.getValidation()) {
+            return UserRegisterProcessorResult.failure(validatedUser.getStatus());
+        }
+
         UserCacheEventResponse cachedUser = this.userCreateProxy.cacheUser(dto);
 
         if (!cachedUser.getCached()) {

@@ -1,12 +1,12 @@
 package org.zerock.voteservice.adapter.in.web.controller.user.register;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.adapter.in.web.controller.user.mapper.UserApiEndpointMapper;
+import org.zerock.voteservice.adapter.in.web.controller.user.register.docs.UserRegisterApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.user.register.processor.UserRegisterProcessor;
 import org.zerock.voteservice.adapter.in.web.controller.user.register.processor.UserRegisterProcessorResult;
 import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterService;
@@ -29,6 +29,7 @@ public class UserApiRegisterController extends UserApiEndpointMapper {
         this.userRegisterProcessor = userRegisterProcessor;
     }
 
+    @UserRegisterApiDoc
     @PostMapping("/register")
     public ResponseEntity<? extends ResponseDto> register(
             @RequestBody UserRegisterRequestDto dto

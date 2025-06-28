@@ -5,6 +5,8 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import domain.event.user.create.protocol.UserCreateEventServiceGrpc;
+import domain.event.user.create.protocol.UserValidateEventRequest;
+import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventRequest;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
@@ -30,15 +32,26 @@ public class UserCreateEventServiceGrpcStub {
     }
 
     public UserCacheEventResponse cacheUser(
-            String userHash, Integer uid, String gender, Timestamp birthDate
+            Integer uid, String userHash, String gender, Timestamp birthDate
     ) {
         UserCacheEventRequest request = UserCacheEventRequest.newBuilder()
-                .setUserHash(userHash)
                 .setUid(uid)
+                .setUserHash(userHash)
                 .setGender(gender)
                 .setBirthDate(birthDate)
                 .build();
 
         return stub.cacheUserEvent(request);
+    }
+
+    public UserValidateEventResponse validateUser(
+            Integer uid, String userHash
+    ) {
+        UserValidateEventRequest request = UserValidateEventRequest.newBuilder()
+                .setUid(uid)
+                .setUserHash(userHash)
+                .build();
+
+        return stub.validateUserEvent(request);
     }
 }
