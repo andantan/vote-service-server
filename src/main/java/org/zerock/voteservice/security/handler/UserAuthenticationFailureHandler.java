@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Log4j2
 public class UserAuthenticationFailureHandler implements AuthenticationFailureHandler {

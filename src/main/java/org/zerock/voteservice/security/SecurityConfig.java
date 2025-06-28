@@ -109,7 +109,7 @@ public class SecurityConfig {
         filter.setUsernameParameter(usernameParameterProperty);
         filter.setPasswordParameter(passwordParameterProperty);
 
-        UserAuthenticationSuccessHandler successHandler = new UserAuthenticationSuccessHandler(jwtUtil);
+        UserAuthenticationSuccessHandler successHandler = new UserAuthenticationSuccessHandler(objectMapper, jwtUtil);
         UserAuthenticationFailureHandler failureHandler = new UserAuthenticationFailureHandler(objectMapper);
 
         filter.setAuthenticationSuccessHandler(successHandler);

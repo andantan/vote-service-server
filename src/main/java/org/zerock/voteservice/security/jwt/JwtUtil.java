@@ -1,13 +1,13 @@
 package org.zerock.voteservice.security.jwt;
 
 import io.jsonwebtoken.Claims;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
 import io.jsonwebtoken.Jwts;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 import org.springframework.stereotype.Component;
 import org.zerock.voteservice.tool.time.DateUtil;
@@ -15,7 +15,7 @@ import org.zerock.voteservice.tool.time.DateUtil;
 @Component
 public class JwtUtil {
     private final SecretKey secretKey;
-    private final Long expireMinutes;
+    @Getter private final Long expireMinutes;
 
     public JwtUtil(
             @Value("${spring.security.jwt.secret.key}") String secretKey,

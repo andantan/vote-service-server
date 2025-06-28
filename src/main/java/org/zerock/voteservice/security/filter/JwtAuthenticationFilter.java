@@ -23,6 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final String documentEndpoint;
+    private final String blockchainNotificationEndpoint;
     private final List<String> excludedEndpoints;
 
     public JwtAuthenticationFilter(
@@ -31,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) {
         this.jwtUtil = jwtUtil;
         this.documentEndpoint = publicEndpointsProperties.getSpringdocDocumentEndpoint();
+        this.blockchainNotificationEndpoint = publicEndpointsProperties.getBlockchainNodeUnicastNotificationEndpoint();
         this.excludedEndpoints = publicEndpointsProperties.getExcludedJwtAuthenticationEndpoints();
     }
 
@@ -43,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestUri = request.getRequestURI();
 
-        if (this.excludedEndpoints.contains(requestUri) || requestUri.startsWith(documentEndpoint)) {
+        if (this.isPermittedEndpoint(requestUri)) {
             log.info("Skipping JwtauthenticationFilter - {}", requestUri);
             filterChain.doFilter(request, response);
             return;
@@ -118,6 +120,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPermittedEndpoint(String requestUri) {
+        return this.excludedEndpoints.contains(requestUri)
+                || requestUri.startsWith(documentEndpoint)
+                || requestUri.startsWith(blockchainNotificationEndpoint);
     }
 
     private boolean isValidAuthorizationHeader(String authorizationHeader) {
