@@ -1,7 +1,7 @@
 package org.zerock.voteservice.tool.hash;
 
 import lombok.extern.log4j.Log4j2;
-import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -13,19 +13,20 @@ public class Sha256 {
         return MessageDigest.getInstance("SHA-256");
     }
 
-    public static String generateUserHash(Integer userId, UserRegisterRequestDto dto) {
+    public static String sum(UserEntity userEntity) {
         String userHash = "";
 
         try {
             MessageDigest digest = Sha256.getSha256MessageDigest();
-            String dataToHash = String.format("\"%d\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"",
-                    userId,
-                    dto.getUsername(),
-                    dto.getRealName(),
-                    dto.getEmail(),
-                    dto.getResidentRegistrationNumberPart(),
-                    dto.getPhoneNumber()
-            );  // Example: 2719847284|user123|홍길동|userMail@mail.com|001209-3|01012345678
+            String dataToHash = String.format("\"%d\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"",
+                    userEntity.getUid(),
+                    userEntity.getUsername(),
+                    userEntity.getRealName(),
+                    userEntity.getEmail(),
+                    userEntity.getBirthDate().toString(),
+                    userEntity.getGender(),
+                    userEntity.getPhoneNumber()
+            );  // Example: "2719847284"|"user123"|"홍길동"|"userMail@mail.com"|"20001209"|"M"|"01012345678"
 
             byte[] hashBytes = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
 

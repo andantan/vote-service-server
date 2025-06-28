@@ -1,7 +1,10 @@
-package org.zerock.voteservice.adapter.in.web.dto.user.login;
+package org.zerock.voteservice.adapter.in.web.dto.user.authentication;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.zerock.voteservice.adapter.in.web.dto.user.base.BaseUserRequest;
 
@@ -10,9 +13,8 @@ import org.zerock.voteservice.adapter.in.web.dto.user.base.BaseUserRequest;
 @ToString(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-//@AllArgsConstructor
 @Schema(
         description = "로그인 시도 요청 데이터 인터페이스"
 )
-public class UserLoginRequestDto extends BaseUserRequest {
+public class UserAuthenticationRequestDto extends BaseUserRequest {
 }

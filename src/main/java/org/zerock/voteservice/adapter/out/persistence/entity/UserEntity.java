@@ -116,6 +116,15 @@ public class UserEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Boolean isHashable() {
+        return this.username != null
+                && this.realName != null
+                && this.birthDate != null
+                && this.gender != null
+                && this.email != null
+                && this.phoneNumber != null;
+    }
+
     public static UserEntity newUserEntity(
             UserRegisterRequestDto dto, PasswordEncoder encoder
     ) throws IllegalArgumentException {
@@ -131,6 +140,19 @@ public class UserEntity {
 
         return userBuilder.build();
     }
+
+    public static UserEntity newJwtUserEntity(
+            Integer uid, String username, String role
+    ) throws IllegalArgumentException {
+        String enumRoleString = role.startsWith("ROLE_") ? role.substring("ROLE_".length()) : role;
+
+        return UserEntity.builder()
+                .uid(uid)
+                .username(username)
+                .role(UserRole.valueOf(enumRoleString))
+                .build();
+    }
+
 
     private static UserEntity.UserEntityBuilder extractBirthDateAndGender(
             UserEntity.UserEntityBuilder builder, String registrationNumber

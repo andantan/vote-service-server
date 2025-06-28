@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.adapter.in.web.controller.user.mapper.UserApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.user.login.UserLoginRequestDto;
+import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationRequestDto;
 
 @Log4j2
 @RestController
@@ -15,7 +15,7 @@ public class UserApiLoginController extends UserApiEndpointMapper {
 
     @PostMapping("/login")
     public ResponseEntity<? extends ResponseDto> login(
-            @RequestBody UserLoginRequestDto dto
+            @RequestBody UserAuthenticationRequestDto dto
     ) {
         return null;
     }

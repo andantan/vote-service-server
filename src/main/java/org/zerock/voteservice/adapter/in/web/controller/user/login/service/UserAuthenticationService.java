@@ -13,23 +13,21 @@ import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
 
 @Log4j2
 @Service
-public class UserLoginService implements UserDetailsService {
+public class UserAuthenticationService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    public UserLoginService(UserRepository userRepository) {
+    public UserAuthenticationService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("------------UserLoginService::loadUserByUsername------------");
-
         UserEntity userEntity = userRepository.findByUsername(username);
 
-        if (userEntity != null) {
-            return new UserAuthenticationDetails(userEntity);
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(username);
         }
 
-        return null;
+        return new UserAuthenticationDetails(userEntity, null);
     }
 }

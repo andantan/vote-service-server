@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class PublicEndpointsProperties {
     @Value("${springdoc.document.endpoint}")
-    private String springdocDocumentEndpoint;
+    private String springdocDocumentEndpoint;   // documents
 
     @Value("${web-client.api.user-endpoint}")
     private String webClientUserEndpoint;
@@ -28,6 +28,14 @@ public class PublicEndpointsProperties {
                 this.getRegisterEndpoint(),
                 this.getLoginEndpoint(),
                 this.getBlockchainNodeUnicastNotificationEndpoint()
+        );
+    }
+
+    public List<String> getExcludedJwtAuthenticationEndpoints() {
+        return List.of(
+                this.getSpringdocDocumentEndpoint(),
+                this.getRegisterEndpoint(),
+                this.getLoginEndpoint()
         );
     }
 

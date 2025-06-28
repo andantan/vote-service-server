@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +15,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.zerock.voteservice.security.filter.JwtAuthenticationFilter;
+import org.zerock.voteservice.security.handler.UserAuthenticationFailureHandler;
+import org.zerock.voteservice.security.handler.UserAuthenticationSuccessHandler;
 import org.zerock.voteservice.security.jwt.JwtUtil;
 import org.zerock.voteservice.security.filter.UserAuthenticationFilter;
 import org.zerock.voteservice.security.property.PublicEndpointsProperties;
-import org.zerock.voteservice.adapter.in.web.controller.user.login.service.UserLoginService;
 
 @Log4j2
 @Configuration
@@ -35,29 +35,31 @@ public class SecurityConfig {
     private String passwordParameterProperty;
 
     private final PublicEndpointsProperties publicEndpointsProperties;
-    private final UserLoginService userLoginService;
-    private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
     public SecurityConfig(
             PublicEndpointsProperties publicEndpointsProperties,
-            UserLoginService userLoginService,
-            PasswordEncoder passwordEncoder,
             ObjectMapper objectMapper,
             JwtUtil jwtUtil
     ) {
         this.publicEndpointsProperties = publicEndpointsProperties;
-        this.userLoginService = userLoginService;
-        this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        AuthenticationManager authenticationManager = getAuthenticationManager(httpSecurity);
+    public AuthenticationManager getAuthenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity httpSecurity,
+            AuthenticationManager authenticationManager
+    ) throws Exception {
         this.customizeAuthenticationManager(httpSecurity, authenticationManager);
         this.customizeRequestAuthorization(httpSecurity);
         this.customizeSecurityFilterChain(httpSecurity, authenticationManager);
@@ -97,33 +99,26 @@ public class SecurityConfig {
         );
     }
 
-    private AuthenticationManager getAuthenticationManager(
-            HttpSecurity httpSecurity
-    ) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-
-        authenticationManagerBuilder
-                .userDetailsService(userLoginService)
-                .passwordEncoder(passwordEncoder);
-
-        return authenticationManagerBuilder.build();
-    }
-
     private UserAuthenticationFilter createUserAuthenticationFilter(
             AuthenticationManager authenticationManager
     ) {
-        UserAuthenticationFilter filter = new UserAuthenticationFilter(objectMapper, jwtUtil);
+        UserAuthenticationFilter filter = new UserAuthenticationFilter(objectMapper);
 
         filter.setAuthenticationManager(authenticationManager);
         filter.setFilterProcessesUrl(publicEndpointsProperties.getLoginEndpoint());
         filter.setUsernameParameter(usernameParameterProperty);
         filter.setPasswordParameter(passwordParameterProperty);
 
+        UserAuthenticationSuccessHandler successHandler = new UserAuthenticationSuccessHandler(jwtUtil);
+        UserAuthenticationFailureHandler failureHandler = new UserAuthenticationFailureHandler(objectMapper);
+
+        filter.setAuthenticationSuccessHandler(successHandler);
+        filter.setAuthenticationFailureHandler(failureHandler);
+
         return filter;
     }
 
     private JwtAuthenticationFilter createJwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil);
+        return new JwtAuthenticationFilter(jwtUtil, publicEndpointsProperties);
     }
 }
