@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 @Getter
@@ -15,18 +16,23 @@ public class UserRegisterServiceResult {
     private Boolean success;
     private String status;
     private String message;
-    private Integer id;
-    private LocalDateTime registerTime;
+    private Integer uid;
+    private String userHash;
+    private String gender;
+    private LocalDate birthDate;
     private Integer httpStatusCode;
 
-    public static UserRegisterServiceResult success(String status, Integer id) {
+    public static UserRegisterServiceResult success(String status, UserEntity userEntity, String userHash) {
         String successMessage = "신규 회원 검증 및 등록에 성공했습니다.";
 
         return builder()
                 .success(true)
                 .status(status)
                 .message(successMessage)
-                .id(id)
+                .uid(userEntity.getUid())
+                .userHash(userHash)
+                .gender(userEntity.getGender())
+                .birthDate(userEntity.getBirthDate())
                 .httpStatusCode(HttpStatus.OK.value())
                 .build();
     }

@@ -1,4 +1,4 @@
-package org.zerock.voteservice.tool.date;
+package org.zerock.voteservice.tool.time;
 
 import java.util.Date;
 

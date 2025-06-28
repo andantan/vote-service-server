@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.VoteErrorResponseDto;
 
 @Getter
 @NoArgsConstructor

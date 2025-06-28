@@ -7,9 +7,8 @@ import io.jsonwebtoken.Jwts;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
-import org.zerock.voteservice.tool.date.DateUtil;
+import org.zerock.voteservice.tool.time.DateUtil;
 
 @Component
 public class JwtUtil {

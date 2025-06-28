@@ -20,10 +20,20 @@ public enum UserRegisterErrorStatus {
             "존재하는 회원 이메일입니다.",
             HttpStatus.BAD_REQUEST // 400
     ),
+    EXIST_USERHASH(
+            "EXIST_USERHASH",
+            "존재하는 유저 해시값입니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
+    EXIST_UID(
+            "EXIST_UID",
+            "존재하는 유저 UID입니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
     INVALID_PARAMETER(
-      "INVALID_PARAMETER",
-      "유효하지 않은 회원 정보가 존재합니다.",
-      HttpStatus.BAD_REQUEST // 400
+          "INVALID_PARAMETER",
+            "유효하지 않은 회원 정보가 존재합니다.",
+            HttpStatus.BAD_REQUEST // 400
     ),
     UNKNOWN_ERROR(
             "UNKNOWN_ERROR",

@@ -52,14 +52,14 @@ public class ProposalCreateProcessor {
     }
 
     public ResponseEntity<VoteProposalResponseDto> getSuccessResponse(VoteProposalRequestDto requestDto, ProposalCreateProcessorResult result) {
-            VoteProposalResponseDto successDto = VoteProposalResponseDto.builder()
-                    .success(result.getSuccess())
-                    .topic(result.getTopic())
-                    .message(result.getMessage())
-                    .status(result.getStatus())
-                    .httpStatusCode(result.getHttpStatusCode())
-                    .duration(requestDto.getDuration())
-                    .build();
+        VoteProposalResponseDto successDto = VoteProposalResponseDto.builder()
+                .success(result.getSuccess())
+                .topic(result.getTopic())
+                .message(result.getMessage())
+                .status(result.getStatus())
+                .httpStatusCode(result.getHttpStatusCode())
+                .duration(requestDto.getDuration())
+                .build();
 
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }

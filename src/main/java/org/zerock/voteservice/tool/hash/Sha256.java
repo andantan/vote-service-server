@@ -18,7 +18,7 @@ public class Sha256 {
 
         try {
             MessageDigest digest = Sha256.getSha256MessageDigest();
-            String dataToHash = String.format("%d|%s|%s|%s|%s|%s",
+            String dataToHash = String.format("\"%d\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"",
                     userId,
                     dto.getUsername(),
                     dto.getRealName(),

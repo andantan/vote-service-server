@@ -1,21 +1,27 @@
 package org.zerock.voteservice.adapter.in.web.dto.user.register;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import java.time.LocalDateTime;
+import lombok.experimental.SuperBuilder;
+import org.zerock.voteservice.adapter.in.web.dto.user.base.BaseUserResponse;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserRegisterResponseDto {
-    private Integer id;
+@Schema(
+        description = "유저 회원 가입 응답 데이터 인터페이스"
+)
+public class UserRegisterResponseDto extends BaseUserResponse {
+    @JsonProperty("username")
+    @Schema(
+            description = "유저의 로그인 ID",
+            example = "userid",
+            type = "string",
+            implementation = String.class
+    )
     private String username;
-    private String realName;
-    private String birthDate;
-    private String gender;
-    private String email;
-    private String phoneNumber;
-    private String role;
-    private LocalDateTime createdAt;
 }

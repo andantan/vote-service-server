@@ -17,7 +17,7 @@ import org.zerock.voteservice.adapter.in.web.dto.query.schema.*;
 
 import org.zerock.voteservice.adapter.out.grpc.proxy.query.ProposalQueryProxy;
 
-import org.zerock.voteservice.tool.date.DateConverter;
+import org.zerock.voteservice.tool.time.DateConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;

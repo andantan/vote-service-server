@@ -47,11 +47,9 @@ public class UserRegisterService {
         }
 
         UserEntity savedUserEntity = userRepository.save(newUserEntity);
+        String userHash = Sha256.generateUserHash(savedUserEntity.getUid(), dto);
 
-        // TODO: userHash
-        String userHash = Sha256.generateUserHash(savedUserEntity.getId(), dto);
-
-        return UserRegisterServiceResult.success("OK", savedUserEntity.getId());
+        return UserRegisterServiceResult.success("OK", savedUserEntity, userHash);
     }
 
     public ResponseEntity<UserErrorResponseDto> getErrorResponse(UserRegisterServiceResult result) {

@@ -1,4 +1,79 @@
 package org.zerock.voteservice.adapter.in.web.controller.user.register.processor;
 
+import com.google.protobuf.Timestamp;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import domain.event.user.create.protocol.UserCacheEventResponse;
+
+import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
+import org.zerock.voteservice.adapter.in.web.dto.user.register.UserCacheRequestDto;
+import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterResponseDto;
+import org.zerock.voteservice.adapter.out.grpc.proxy.user.UserCreateProxy;
+
+import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterServiceResult;
+import org.zerock.voteservice.tool.time.DateConverter;
+
+@Log4j2
+@Service
 public class UserRegisterProcessor {
+
+    private final UserCreateProxy userCreateProxy;
+
+    public UserRegisterProcessor(UserCreateProxy userCreateProxy) {
+        this.userCreateProxy = userCreateProxy;
+    }
+
+    public UserRegisterProcessorResult processUserCreation(UserRegisterServiceResult serviceResult) {
+        UserCacheRequestDto dto = this.extractCacheDto(serviceResult);
+        UserCacheEventResponse cachedUser = this.userCreateProxy.cacheUser(dto);
+
+        if (!cachedUser.getCached()) {
+            return UserRegisterProcessorResult.failure(cachedUser.getStatus());
+        }
+
+        return UserRegisterProcessorResult.success(
+                cachedUser.getStatus(), serviceResult.getUid(), serviceResult.getUserHash()
+        );
+    }
+
+    private UserCacheRequestDto extractCacheDto(UserRegisterServiceResult serviceResult) {
+        Timestamp birthDateTimeStamp = DateConverter.toTimestamp(serviceResult.getBirthDate());
+
+        return UserCacheRequestDto.builder()
+                .uid(serviceResult.getUid())
+                .userHash(serviceResult.getUserHash())
+                .gender(serviceResult.getGender())
+                .birthDate(birthDateTimeStamp)
+                .build();
+    }
+
+    public ResponseEntity<UserRegisterResponseDto> getSuccessDto(
+            UserRegisterRequestDto dto, UserRegisterProcessorResult result
+    ) {
+        UserRegisterResponseDto successDto = UserRegisterResponseDto.builder()
+                .success(result.getSuccess())
+                .message(result.getMessage())
+                .status(result.getStatus())
+                .httpStatusCode(result.getHttpStatusCode())
+                .uid(result.getUid())
+                .userHash(result.getUserHash())
+                .username(dto.getUsername())
+                .build();
+
+        return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
+    }
+
+    public ResponseEntity<UserErrorResponseDto> getErrorResponse(
+            UserRegisterProcessorResult result
+    ) {
+        UserRegisterErrorStatus errorStatus = UserRegisterErrorStatus.fromCode(result.getStatus());
+        UserErrorResponseDto errorDto = UserErrorResponseDto.from(errorStatus);
+
+        return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());
+    }
 }

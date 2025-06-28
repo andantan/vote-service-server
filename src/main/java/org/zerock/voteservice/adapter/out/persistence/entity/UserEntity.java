@@ -23,11 +23,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(
-            name = "id",
+            name = "uid",
             nullable = false,
             updatable = false
     )
-    private Integer id;
+    private Integer uid;
 
     @Column(
             name = "username",

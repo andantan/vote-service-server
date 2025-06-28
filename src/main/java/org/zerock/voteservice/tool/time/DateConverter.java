@@ -1,10 +1,8 @@
-package org.zerock.voteservice.tool.date;
+package org.zerock.voteservice.tool.time;
 
 import com.google.protobuf.Timestamp;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.LocalDateTime;
+import java.time.*;
 
 public class DateConverter {
     private static final String SOUTH_KOREA_TIME_ZONE_ID = "Asia/Seoul";
@@ -18,5 +16,14 @@ public class DateConverter {
         Instant instant = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
 
         return LocalDateTime.ofInstant(instant, KST_ZONE_ID);
+    }
+
+    public static Timestamp toTimestamp(LocalDate localDate) {
+        long epochSeconds = localDate.atStartOfDay(ZoneOffset.UTC).toEpochSecond();
+
+        return Timestamp.newBuilder()
+                .setSeconds(epochSeconds)
+                .setNanos(0)
+                .build();
     }
 }

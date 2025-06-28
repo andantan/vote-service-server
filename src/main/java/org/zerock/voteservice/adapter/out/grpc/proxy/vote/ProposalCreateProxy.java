@@ -1,10 +1,12 @@
 package org.zerock.voteservice.adapter.out.grpc.proxy.vote;
 
-import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
-import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
-import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import domain.vote.proposal.protocol.OpenProposalPendingResponse;
+import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
+import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
+
 import org.zerock.voteservice.adapter.in.web.dto.vote.proposal.VoteProposalRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.blockchainNode.ProposalPendingServiceGrpcStub;
 import org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData.ProposalCreateEventServiceGrpcStub;
