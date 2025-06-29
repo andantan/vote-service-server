@@ -74,6 +74,7 @@ public class PublicEndpointsProperties {
     private List<String> getExcludedDocumentEndpointList() {
         return List.of(
                 this.getSpringdocDocumentEndpoint() + "/swagger-ui/swagger-initializer.js",
+                this.getSpringdocDocumentEndpoint() + "/swagger-ui/swagger-ui.html",
                 this.getSpringdocDocumentEndpoint() + "/api/swagger-config",
                 this.getSpringdocDocumentEndpoint() + "/api"
         );
