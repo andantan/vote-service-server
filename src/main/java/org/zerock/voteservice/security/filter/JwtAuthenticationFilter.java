@@ -9,6 +9,7 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
 import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
@@ -143,10 +144,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        List<String> excludedPaths = publicEndpointsProperties.getExcludedJwtAuthenticationEndpoints();
+        List<String> excludedPaths = publicEndpointsProperties.getPermittedEndpoints();
         String requestUri = request.getRequestURI();
+        AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        return excludedPaths.contains(requestUri) || requestUri.startsWith("/documents");
+        for (String pattern : excludedPaths) {
+            if (pathMatcher.match(pattern, requestUri)) {
+                log.info("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean isValidAuthorizationHeader(String authorizationHeader) {

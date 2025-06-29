@@ -15,10 +15,10 @@ import java.util.List;
 @Component
 public class PublicEndpointsProperties {
     @Value("${springdoc.document.endpoint}")
-    private String springdocDocumentEndpoint;   // documents
+    private String springdocDocumentEndpoint;   // /documents
 
     @Value("${web-client.api.user-endpoint}")
-    private String webClientUserEndpoint;
+    private String webClientUserEndpoint;   // /users
 
     @Value("${blockchain-node.unicast.notification-endpoint}")
     private String blockchainNodeUnicastNotificationEndpoint;
@@ -33,57 +33,16 @@ public class PublicEndpointsProperties {
 
     public List<String> getPermittedEndpoints() {
         return List.of(
-                this.getSpringdocDocumentEndpoint(),
-                this.getRegisterEndpoint(),
-                this.getLoginEndpoint(),
-                this.getBlockchainNodeUnicastNotificationEndpoint()
+                this.getSpringdocDocumentEndpoint() + "/**",
+                this.getRegisterEndpoint() + "/**",
+                this.getLoginEndpoint() + "/**",
+                this.getBlockchainNodeUnicastNotificationEndpoint() + "/**"
         );
     }
 
     public RequestMatcher[] getPermittedRequestMatchers() {
         return getPermittedEndpoints().stream()
-                .map(endpoint -> AntPathRequestMatcher.antMatcher(endpoint + "/**"))
+                .map(AntPathRequestMatcher::antMatcher)
                 .toArray(RequestMatcher[]::new);
-    }
-
-    public List<String> getExcludedJwtAuthenticationEndpoints() {
-        return this.getDefaultExcludedEndpoints();
-    }
-
-    public List<String> getExcludedUserHashFilterEndpoints() {
-        return this.getDefaultExcludedEndpoints();
-    }
-
-    private List<String> getDefaultExcludedEndpoints() {
-        List<String> excludedEndpoints = new ArrayList<>();
-
-        excludedEndpoints.addAll(this.getExcludedUserEndpointList());
-        excludedEndpoints.addAll(this.getExcludedDocumentEndpointList());
-        excludedEndpoints.addAll(this.getExcludedBlockchainNotificationEndpointList());
-
-        return excludedEndpoints;
-    }
-
-    private List<String> getExcludedUserEndpointList() {
-        return List.of(
-                this.getRegisterEndpoint(),
-                this.getLoginEndpoint()
-        );
-    }
-
-    private List<String> getExcludedDocumentEndpointList() {
-        return List.of(
-                this.getSpringdocDocumentEndpoint() + "/swagger-ui/swagger-initializer.js",
-                this.getSpringdocDocumentEndpoint() + "/swagger-ui/index.html",
-                this.getSpringdocDocumentEndpoint() + "/api/swagger-config",
-                this.getSpringdocDocumentEndpoint() + "/api"
-        );
-    }
-
-    private List<String> getExcludedBlockchainNotificationEndpointList() {
-        return List.of(
-                this.getBlockchainNodeUnicastNotificationEndpoint() + "/new-block",
-                this.getBlockchainNodeUnicastNotificationEndpoint() + "/expired-pending"
-        );
     }
 }
