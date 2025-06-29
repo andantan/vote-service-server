@@ -10,7 +10,7 @@ import java.time.format.DateTimeParseException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
-import org.zerock.voteservice.adapter.in.web.dto.user.role.UserRole;
+import org.zerock.voteservice.security.role.UserAuthorizationRole;
 
 @Entity
 @Table(name = "users")
@@ -90,7 +90,7 @@ public class UserEntity {
             updatable = false,
             length = 30
     )
-    private UserRole role;
+    private UserAuthorizationRole role;
 
     @Column(
             name = "created_at",
@@ -134,7 +134,7 @@ public class UserEntity {
                 .realName(dto.getRealName())
                 .email(dto.getEmail())
                 .phoneNumber(dto.getPhoneNumber())
-                .role(UserRole.USER);
+                .role(UserAuthorizationRole.USER);
 
         userBuilder = extractBirthDateAndGender(userBuilder, dto.getResidentRegistrationNumberPart());
 
@@ -149,7 +149,7 @@ public class UserEntity {
         return UserEntity.builder()
                 .uid(uid)
                 .username(username)
-                .role(UserRole.valueOf(enumRoleString))
+                .role(UserAuthorizationRole.valueOf(enumRoleString))
                 .build();
     }
 

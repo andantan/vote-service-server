@@ -38,7 +38,6 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
     }
 
     private UserErrorResponseDto getErrorResponseDto(AuthenticationException exception) {
-
         String errorMessage;
         String errorStatus;
 

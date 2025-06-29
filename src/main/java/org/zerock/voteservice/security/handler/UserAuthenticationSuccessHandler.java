@@ -55,7 +55,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("사용자에게 할당된 권한이 없습니다."));
 
-        return jwtUtil.createJwt(uid, username, userHash, role);
+        return jwtUtil.createJwt(uid, userHash, username, role);
     }
 
     private UserAuthenticationResponseDto getSuccessResponseDto(UserAuthenticationDetails userDetails) {

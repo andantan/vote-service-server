@@ -22,40 +22,33 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final String documentEndpoint;
-    private final String blockchainNotificationEndpoint;
-    private final List<String> excludedEndpoints;
+    private final PublicEndpointsProperties publicEndpointsProperties;
 
     public JwtAuthenticationFilter(
             JwtUtil jwtUtil,
             PublicEndpointsProperties publicEndpointsProperties
     ) {
         this.jwtUtil = jwtUtil;
-        this.documentEndpoint = publicEndpointsProperties.getSpringdocDocumentEndpoint();
-        this.blockchainNotificationEndpoint = publicEndpointsProperties.getBlockchainNodeUnicastNotificationEndpoint();
-        this.excludedEndpoints = publicEndpointsProperties.getExcludedJwtAuthenticationEndpoints();
+        this.publicEndpointsProperties = publicEndpointsProperties;
     }
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         log.info("------------JwtAuthenticationFilter::doFilterInternal------------");
 
         String requestUri = request.getRequestURI();
-
-        if (this.isPermittedEndpoint(requestUri)) {
-            log.info("Skipping JwtauthenticationFilter - {}", requestUri);
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String authorizationHeader = request.getHeader("Authorization");
 
         if (!this.isValidAuthorizationHeader(authorizationHeader)) {
             log.warn("JWT token is missing or does not start with 'Bearer '. (Path: {})", requestUri);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 토큰이 필요합니다. (형식: Bearer <token>)");
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "인증 토큰이 필요합니다. (형식: Bearer <token>)"
+            );
             return;
         }
 
@@ -71,8 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             claims = jwtUtil.extractAllClaims(token);
 
             if (!this.jwtUtil.validateEssentialClaims(claims)) {
-                log.warn("Essential claims (username, role, user_hash, uid) are missing or invalid in JWT token. (Path: {})", requestUri);
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 유효하지 않거나 손상되었습니다: 필수 클레임이 누락되었습니다.");
+                log.warn("Essential claims are missing or invalid in JWT token. (Path: {})", requestUri);
+
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "토큰이 유효하지 않거나 손상되었습니다: 필수 클레임이 누락되었습니다."
+                );
+
                 return;
             }
 
@@ -82,16 +80,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             uid = jwtUtil.getUid(claims);
 
         } catch (io.jsonwebtoken.security.SignatureException | io.jsonwebtoken.MalformedJwtException e) {
-            log.error("Invalid JWT signature or malformed token: {} (Path: {})", e.getMessage(), requestUri, e);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 인증 토큰입니다: 서명이 유효하지 않거나 토큰 형식이 잘못되었습니다.");
+            log.error("Invalid JWT signature or malformed token (Path: {})", requestUri);
+
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "유효하지 않은 인증 토큰입니다: 서명이 유효하지 않거나 토큰 형식이 잘못되었습니다."
+            );
+
             return;
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            log.warn("Expired JWT token caught: {} (Path: {})", e.getMessage(), requestUri, e);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 만료되었습니다.");
+            log.warn("Expired JWT token caught: {} (Path: {})", e.getMessage(), requestUri);
+
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "토큰이 만료되었습니다."
+            );
+
             return;
         } catch (Exception e) {
-            log.error("Unexpected error during JWT processing: {} (Path: {})", e.getMessage(), requestUri, e);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 토큰 유효성 검사 중 예상치 못한 오류가 발생했습니다.");
+            log.error("Unexpected error during JWT processing: {} (Path: {})", e.getMessage(), requestUri);
+
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "인증 토큰 유효성 검사 중 예상치 못한 오류가 발생했습니다."
+            );
+
             return;
         }
 
@@ -101,12 +114,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 userEntity = UserEntity.newJwtUserEntity(uid, username, role);
             } catch (IllegalArgumentException e) {
-                log.error("Invalid role value in JWT: {} (Path: {})", role, requestUri, e);
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰에 유효하지 않은 사용자 역할이 포함되어 있습니다.");
+                log.error("Invalid role value in JWT: {} (Path: {})", role, requestUri);
+
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "토큰에 유효하지 않은 사용자 역할이 포함되어 있습니다."
+                );
+
                 return;
             }
 
             UserAuthenticationDetails userAuthenticationDetails = new UserAuthenticationDetails(userEntity, userHash);
+            log.info("JWT Details user hash: {}", userAuthenticationDetails.getUserHash());
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userAuthenticationDetails,
@@ -122,10 +141,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isPermittedEndpoint(String requestUri) {
-        return this.excludedEndpoints.contains(requestUri)
-                || requestUri.startsWith(documentEndpoint)
-                || requestUri.startsWith(blockchainNotificationEndpoint);
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        List<String> excludedPaths = publicEndpointsProperties.getExcludedJwtAuthenticationEndpoints();
+        String requestUri = request.getRequestURI();
+
+        return excludedPaths.contains(requestUri);
     }
 
     private boolean isValidAuthorizationHeader(String authorizationHeader) {

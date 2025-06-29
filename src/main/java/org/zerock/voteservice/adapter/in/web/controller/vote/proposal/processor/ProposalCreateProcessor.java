@@ -70,4 +70,11 @@ public class ProposalCreateProcessor {
 
         return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());
     }
+
+    public ResponseEntity<VoteErrorResponseDto> getPanicResponse(String status) {
+        VoteProposalErrorStatus errorStatus = VoteProposalErrorStatus.fromCode(status);
+        VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
+
+        return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());
+    }
 }

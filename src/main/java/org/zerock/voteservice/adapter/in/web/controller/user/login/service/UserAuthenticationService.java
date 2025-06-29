@@ -11,6 +11,8 @@ import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthent
 import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
 
+import java.util.Optional;
+
 @Log4j2
 @Service
 public class UserAuthenticationService implements UserDetailsService {
@@ -22,12 +24,16 @@ public class UserAuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUsername(username);
-
-        if (userEntity == null) {
-            throw new UsernameNotFoundException(username);
-        }
+        UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.warn("User not found during authentication for username: {}", username);
+                    return new UsernameNotFoundException(username);
+                });
 
         return new UserAuthenticationDetails(userEntity, null);
+    }
+
+    public Optional<UserEntity> loadUserByJwt(Integer jwtUid, String jwtUsername) {
+        return this.userRepository.findByUidAndUsername(jwtUid, jwtUsername);
     }
 }

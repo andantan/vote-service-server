@@ -11,7 +11,8 @@ import java.util.Collection;
 
 public class UserAuthenticationDetails implements UserDetails {
     private final UserEntity userEntity;
-    @Getter private final String userHash;
+    @Getter
+    private final String userHash;
 
     public UserAuthenticationDetails(
             UserEntity userEntity, String userHash
@@ -61,4 +62,5 @@ public class UserAuthenticationDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

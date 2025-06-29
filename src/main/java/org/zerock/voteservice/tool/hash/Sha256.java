@@ -40,7 +40,7 @@ public class Sha256 {
             }
             userHash = hexString.toString();
 
-            log.info("UserDigest: {}, UserHash: {}", dataToHash, userHash);
+            log.debug("UserDigest: {}, UserHash: {}", dataToHash, userHash);
         } catch (NoSuchAlgorithmException e) {
             log.error(e);
         }
