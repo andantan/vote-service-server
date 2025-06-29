@@ -6,9 +6,14 @@ import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+
+    Boolean existsByUid(Integer uid);
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
 
     Optional<UserEntity> findByUsername(String username);
+
     Optional<UserEntity> findByUidAndUsername(Integer uid, String username);
+
+    void deleteByUid(Integer uid);
 }

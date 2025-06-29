@@ -40,6 +40,11 @@ public enum UserRegisterErrorStatus {
             "데이터베이스 서버에서 알 수 없는 오류가 발생했습니다.",
             HttpStatus.INTERNAL_SERVER_ERROR // 500
     ),
+    INTERNAL_SERVER_ERROR(
+            "INTERNAL_SERVER_ERROR",
+            "서버 내부의 오류가 발생했습니다.",
+            HttpStatus.INTERNAL_SERVER_ERROR // 500
+    ),
     UNKNOWN_ERROR(
             "UNKNOWN_ERROR",
             "알 수 없는 오류가 발생했습니다.",
