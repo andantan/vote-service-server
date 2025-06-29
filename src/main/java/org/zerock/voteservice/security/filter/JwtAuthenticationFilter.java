@@ -146,7 +146,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         List<String> excludedPaths = publicEndpointsProperties.getExcludedJwtAuthenticationEndpoints();
         String requestUri = request.getRequestURI();
 
-        return excludedPaths.contains(requestUri);
+        return excludedPaths.contains(requestUri) || requestUri.startsWith("/documents");
     }
 
     private boolean isValidAuthorizationHeader(String authorizationHeader) {
