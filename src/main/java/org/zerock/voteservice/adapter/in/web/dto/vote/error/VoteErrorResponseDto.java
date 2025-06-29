@@ -15,7 +15,7 @@ import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteProposalE
 @EqualsAndHashCode
 @Builder
 @Schema(
-        description = "투표 API 오류 응답 공통 형식"
+        description = "Vote API 오류 응답 공통 형식"
 )
 public class VoteErrorResponseDto implements ResponseDto {
     @JsonProperty("success")

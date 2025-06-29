@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.docs.VoteSubmitApiDoc;
-import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateResult;
+import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateProcessorResult;
 import org.zerock.voteservice.adapter.in.web.controller.vote.mapper.VoteApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitRequestDto;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateProcessor;
@@ -24,7 +24,7 @@ public class VoteSubmitApiController extends VoteApiEndpointMapper {
     @VoteSubmitApiDoc
     @PostMapping("/submit")
     public ResponseEntity<? extends ResponseDto> submitVote(@RequestBody VoteSubmitRequestDto dto) {
-        BallotCreateResult result = this.ballotCreateProcessor.processBallotCreation(dto);
+        BallotCreateProcessorResult result = this.ballotCreateProcessor.processBallotCreation(dto);
 
         if (!result.getSuccess()) {
             return this.ballotCreateProcessor.getErrorResponse(result);

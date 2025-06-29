@@ -25,32 +25,32 @@ public class BallotCreateProcessor {
         this.ballotCreateProxy = ballotCreateProxy;
     }
 
-    public BallotCreateResult processBallotCreation(VoteSubmitRequestDto dto) {
+    public BallotCreateProcessorResult processBallotCreation(VoteSubmitRequestDto dto) {
         // Cache server: request validate ballot [gRPC]
         BallotValidateEventResponse validatedBallot = this.ballotCreateProxy.validateBallot(dto);
 
         if (!validatedBallot.getValidation()) {
-            return BallotCreateResult.failure(validatedBallot.getStatus());
+            return BallotCreateProcessorResult.failure(validatedBallot.getStatus());
         }
 
         // Blockchain server: request submit transaction [gRPC]
         SubmitBallotTransactionResponse submittedBallot = this.ballotCreateProxy.submitBallotTransaction(dto);
 
         if (!submittedBallot.getSuccess()) {
-            return BallotCreateResult.failure(submittedBallot.getStatus());
+            return BallotCreateProcessorResult.failure(submittedBallot.getStatus());
         }
 
         // Cache server: request cache ballot [gRPC]
         BallotCacheEventResponse cachedBallot = this.ballotCreateProxy.cacheBallot(dto, submittedBallot.getVoteHash());
 
         if (!cachedBallot.getCached()) {
-            return BallotCreateResult.failure(cachedBallot.getStatus());
+            return BallotCreateProcessorResult.failure(cachedBallot.getStatus());
         }
 
-        return BallotCreateResult.success(cachedBallot.getStatus(), submittedBallot.getVoteHash());
+        return BallotCreateProcessorResult.success(cachedBallot.getStatus(), submittedBallot.getVoteHash());
     }
 
-    public ResponseEntity<VoteSubmitResponseDto> getSuccessResponse(VoteSubmitRequestDto requestDto, BallotCreateResult result) {
+    public ResponseEntity<VoteSubmitResponseDto> getSuccessResponse(VoteSubmitRequestDto requestDto, BallotCreateProcessorResult result) {
         String successMessage = "투표 참여가 완료되었습니다.";
 
         VoteSubmitResponseDto successDto = VoteSubmitResponseDto.builder()
@@ -67,7 +67,7 @@ public class BallotCreateProcessor {
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
     }
 
-    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(BallotCreateResult result) {
+    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(BallotCreateProcessorResult result) {
         VoteBallotErrorStatus errorStatus = VoteBallotErrorStatus.fromCode(result.getStatus());
         VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
 

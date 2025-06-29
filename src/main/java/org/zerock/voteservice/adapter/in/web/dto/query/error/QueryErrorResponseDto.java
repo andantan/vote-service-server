@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.in.web.dto.query.error.status.QueryProposa
 @EqualsAndHashCode
 @Builder
 @Schema(
-        description = "조회 API 오류 응답 공통 형식"
+        description = "Query API 오류 응답 공통 형식"
 )
 public class QueryErrorResponseDto implements ResponseDto {
     @JsonProperty("success")

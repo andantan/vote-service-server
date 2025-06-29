@@ -8,7 +8,7 @@ import org.zerock.voteservice.adapter.in.web.controller.query.mapper.QueryApiEnd
 import org.zerock.voteservice.adapter.in.web.controller.query.proposal.docs.QueryProposalDetailApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.query.proposal.docs.QueryProposalFilteredListApiDoc;
 
-import org.zerock.voteservice.adapter.in.web.controller.query.proposal.processor.ProposalQueryResult;
+import org.zerock.voteservice.adapter.in.web.controller.query.proposal.processor.ProposalQueryProcessorResult;
 import org.zerock.voteservice.adapter.in.web.controller.query.proposal.processor.ProposalQueryProcessor;
 
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
@@ -30,7 +30,7 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getProposalDetail(
             @PathVariable(value = "topic") final String topic
     ) {
-        ProposalQueryResult topicValidationResult = this.proposalQueryProcessor.validateTopic(topic);
+        ProposalQueryProcessorResult topicValidationResult = this.proposalQueryProcessor.validateTopic(topic);
 
         if (!topicValidationResult.getSuccess()) {
             return this.proposalQueryProcessor.getErrorResponse(topicValidationResult);
@@ -40,7 +40,7 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
                 .topic(topic)
                 .build();
 
-        ProposalQueryResult result = this.proposalQueryProcessor.processProposalDetailQuery(dto);
+        ProposalQueryProcessorResult result = this.proposalQueryProcessor.processProposalDetailQuery(dto);
 
         if (!result.getSuccess()) {
             return this.proposalQueryProcessor.getErrorResponse(result);
@@ -70,7 +70,7 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
                 .limit(limit)
                 .build();
 
-        ProposalQueryResult result = this.proposalQueryProcessor.processFilteredProposalsQuery(dto);
+        ProposalQueryProcessorResult result = this.proposalQueryProcessor.processFilteredProposalsQuery(dto);
 
         if (!result.getSuccess()) {
             return this.proposalQueryProcessor.getErrorResponse(result);

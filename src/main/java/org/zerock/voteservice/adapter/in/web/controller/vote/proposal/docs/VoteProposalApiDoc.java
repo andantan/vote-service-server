@@ -1,6 +1,6 @@
 package org.zerock.voteservice.adapter.in.web.controller.vote.proposal.docs;
 
-import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.docs.VoteproposalApiDescriptions.*;
+import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.docs.voteproposalApiDescriptions.*;
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
