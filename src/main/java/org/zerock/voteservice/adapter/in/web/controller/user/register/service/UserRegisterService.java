@@ -1,9 +1,11 @@
 package org.zerock.voteservice.adapter.in.web.controller.user.register.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
@@ -12,6 +14,7 @@ import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
 import org.zerock.voteservice.tool.hash.Sha256;
 
 @Service
+@Log4j2
 public class UserRegisterService {
 
     private final UserRepository userRepository;
@@ -37,6 +40,7 @@ public class UserRegisterService {
         return UserRegisterServiceResult.successWithoutData();
     }
 
+    @Transactional
     public UserRegisterServiceResult register(UserRegisterRequestDto dto) {
         UserEntity newUserEntity;
 
@@ -46,10 +50,31 @@ public class UserRegisterService {
             return UserRegisterServiceResult.failureWithMessage("INVALID_PARAMETER", e.getMessage());
         }
 
-        UserEntity savedUserEntity = userRepository.save(newUserEntity);
-        String userHash = Sha256.sum(savedUserEntity);
+        try {
+            UserEntity savedUserEntity = userRepository.save(newUserEntity);
 
-        return UserRegisterServiceResult.success("OK", savedUserEntity, userHash);
+            return UserRegisterServiceResult.success("OK", savedUserEntity);
+        } catch (Exception e) {
+            log.error("Failed to save user to MariaDB: {}", dto.getUsername(), e);
+            return UserRegisterServiceResult.failureWithMessage("DATABASE_SAVE_ERROR", "Failed to save user in MariaDB: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public UserRegisterServiceResult rollbackUserCreation(Integer uid) {
+        try {
+            if (userRepository.existsByUid(uid)) {
+                userRepository.deleteByUid(uid);
+                log.info("Successfully rolled back MariaDB user entry for UID: {}", uid);
+                return UserRegisterServiceResult.successWithoutData();
+            } else {
+                log.warn("Attempted to rollback non-existent user for UID: {}", uid);
+                return UserRegisterServiceResult.failureWithoutData();
+            }
+        } catch (Exception e) {
+            log.error("Failed to rollback MariaDB user entry for UID: {}. Error: {}", uid, e.getMessage(), e);
+            return UserRegisterServiceResult.failureWithoutData();
+        }
     }
 
     public ResponseEntity<UserErrorResponseDto> getErrorResponse(UserRegisterServiceResult result) {

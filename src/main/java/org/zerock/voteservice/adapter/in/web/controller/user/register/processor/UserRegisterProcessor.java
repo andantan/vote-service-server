@@ -85,4 +85,13 @@ public class UserRegisterProcessor {
 
         return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());
     }
+
+    public ResponseEntity<UserErrorResponseDto> getErrorResponse(
+            String status
+    ) {
+        UserRegisterErrorStatus errorStatus = UserRegisterErrorStatus.fromCode(status);
+        UserErrorResponseDto errorDto = UserErrorResponseDto.from(errorStatus);
+
+        return new ResponseEntity<>(errorDto, errorStatus.getHttpStatusCode());
+    }
 }
