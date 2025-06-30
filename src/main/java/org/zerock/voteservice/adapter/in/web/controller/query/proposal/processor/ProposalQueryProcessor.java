@@ -104,6 +104,13 @@ public class ProposalQueryProcessor {
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
     }
 
+    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(String status) {
+        QueryProposalErrorStatus errorStatus = QueryProposalErrorStatus.fromCode(status);
+        QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
+
+        return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
+    }
+
     private List<? extends ProposalResponseSchema> mappingProposalResponseSchema(QueryProposalFilteredListRequestDto dto, ProposalQueryProcessorResult result) {
         Function<Proposal, ? extends ProposalResponseSchema> mapper = dto.getSummarize()
                 ? this::mappingProposalSummarizedSchema

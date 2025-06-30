@@ -11,7 +11,6 @@ import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterE
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
-import org.zerock.voteservice.tool.hash.Sha256;
 
 @Service
 @Log4j2
@@ -61,19 +60,13 @@ public class UserRegisterService {
     }
 
     @Transactional
-    public UserRegisterServiceResult rollbackUserCreation(Integer uid) {
+    public void rollbackUserCreation(Integer uid) {
         try {
             if (userRepository.existsByUid(uid)) {
                 userRepository.deleteByUid(uid);
-                log.info("Successfully rolled back MariaDB user entry for UID: {}", uid);
-                return UserRegisterServiceResult.successWithoutData();
-            } else {
-                log.warn("Attempted to rollback non-existent user for UID: {}", uid);
-                return UserRegisterServiceResult.failureWithoutData();
             }
         } catch (Exception e) {
-            log.error("Failed to rollback MariaDB user entry for UID: {}. Error: {}", uid, e.getMessage(), e);
-            return UserRegisterServiceResult.failureWithoutData();
+            log.error("{}Failed to rollback MariaDB user entry for UID: {}. Error: {}", uid, e.getMessage(), e);
         }
     }
 

@@ -1,6 +1,13 @@
 package org.zerock.voteservice.adapter.in.web.controller.vote.submit;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.docs.VoteSubmitApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateProcessorResult;
 import org.zerock.voteservice.adapter.in.web.controller.vote.mapper.VoteApiEndpointMapper;
+import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
+import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitBallotDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitRequestDto;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateProcessor;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 
-
+@Log4j2
 @RestController
 public class VoteSubmitApiController extends VoteApiEndpointMapper {
     private final BallotCreateProcessor ballotCreateProcessor;
@@ -23,13 +32,61 @@ public class VoteSubmitApiController extends VoteApiEndpointMapper {
 
     @VoteSubmitApiDoc
     @PostMapping("/submit")
-    public ResponseEntity<? extends ResponseDto> submitVote(@RequestBody VoteSubmitRequestDto dto) {
-        BallotCreateProcessorResult result = this.ballotCreateProcessor.processBallotCreation(dto);
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
+    public ResponseEntity<? extends ResponseDto> submitVote(
+            @RequestBody VoteSubmitRequestDto dto
+    ) {
 
-        if (!result.getSuccess()) {
-            return this.ballotCreateProcessor.getErrorResponse(result);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
+
+        String logPrefix = String.format("[UID:%d] ", userDetails.getUid());
+
+        String roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(java.util.stream.Collectors.joining(", "));
+
+        log.debug("{}>>>>>> Initiating submitVote API call: [Path: /submit, Method: POST]", logPrefix);
+        log.debug("{}Authenticated User Info: [Username: {}, Roles: {}]", logPrefix, userDetails.getUsername(), roles);
+        log.debug("{}Received Request DTO: [Topic: {}, Option: {}]", logPrefix, dto.getTopic(), dto.getOption());
+
+        VoteSubmitBallotDto voteSubmitBallotDto = VoteSubmitBallotDto.builder()
+                .userHash(userDetails.getUserHash())
+                .topic(dto.getTopic())
+                .option(dto.getOption())
+                .build();
+
+        try {
+            BallotCreateProcessorResult result = this.ballotCreateProcessor.processBallotCreation(voteSubmitBallotDto);
+
+            if (!result.getSuccess()) {
+                log.warn("{}Vote submission processing failed: [Topic: {}, Status: {}, Message: {}]",
+                        logPrefix, dto.getTopic(), result.getStatus(), result.getMessage());
+                return this.ballotCreateProcessor.getErrorResponse(result);
+            }
+
+            log.info("{}Vote submission successful: [Topic: {}, Status: {}, Message: {}]",
+                    logPrefix, dto.getTopic(), result.getStatus(), result.getMessage());
+            return this.ballotCreateProcessor.getSuccessResponse(voteSubmitBallotDto, result);
+
+        } catch (StatusRuntimeException e) {
+            Status.Code statusCode = e.getStatus().getCode();
+            String statusDescription = e.getStatus().getDescription();
+
+            if (statusCode == Status.Code.UNAVAILABLE) {
+                log.error("{}gRPC Server is unavailable or unreachable for vote submission. Check server status and network. Error: {}", logPrefix, statusDescription);
+            } else if (statusCode == Status.Code.DEADLINE_EXCEEDED) {
+                log.error("{}gRPC call timed out for vote submission. Consider increasing timeout or checking server performance. Error: {}", logPrefix, statusDescription);
+            } else {
+                log.error("{}Unexpected gRPC error during vote submission: Status={}, Description={}", logPrefix, statusCode, statusDescription);
+            }
+
+            return this.ballotCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
+
+        } catch (Exception e) {
+            log.error("{}An unexpected error occurred during vote submission for topic: {}, option: {}. Error: {}", logPrefix, dto.getTopic(), dto.getOption(), e.getMessage(), e);
+
+            return this.ballotCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
         }
-
-        return this.ballotCreateProcessor.getSuccessResponse(dto, result);
     }
 }

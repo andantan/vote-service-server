@@ -39,8 +39,6 @@ public class Sha256 {
                 hexString.append(hex);
             }
             userHash = hexString.toString();
-
-            log.debug("UserDigest: {}, UserHash: {}", dataToHash, userHash);
         } catch (NoSuchAlgorithmException e) {
             log.error(e);
         }

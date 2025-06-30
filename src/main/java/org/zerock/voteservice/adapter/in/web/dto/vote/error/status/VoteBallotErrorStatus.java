@@ -44,6 +44,11 @@ public enum VoteBallotErrorStatus {
             "이미 진행이 완료된 투표입니다.",
             HttpStatus.BAD_REQUEST // 400
     ),
+    INTERNAL_SERVER_ERROR(
+            "INTERNAL_SERVER_ERROR",
+            "서버 내부에서 오류가 발생했습니다.",
+            HttpStatus.INTERNAL_SERVER_ERROR // 500
+    ),
     DATABASE_ACCESS_ERROR(
             "DATABASE_ACCESS_ERROR",
             "데이터베이스 서버에서 알 수 없는 오류가 발생했습니다.",

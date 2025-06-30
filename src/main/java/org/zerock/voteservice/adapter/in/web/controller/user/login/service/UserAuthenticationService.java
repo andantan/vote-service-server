@@ -24,11 +24,14 @@ public class UserAuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        String logPrefix = String.format("[Username: %s] ", username);
+
+        log.debug("{}Attempting to load user details", logPrefix);
+
         UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("User not found during authentication for username: {}", username);
-                    return new UsernameNotFoundException(username);
-                });
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        log.debug("{}User details successfully loaded [UID: {}]", logPrefix, userEntity.getUid());
 
         return new UserAuthenticationDetails(userEntity, null);
     }
