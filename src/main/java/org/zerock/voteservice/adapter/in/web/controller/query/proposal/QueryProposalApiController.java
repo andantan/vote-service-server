@@ -94,6 +94,9 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
 
             return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
 
+        } catch (RuntimeException e) {
+            log.error("{}{}", logPrefix, e.getMessage());
+            return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
         } catch (Exception e) {
             log.error("{}An unexpected error occurred during proposal detail query for topic: {}. Error: {}", logPrefix, topic, e.getMessage(), e);
             return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
