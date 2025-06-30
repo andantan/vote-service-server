@@ -42,14 +42,7 @@ public class ProposalQueryProcessor {
     }
 
     public ProposalQueryProcessorResult processProposalDetailQuery(QueryProposalDetailRequestDto dto) {
-        GetProposalDetailResponse proposalDetail;
-        proposalDetail = this.proposalQueryProxy.getProposalDetail(dto);
-
-//        try {
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//            return ProposalQueryProcessorResult.failure("INTERNAL_SERVER_ERROR");
-//        }
+        GetProposalDetailResponse proposalDetail = this.proposalQueryProxy.getProposalDetail(dto);
 
         if (!proposalDetail.getQueried()) {
             return ProposalQueryProcessorResult.failure(proposalDetail.getStatus());
