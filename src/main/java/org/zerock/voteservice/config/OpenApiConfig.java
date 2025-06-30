@@ -23,19 +23,30 @@ public class OpenApiConfig {
                 .version(apiVersion);
 
         String securitySchemeName = "BearerAuth";
-
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER)
-                .name("Authorization");
+                .name("Authorization")
+                .description("JWT 토큰을 입력해주세요.");
 
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList(securitySchemeName);
+        String userHashSchemeName = "X-User-Hash";
+        SecurityScheme userHashSecurityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.HEADER)
+                .name(userHashSchemeName)
+                .description("사용자 고유 해시 값 (인증된 사용자의 식별자)");
+
+        SecurityRequirement securityRequirement = new SecurityRequirement()
+                .addList(securitySchemeName)
+                .addList(userHashSchemeName);
 
         return new OpenAPI()
                 .info(apiInfo)
-                .components(new Components().addSecuritySchemes(securitySchemeName, securityScheme))
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName, securityScheme)
+                        .addSecuritySchemes(userHashSchemeName, userHashSecurityScheme))
                 .addSecurityItem(securityRequirement);
     }
 }

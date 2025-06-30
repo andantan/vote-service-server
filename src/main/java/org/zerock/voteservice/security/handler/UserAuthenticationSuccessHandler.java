@@ -33,17 +33,27 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
             HttpServletResponse response,
             Authentication authentication
     ) throws IOException {
+        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
+        String logPrefix = String.format("[Username:%s] ", userDetails.getUsername());
+
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json; charset=utf-8");
-
-        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
 
         String token = this.getJwtAccessToken(userDetails, authentication);
         UserAuthenticationResponseDto successDto = this.getSuccessResponseDto(userDetails);
 
         response.addHeader("Authorization", "Bearer " + token);
+
+        log.debug("{}JWT token generated and added to header for user", logPrefix);
+
         response.getWriter().write(objectMapper.writeValueAsString(successDto));
         response.getWriter().flush();
+
+        log.debug("{}Authentication success response sent to client for user: [Status: {}, Message: {}]",
+                logPrefix, successDto.getStatus(), successDto.getMessage());
+
+        String maskedToken = "..." + token.substring(token.length() - 10);
+        log.info("{}Authentication successed. JWT issued: [Token: \"{}\"]", logPrefix, maskedToken);
     }
 
     private String getJwtAccessToken(UserAuthenticationDetails userDetails, Authentication authentication) {

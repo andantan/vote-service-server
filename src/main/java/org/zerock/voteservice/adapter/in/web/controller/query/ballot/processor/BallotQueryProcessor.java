@@ -79,6 +79,13 @@ public class BallotQueryProcessor {
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
     }
 
+    public ResponseEntity<QueryErrorResponseDto> getErrorResponse(String status) {
+        QueryBallotErrorStatus errorStatus = QueryBallotErrorStatus.fromCode(status);
+        QueryErrorResponseDto errorDto = QueryErrorResponseDto.from(errorStatus);
+
+        return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
+    }
+
     private BallotSchema mappingBallotSchema(Ballot ballot) {
         LocalDateTime kstSubmittedAt = null;
 

@@ -25,8 +25,6 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException {
-        log.warn("------------UserAuthenticationEntryPoint::commence------------");
-
         Integer statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String errorMessage = (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
 

@@ -36,7 +36,6 @@ import java.lang.annotation.Target;
                                 summary = "법률 개정안 투표",
                                 value = """
                                         {
-                                          "hash": "YOUR_USER_HASH",
                                           "topic": "법률 개정안 찬반 투표",
                                           "option": "찬성"
                                         }"""

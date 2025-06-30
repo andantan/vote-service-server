@@ -25,15 +25,4 @@ public class VoteSubmitRequestDto extends BaseVoteRequest {
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     private String option;
-
-    @JsonProperty("hash")
-    @Schema(
-            description = "요청하는 유저의 고유 해시값(유저 식별) = Sha256(\"이름\"|\"이메일\"|\"전화번호\"|\"성별\"|\"생년월일\")",
-            example = "1303522e0b59179b948c1713105ac8f9d13c62080a743118617fecef799e92e5",
-            type = "string",
-            format = "hex",
-            implementation = String.class,
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    private String userHash;
 }

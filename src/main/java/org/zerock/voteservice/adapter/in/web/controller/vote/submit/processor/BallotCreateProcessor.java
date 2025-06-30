@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitBallotDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.vote.BallotCreateProxy;
 
 import org.zerock.voteservice.adapter.in.web.dto.vote.error.VoteErrorResponseDto;
@@ -25,7 +26,7 @@ public class BallotCreateProcessor {
         this.ballotCreateProxy = ballotCreateProxy;
     }
 
-    public BallotCreateProcessorResult processBallotCreation(VoteSubmitRequestDto dto) {
+    public BallotCreateProcessorResult processBallotCreation(VoteSubmitBallotDto dto) {
         // Cache server: request validate ballot [gRPC]
         BallotValidateEventResponse validatedBallot = this.ballotCreateProxy.validateBallot(dto);
 
@@ -50,7 +51,7 @@ public class BallotCreateProcessor {
         return BallotCreateProcessorResult.success(cachedBallot.getStatus(), submittedBallot.getVoteHash());
     }
 
-    public ResponseEntity<VoteSubmitResponseDto> getSuccessResponse(VoteSubmitRequestDto requestDto, BallotCreateProcessorResult result) {
+    public ResponseEntity<VoteSubmitResponseDto> getSuccessResponse(VoteSubmitBallotDto requestDto, BallotCreateProcessorResult result) {
         String successMessage = "투표 참여가 완료되었습니다.";
 
         VoteSubmitResponseDto successDto = VoteSubmitResponseDto.builder()
@@ -69,6 +70,13 @@ public class BallotCreateProcessor {
 
     public ResponseEntity<VoteErrorResponseDto> getErrorResponse(BallotCreateProcessorResult result) {
         VoteBallotErrorStatus errorStatus = VoteBallotErrorStatus.fromCode(result.getStatus());
+        VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
+
+        return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
+    }
+
+    public ResponseEntity<VoteErrorResponseDto> getErrorResponse(String status) {
+        VoteBallotErrorStatus errorStatus = VoteBallotErrorStatus.fromCode(status);
         VoteErrorResponseDto errorDto = VoteErrorResponseDto.from(errorStatus);
 
         return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));

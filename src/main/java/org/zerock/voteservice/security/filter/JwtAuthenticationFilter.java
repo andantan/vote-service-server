@@ -39,8 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        log.info("------------JwtAuthenticationFilter::doFilterInternal------------");
-
         String requestUri = request.getRequestURI();
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -61,6 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username;
         String role;
 
+        String logPrefix;
+
         try {
             claims = jwtUtil.extractAllClaims(token);
 
@@ -80,8 +80,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             userHash = jwtUtil.getUserHash(claims);
             uid = jwtUtil.getUid(claims);
 
+            logPrefix = String.format("[UID:%d] ", uid);
+
         } catch (io.jsonwebtoken.security.SignatureException | io.jsonwebtoken.MalformedJwtException e) {
-            log.error("Invalid JWT signature or malformed token (Path: {})", requestUri);
+            log.debug("Invalid JWT signature or malformed token (Path: {})", requestUri);
 
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
@@ -90,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             return;
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            log.warn("Expired JWT token caught: {} (Path: {})", e.getMessage(), requestUri);
+            log.debug("JWT expired for request to {}", requestUri);
 
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
@@ -126,7 +128,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             UserAuthenticationDetails userAuthenticationDetails = new UserAuthenticationDetails(userEntity, userHash);
-            log.info("JWT Details user hash: {}", userAuthenticationDetails.getUserHash());
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userAuthenticationDetails,
@@ -135,10 +136,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
-            log.info("JWT authentication successful: Uid '{}' Username '{}', Role '{}', UserHash '{}'",
-                    uid, username, role, userHash);
         }
 
+        log.info("{}JWT authentication successful", logPrefix);
         filterChain.doFilter(request, response);
     }
 
@@ -150,7 +150,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         for (String pattern : excludedPaths) {
             if (pathMatcher.match(pattern, requestUri)) {
-                log.info("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
+                log.debug("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
                 return true;
             }
         }

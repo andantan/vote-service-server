@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.security.filter.UserAuthenticationFilter;
 
 import java.io.IOException;
 
@@ -28,6 +29,13 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
             HttpServletResponse response,
             AuthenticationException exception
     ) throws IOException {
+        String attemptedUsername = (String) request.getAttribute(UserAuthenticationFilter.ATTEMPTED_USERNAME_ATTRIBUTE);
+        String logPrefix = String.format("[Username:%s] ", attemptedUsername);
+
+        log.warn("{}Authentication failed: [Reason: {}, ExceptionType: {}]",
+                logPrefix, exception.getMessage(), exception.getClass().getSimpleName());
+
+
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json; charset=utf-8");
 
@@ -35,6 +43,9 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
 
         response.getWriter().write(objectMapper.writeValueAsString(failureDto));
         response.getWriter().flush();
+
+        log.debug("{}Authentication failure response sent to client: [Status: {}, Message: {}]",
+                logPrefix, failureDto.getHttpStatusCode(), failureDto.getMessage());
     }
 
     private UserErrorResponseDto getErrorResponseDto(AuthenticationException exception) {

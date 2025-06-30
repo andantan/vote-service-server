@@ -5,6 +5,7 @@ import domain.event.ballot.create.protocol.BallotValidateEventResponse;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitBallotDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.blockchainNode.BallotTransactionServiceGrpcStub;
 import org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData.BallotCreateEventServiceGrpcStub;
@@ -23,19 +24,19 @@ public class BallotCreateProxy {
         this.ballotCreateEventServiceGrpcStub = ballotCreateEventServiceGrpcStub;
     }
 
-    public BallotValidateEventResponse validateBallot(VoteSubmitRequestDto dto) {
+    public BallotValidateEventResponse validateBallot(VoteSubmitBallotDto dto) {
         return this.ballotCreateEventServiceGrpcStub.validateBallot(
                 dto.getUserHash(), dto.getTopic(), dto.getOption()
         );
     }
 
-    public SubmitBallotTransactionResponse submitBallotTransaction(VoteSubmitRequestDto dto) {
+    public SubmitBallotTransactionResponse submitBallotTransaction(VoteSubmitBallotDto dto) {
         return this.ballotTransactionServiceGrpcStub.submitBallotTransaction(
                 dto.getUserHash(), dto.getTopic(), dto.getOption()
         );
     }
 
-    public BallotCacheEventResponse cacheBallot(VoteSubmitRequestDto dto, String voteHash) {
+    public BallotCacheEventResponse cacheBallot(VoteSubmitBallotDto dto, String voteHash) {
         return this.ballotCreateEventServiceGrpcStub.cacheBallot(
                 dto.getUserHash(), voteHash, dto.getTopic()
         );

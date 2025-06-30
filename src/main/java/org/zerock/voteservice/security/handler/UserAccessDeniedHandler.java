@@ -26,7 +26,6 @@ public class UserAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException {
-        log.warn("------------CustomAccessDeniedHandler::handle------------");
         log.warn("Access denied for authenticated user. Path: {}, Exception: {}",
                 request.getRequestURI(), accessDeniedException.getMessage());
 

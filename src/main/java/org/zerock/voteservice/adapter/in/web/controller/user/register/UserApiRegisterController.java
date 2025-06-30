@@ -1,6 +1,7 @@
 package org.zerock.voteservice.adapter.in.web.controller.user.register;
 
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,54 +36,77 @@ public class UserApiRegisterController extends UserApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> register(
             @RequestBody UserRegisterRequestDto dto
     ) {
-        UserRegisterServiceResult userValidationResult = this.userRegisterService.validateUserExistence(
-                dto.getUsername(), dto.getEmail()
-        );
+        String logPrefix = String.format("[AttemptingRegisterUsername:%s] ", dto.getUsername());
+        Integer currentUid = null;
 
-        if (!userValidationResult.getSuccess()) {
-            return this.userRegisterService.getErrorResponse(userValidationResult);
-        }
+        log.debug("{}>>>>>> Initiating user registration API call: [Path: /register, Method: POST]", logPrefix);
 
-        UserRegisterServiceResult userSavedResult = null;
+        UserRegisterServiceResult userSavedResult;
 
         try {
+            UserRegisterServiceResult userValidationResult = this.userRegisterService.validateUserExistence(
+                    dto.getUsername(), dto.getEmail()
+            );
+
+            if (!userValidationResult.getSuccess()) {
+                log.debug("{}User validation failed for registration: [Status: {}]",
+                        logPrefix, userValidationResult.getStatus());
+
+                return this.userRegisterService.getErrorResponse(userValidationResult);
+            }
+
+            log.debug("{}User validation successful", logPrefix);
+
             userSavedResult = userRegisterService.register(dto);
 
             if (!userSavedResult.getSuccess()) {
+                log.warn("{}User save to DB failed during registration: [Status: {}, Message: {}]",
+                        logPrefix, userSavedResult.getStatus(), userSavedResult.getMessage());
+
                 return this.userRegisterService.getErrorResponse(userSavedResult);
             }
+
+            currentUid = userSavedResult.getUid();
+
+            log.debug("{}User successfully saved to DB: [UID: {}]", logPrefix, userSavedResult.getUid());
 
             UserRegisterProcessorResult userCachedResult = this.userRegisterProcessor.processUserCreation(userSavedResult);
 
             if (!userCachedResult.getSuccess()) {
-                log.error("Failed to process user creation in external cache. Attempting to rollback MariaDB entry for user: {}", dto.getUsername());
+                log.error("{}User creation process failed (caching): [UID: {}, Status: {}, Message: {}]. Attempting MariaDB rollback.",
+                        logPrefix, currentUid, userCachedResult.getStatus(), userCachedResult.getMessage());
+
                 this.userRegisterService.rollbackUserCreation(userSavedResult.getUid());
+
+                log.debug("{}MariaDB rollback initiated for user: [UID: {}]", logPrefix, currentUid);
 
                 return this.userRegisterProcessor.getErrorResponse(userCachedResult);
             }
 
-            log.info("User successfully registered: {} -> id:{}", dto.getUsername(), userSavedResult.getUid());
+            log.info("{}User successfully registered: [UID: {}]", logPrefix, userSavedResult.getUid());
 
             return this.userRegisterProcessor.getSuccessDto(dto, userCachedResult);
-        } catch (io.grpc.StatusRuntimeException e) {
+        } catch (StatusRuntimeException e) {
             if (e.getStatus().getCode() == Status.Code.UNAVAILABLE) {
-                log.error("gRPC Server is unavailable or unreachable: {}. Check server status and network.", e.getMessage());
-            } else if (e.getStatus().getCode() == Status.Code.DEADLINE_EXCEEDED) {
-                log.error("gRPC call timed out: {}. Consider increasing timeout or checking server performance.", e.getMessage());
+                log.error("{}gRPC Server is unavailable or unreachable for register: [Status: {}]", logPrefix, e.getStatus().getCode());
             } else {
-                log.error("Unexpected gRPC error: Status={}, Description={}", e.getStatus().getCode(), e.getStatus().getDescription());
+                log.error("{}unexpected gRPC error: Status={}, Description={}", logPrefix, e.getStatus().getCode(), e.getStatus().getDescription());
             }
 
-            if (userSavedResult != null && userSavedResult.getSuccess() && userSavedResult.getUid() != null) {
-                this.userRegisterService.rollbackUserCreation(userSavedResult.getUid());
-            }
+            log.warn("{}Attempting MariaDB rollback due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
+            this.userRegisterService.rollbackUserCreation(currentUid);
+            log.info("{}MariaDB rollback completed due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
 
             return this.userRegisterProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
         } catch (Exception e) {
-            log.error("An unexpected error occurred during user registration for user: {}. Attempting to rollback MariaDB entry.", dto.getUsername());
+            log.error("{}An unexpected error occurred during user registration for user. Attempting to rollback MariaDB entry.", dto.getUsername());
 
-            if (userSavedResult != null && userSavedResult.getSuccess() && userSavedResult.getUid() != null) {
-                this.userRegisterService.rollbackUserCreation(userSavedResult.getUid());
+            if (currentUid != null) {
+                log.warn("{}Attempting MariaDB rollback due to unexpected error for user: [UID: {}]", logPrefix, currentUid);
+                this.userRegisterService.rollbackUserCreation(currentUid);
+                log.info("{}MariaDB rollback completed due to unexpected error for user: [UID: {}]", logPrefix, currentUid);
+            } else {
+                log.warn("{}No UID available for MariaDB rollback after unexpected error during user registration for user", logPrefix);
             }
 
             return this.userRegisterProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");

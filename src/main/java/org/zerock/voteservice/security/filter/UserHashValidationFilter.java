@@ -59,7 +59,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String logPrefix = String.format("[UID: %5d] ", userDetails.getUid());
+        String logPrefix = String.format("[UID:%d] ", userDetails.getUid());
 
         log.debug("{}UserHashValidationFilter activated for: {}", logPrefix, request.getRequestURI());
 
@@ -79,8 +79,8 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
 
         String jwtUserHash = userDetails.getUserHash();
 
-        log.info("{}Client Userhash: {}", logPrefix, clientUserHash);
-        log.info("{}Jwt Userhash: {}", logPrefix, jwtUserHash);
+        log.debug("{}Headers(X-User-Hash) Userhash: {}", logPrefix, clientUserHash);
+        log.debug("{}Headers(Authorization) Userhash: {}", logPrefix, jwtUserHash);
 
         if (!clientUserHash.equals(jwtUserHash)) {
             log.warn("{}User hash validation failed: Client hash '{}' does not match JWT hash '{}'.",
@@ -113,7 +113,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
 
         String dbCalculatedUserHash = Sha256.sum(jwtUserEntity.get());
 
-        log.info("{}Database Calculated Userhash: {}", logPrefix, dbCalculatedUserHash);
+        log.debug("{}Database Calculated Userhash: {}", logPrefix, dbCalculatedUserHash);
 
         if (!clientUserHash.equals(dbCalculatedUserHash)) {
             log.warn("{}User hash validation failed: Client hash '{}' does not match DB calculated hash '{}'. This might indicate a stale token or data tampering.",
@@ -127,7 +127,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
             return;
         }
 
-        log.info("{}User hash validation successful for request: {}", logPrefix, request.getRequestURI());
+        log.info("{}UserHash validation successful", logPrefix);
         filterChain.doFilter(request, response);
     }
 
@@ -139,7 +139,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
 
         for (String pattern : excludedPaths) {
             if (pathMatcher.match(pattern, requestUri)) {
-                log.info("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
+                log.debug("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
                 return true;
             }
         }
