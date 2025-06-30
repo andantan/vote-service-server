@@ -47,7 +47,7 @@ public class ProposalQueryEventServiceGrpcStub {
         } catch (StatusRuntimeException e) {
             if (e.getStatus().getCode() == Status.Code.UNAVAILABLE) {
                 String unavailableServer = "L3";
-                String errorMessage = String.format("gRPC call to %s failed due to server unavailability or host resolution issue: %s:%d", unavailableServer, grpcHost, grpcPort);
+                String errorMessage = String.format("gRPC call to %s failed due to server unavailability or host resolution issue: %s:%d [%s]", unavailableServer, grpcHost, grpcPort, e);
                 throw new RuntimeException(errorMessage);
             }
             log.error("gRPC call to ProposalQueryEventService for getProposalDetail failed with status: {} (Description: {}). Request: {}",
