@@ -98,6 +98,12 @@ public class UserApiRegisterController extends UserApiEndpointMapper {
             log.info("{}MariaDB rollback completed due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
 
             return this.userRegisterProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
+        } catch (RuntimeException e) {
+            log.error("{}{}", logPrefix, e.getMessage());
+            log.warn("{}Attempting MariaDB rollback due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
+            this.userRegisterService.rollbackUserCreation(currentUid);
+            log.info("{}MariaDB rollback completed due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
+            return this.userRegisterProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
         } catch (Exception e) {
             log.error("{}An unexpected error occurred during user registration for user. Attempting to rollback MariaDB entry.", dto.getUsername());
 

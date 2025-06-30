@@ -10,6 +10,8 @@ import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventRequest;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +20,26 @@ import org.springframework.beans.factory.annotation.Value;
 @Service
 public class UserCreateEventServiceGrpcStub {
     private final UserCreateEventServiceGrpc.UserCreateEventServiceBlockingStub stub;
+    private final String grpcHost;
+    private final int grpcPort;
 
     public UserCreateEventServiceGrpcStub(
             @Value("${grpc.server.event.user.create.host}") String grpcUserCreateEventConnectionHost,
             @Value("${grpc.server.event.user.create.port}") int grpcUserCreateEventConnectionPort
     ) {
+        this.grpcHost = grpcUserCreateEventConnectionHost;
+        this.grpcPort = grpcUserCreateEventConnectionPort;
+
+        log.debug("[UserCreateEventServiceGrpcStub] Attempting to connect to gRPC server at {}:{}", grpcHost, grpcPort);
+
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(grpcUserCreateEventConnectionHost, grpcUserCreateEventConnectionPort)
                 .usePlaintext()
                 .build();
 
         stub = UserCreateEventServiceGrpc.newBlockingStub(channel);
+
+        log.debug("[UserCreateEventServiceGrpcStub] gRPC channel for ProposalQueryEventService initialized.");
     }
 
     public UserCacheEventResponse cacheUser(
@@ -52,6 +63,18 @@ public class UserCreateEventServiceGrpcStub {
                 .setUserHash(userHash)
                 .build();
 
-        return stub.validateUserEvent(request);
+        try {
+            return stub.validateUserEvent(request);
+        } catch (StatusRuntimeException e) {
+            if (e.getStatus().getCode() == Status.Code.UNAVAILABLE) {
+                String unavailableServer = "L3";
+                String errorMessage = String.format("gRPC call to %s failed due to server unavailability or host resolution issue: %s:%d [%s]", unavailableServer, grpcHost, grpcPort, e);
+                throw new RuntimeException(errorMessage);
+            }
+            log.error("gRPC call to UserCreateEventService for validateUser failed with status: {} (Description: {}). Request: {}",
+                    e.getStatus().getCode(), e.getStatus().getDescription(), request, e);
+
+            throw e;
+        }
     }
 }
