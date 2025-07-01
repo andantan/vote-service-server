@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import domain.event.proposal.query.protocol.*;
 
+import org.zerock.voteservice.adapter.common.ErrorResponseProcessor;
 import org.zerock.voteservice.adapter.in.web.dto.query.proposal.QueryProposalDetailRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.proposal.QueryProposalDetailResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.proposal.QueryProposalFilteredListRequestDto;
@@ -25,7 +26,7 @@ import java.util.function.Function;
 
 @Log4j2
 @Service
-public class ProposalQueryProcessor {
+public class ProposalQueryProcessor implements ErrorResponseProcessor {
 
     private final ProposalQueryProxy proposalQueryProxy;
 

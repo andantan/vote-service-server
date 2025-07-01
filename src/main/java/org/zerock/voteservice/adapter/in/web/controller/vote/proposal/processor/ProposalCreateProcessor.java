@@ -9,6 +9,7 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
 import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 
+import org.zerock.voteservice.adapter.common.ErrorResponseProcessor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.vote.ProposalCreateProxy;
 import org.zerock.voteservice.adapter.in.web.dto.vote.proposal.VoteProposalRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.proposal.VoteProposalResponseDto;
@@ -18,7 +19,7 @@ import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteProposalE
 
 @Log4j2
 @Service
-public class ProposalCreateProcessor {
+public class ProposalCreateProcessor implements ErrorResponseProcessor {
     private final ProposalCreateProxy proposalCreateProxy;
 
     public ProposalCreateProcessor(ProposalCreateProxy proposalCreateProxy) {

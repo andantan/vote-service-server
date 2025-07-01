@@ -1,7 +1,5 @@
 package org.zerock.voteservice.adapter.in.web.controller.vote.submit;
 
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.docs.VoteSubmitApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateProcessorResult;
 import org.zerock.voteservice.adapter.in.web.controller.vote.mapper.VoteApiEndpointMapper;
@@ -20,6 +19,7 @@ import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitBallotDto
 import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitRequestDto;
 import org.zerock.voteservice.adapter.in.web.controller.vote.submit.processor.BallotCreateProcessor;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
+import org.zerock.voteservice.adapter.out.grpc.stub.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 @RestController
@@ -36,15 +36,15 @@ public class VoteSubmitApiController extends VoteApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> submitVote(
             @RequestBody VoteSubmitRequestDto dto
     ) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
 
-        String logPrefix = String.format("[UID:%d] ", userDetails.getUid());
-
+        Integer currentUid = userDetails.getUid();
         String roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(java.util.stream.Collectors.joining(", "));
+
+        String logPrefix = String.format("[UID:%d] ", currentUid);
 
         log.debug("{}>>>>>> Initiating submitVote API call: [Path: /submit, Method: POST]", logPrefix);
         log.debug("{}Authenticated User Info: [Username: {}, Roles: {}]", logPrefix, userDetails.getUsername(), roles);
@@ -69,20 +69,14 @@ public class VoteSubmitApiController extends VoteApiEndpointMapper {
                     logPrefix, dto.getTopic(), result.getStatus(), result.getMessage());
             return this.ballotCreateProcessor.getSuccessResponse(voteSubmitBallotDto, result);
 
-        } catch (StatusRuntimeException e) {
-            Status.Code statusCode = e.getStatus().getCode();
-            String statusDescription = e.getStatus().getDescription();
-
-            if (statusCode == Status.Code.UNAVAILABLE) {
-                log.error("{}gRPC Server is unavailable or unreachable for vote submission. Check server status and network. Error: {}", logPrefix, statusDescription);
-            } else if (statusCode == Status.Code.DEADLINE_EXCEEDED) {
-                log.error("{}gRPC call timed out for vote submission. Consider increasing timeout or checking server performance. Error: {}", logPrefix, statusDescription);
-            } else {
-                log.error("{}Unexpected gRPC error during vote submission: Status={}, Description={}", logPrefix, statusCode, statusDescription);
-            }
-
+        } catch (GrpcServiceUnavailableException e) {
+            log.error("{}{}", logPrefix, e.getMessage());
             return this.ballotCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
 
+        } catch (io.grpc.StatusRuntimeException e) {
+            return GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
+                    currentUid, e, this.ballotCreateProcessor
+            );
         } catch (Exception e) {
             log.error("{}An unexpected error occurred during vote submission for topic: {}, option: {}. Error: {}", logPrefix, dto.getTopic(), dto.getOption(), e.getMessage(), e);
 

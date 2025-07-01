@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
+import org.zerock.voteservice.adapter.common.ErrorResponseProcessor;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserCacheRequestDto;
@@ -22,7 +23,7 @@ import org.zerock.voteservice.tool.time.DateConverter;
 
 @Log4j2
 @Service
-public class UserRegisterProcessor {
+public class UserRegisterProcessor implements ErrorResponseProcessor {
 
     private final UserCreateProxy userCreateProxy;
 

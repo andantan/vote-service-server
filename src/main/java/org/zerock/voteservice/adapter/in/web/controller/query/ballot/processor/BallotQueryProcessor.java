@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import domain.event.ballot.query.protocol.Ballot;
 import domain.event.ballot.query.protocol.GetUserBallotsResponse;
 
+import org.zerock.voteservice.adapter.common.ErrorResponseProcessor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.query.BallotQueryProxy;
 
 import org.zerock.voteservice.adapter.in.web.dto.query.schema.BallotSchema;
@@ -24,7 +25,7 @@ import java.util.List;
 
 @Log4j2
 @Service
-public class BallotQueryProcessor {
+public class BallotQueryProcessor implements ErrorResponseProcessor {
 
     private final BallotQueryProxy ballotQueryProxy;
 

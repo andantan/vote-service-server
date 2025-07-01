@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.vote.proposal.VoteProposalRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
@@ -20,6 +21,7 @@ import org.zerock.voteservice.adapter.in.web.controller.vote.mapper.VoteApiEndpo
 import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.docs.VoteProposalApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.processor.ProposalCreateProcessor;
 import org.zerock.voteservice.adapter.in.web.controller.vote.proposal.processor.ProposalCreateProcessorResult;
+import org.zerock.voteservice.adapter.out.grpc.stub.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 @RestController
@@ -38,7 +40,8 @@ public class VoteProposalApiController extends VoteApiEndpointMapper {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
 
-        String logPrefix = String.format("[UID:%d] ", userDetails.getUid());
+        Integer currentUid = userDetails.getUid();
+        String logPrefix = String.format("[UID:%d] ", currentUid);
 
         String roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -61,21 +64,17 @@ public class VoteProposalApiController extends VoteApiEndpointMapper {
                     logPrefix, dto.getTopic(), result.getStatus(), result.getMessage());
             return this.proposalCreateProcessor.getSuccessResponse(dto, result);
 
-        } catch (StatusRuntimeException e) {
-            Status.Code statusCode = e.getStatus().getCode();
-            String statusDescription = e.getStatus().getDescription();
-
-            if (statusCode == Status.Code.UNAVAILABLE) {
-                log.error("{}gRPC Server is unavailable or unreachable for vote proposal. Check server status and network. Error: {}", logPrefix, statusDescription);
-            } else if (statusCode == Status.Code.DEADLINE_EXCEEDED) {
-                log.error("{}gRPC call timed out for vote proposal. Consider increasing timeout or checking server performance. Error: {}", logPrefix, statusDescription);
-            } else {
-                log.error("{}Unexpected gRPC error during vote proposal: Status={}, Description={}", logPrefix, statusCode, statusDescription, e);
-            }
+        } catch (GrpcServiceUnavailableException e) {
+            log.error("{}{}", logPrefix, e.getMessage());
 
             return this.proposalCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
 
-        }catch (Exception e) {
+        } catch (io.grpc.StatusRuntimeException e) {
+            return GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
+                    currentUid, e, this.proposalCreateProcessor
+            );
+
+        } catch (Exception e) {
             log.error("{}An unexpected error occurred during vote proposal for topic: {}, duration: {}. Error: {}", logPrefix, dto.getTopic(), dto.getDuration(), e.getMessage(), e);
 
             return this.proposalCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");

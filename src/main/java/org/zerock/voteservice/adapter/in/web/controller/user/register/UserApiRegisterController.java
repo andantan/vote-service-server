@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.in.web.controller.user.mapper.UserApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.controller.user.register.docs.UserRegisterApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.user.register.processor.UserRegisterProcessor;
@@ -15,6 +16,7 @@ import org.zerock.voteservice.adapter.in.web.controller.user.register.service.Us
 import org.zerock.voteservice.adapter.in.web.controller.user.register.service.UserRegisterServiceResult;
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.out.grpc.stub.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 @RestController
@@ -73,12 +75,7 @@ public class UserApiRegisterController extends UserApiEndpointMapper {
             UserRegisterProcessorResult userCachedResult = this.userRegisterProcessor.processUserCreation(userSavedResult);
 
             if (!userCachedResult.getSuccess()) {
-                log.error("{}User creation process failed (caching): [UID: {}, Status: {}, Message: {}]. Attempting MariaDB rollback.",
-                        logPrefix, currentUid, userCachedResult.getStatus(), userCachedResult.getMessage());
-
-                this.userRegisterService.rollbackUserCreation(userSavedResult.getUid());
-
-                log.debug("{}MariaDB rollback initiated for user: [UID: {}]", logPrefix, currentUid);
+                this.userRegisterService.rollbackUserCreation(dto.getUsername(), userSavedResult.getUid());
 
                 return this.userRegisterProcessor.getErrorResponse(userCachedResult);
             }
@@ -86,31 +83,27 @@ public class UserApiRegisterController extends UserApiEndpointMapper {
             log.info("{}User successfully registered: [UID: {}]", logPrefix, userSavedResult.getUid());
 
             return this.userRegisterProcessor.getSuccessDto(dto, userCachedResult);
-        } catch (StatusRuntimeException e) {
-            if (e.getStatus().getCode() == Status.Code.UNAVAILABLE) {
-                log.error("{}gRPC Server is unavailable or unreachable for register: [Status: {}]", logPrefix, e.getStatus().getCode());
-            } else {
-                log.error("{}unexpected gRPC error: Status={}, Description={}", logPrefix, e.getStatus().getCode(), e.getStatus().getDescription());
-            }
-
-            log.warn("{}Attempting MariaDB rollback due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
-            this.userRegisterService.rollbackUserCreation(currentUid);
-            log.info("{}MariaDB rollback completed due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
-
-            return this.userRegisterProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
-        } catch (RuntimeException e) {
+        } catch (GrpcServiceUnavailableException e) {
             log.error("{}{}", logPrefix, e.getMessage());
-            log.warn("{}Attempting MariaDB rollback due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
-            this.userRegisterService.rollbackUserCreation(currentUid);
-            log.info("{}MariaDB rollback completed due to gRPC error for user: [UID: {}]", logPrefix, currentUid);
+
+            this.userRegisterService.rollbackUserCreation(dto.getUsername(), currentUid);
+
             return this.userRegisterProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
+
+        } catch (io.grpc.StatusRuntimeException e) {
+            ResponseEntity<? extends ResponseDto> errorEntity = GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
+                    currentUid, e, this.userRegisterProcessor
+            );
+
+            this.userRegisterService.rollbackUserCreation(dto.getUsername(), currentUid);
+
+            return errorEntity;
+
         } catch (Exception e) {
             log.error("{}An unexpected error occurred during user registration for user. Attempting to rollback MariaDB entry.", dto.getUsername());
 
             if (currentUid != null) {
-                log.warn("{}Attempting MariaDB rollback due to unexpected error for user: [UID: {}]", logPrefix, currentUid);
-                this.userRegisterService.rollbackUserCreation(currentUid);
-                log.info("{}MariaDB rollback completed due to unexpected error for user: [UID: {}]", logPrefix, currentUid);
+                this.userRegisterService.rollbackUserCreation(dto.getUsername(), currentUid);
             } else {
                 log.warn("{}No UID available for MariaDB rollback after unexpected error during user registration for user", logPrefix);
             }

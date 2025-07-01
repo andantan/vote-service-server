@@ -60,13 +60,20 @@ public class UserRegisterService {
     }
 
     @Transactional
-    public void rollbackUserCreation(Integer uid) {
+    public void rollbackUserCreation(String attemptedUsername, Integer uid) {
+        String logPrefix = String.format("[AttemptingRegisterUsername:%s] ", attemptedUsername);
+
         try {
+            log.warn("{}Attempting MariaDB rollback due to gRPC error for user: [UID: {}]", logPrefix, uid);
+
             if (userRepository.existsByUid(uid)) {
                 userRepository.deleteByUid(uid);
             }
+
+            log.warn("{}MariaDB rollback completed due to gRPC error for user: [UID: {}]", logPrefix, uid);
         } catch (Exception e) {
-            log.error("{}Failed to rollback MariaDB user entry for UID: {}. Error: {}", uid, e.getMessage(), e);
+            log.error("{}Failed to rollback MariaDB user entry for UID: {}. Error: {}",
+                    logPrefix, uid, e.getMessage(), e);
         }
     }
 

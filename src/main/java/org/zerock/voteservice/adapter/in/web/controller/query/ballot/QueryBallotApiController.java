@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.in.web.controller.query.mapper.QueryApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.controller.query.ballot.docs.QueryBallotApiDoc;
 import org.zerock.voteservice.adapter.in.web.controller.query.ballot.processor.BallotQueryProcessorResult;
@@ -20,6 +21,7 @@ import org.zerock.voteservice.adapter.in.web.controller.query.ballot.processor.B
 import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.ballot.QueryBallotRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
+import org.zerock.voteservice.adapter.out.grpc.stub.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 @RestController
@@ -41,11 +43,11 @@ public class QueryBallotApiController extends QueryApiEndpointMapper {
         UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
 
         Integer currentUid = userDetails.getUid();
-        String logPrefix = String.format("[UID:%d] ", currentUid);
-
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(java.util.stream.Collectors.joining(", "));
+
+        String logPrefix = String.format("[UID:%d] ", currentUid);
 
         log.debug("{}>>>>>> Initiating getUserVotes API call: [Path: /{}/votes, Method: GET]", logPrefix, userHash);
         log.debug("{}Authenticated User Info: [Username:{}, Role: {}]", logPrefix, userDetails.getUsername(), role);
@@ -77,20 +79,14 @@ public class QueryBallotApiController extends QueryApiEndpointMapper {
                     logPrefix, userHash, result.getStatus(), result.getBallotList() != null ? result.getBallotList().size() : 0);
 
             return this.ballotQueryProcessor.getSuccessResponse(dto, result);
-        } catch (StatusRuntimeException e) {
-            Status.Code statusCode = e.getStatus().getCode();
-            String statusDescription = e.getStatus().getDescription();
-
-            if (statusCode == Status.Code.UNAVAILABLE) {
-                log.error("{}gRPC Server is unavailable or unreachable for vote query. Check server status and network. Error: {}", logPrefix, statusDescription);
-            } else if (statusCode == Status.Code.DEADLINE_EXCEEDED) {
-                log.error("{}gRPC call timed out for vote query. Consider increasing timeout or checking server performance. Error: {}", logPrefix, statusDescription);
-            } else {
-                log.error("{}Unexpected gRPC error during vote query: Status={}, Description={}", logPrefix, statusCode, statusDescription, e);
-            }
-
+        } catch (GrpcServiceUnavailableException e) {
+            log.error("{}{}", logPrefix, e.getMessage());
             return this.ballotQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
 
+        } catch (io.grpc.StatusRuntimeException e) {
+            return GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
+                    currentUid, e, this.ballotQueryProcessor
+            );
         } catch (Exception e) {
             log.error("{}An unexpected error occurred during vote query for userHash: {}. Error: {}", logPrefix, userHash, e.getMessage(), e);
             return this.ballotQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");

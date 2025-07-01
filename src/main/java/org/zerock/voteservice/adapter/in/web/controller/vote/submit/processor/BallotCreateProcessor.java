@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import org.zerock.voteservice.adapter.common.ErrorResponseProcessor;
 import org.zerock.voteservice.adapter.in.web.dto.vote.submit.VoteSubmitBallotDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.vote.BallotCreateProxy;
 
@@ -19,7 +20,7 @@ import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 
 @Log4j2
 @Service
-public class BallotCreateProcessor {
+public class BallotCreateProcessor implements ErrorResponseProcessor {
     private final BallotCreateProxy ballotCreateProxy;
 
     public BallotCreateProcessor(BallotCreateProxy ballotCreateProxy) {
