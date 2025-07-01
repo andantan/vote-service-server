@@ -1,33 +1,25 @@
 package org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.voteData;
 
-import domain.event.proposal.query.protocol.*;
-import io.grpc.ManagedChannel;
-import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
+import io.grpc.StatusRuntimeException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.common.GrpcChannelHandler;
+import org.springframework.beans.factory.annotation.Value;
+
+import domain.event.proposal.query.protocol.*;
+import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 
 @Log4j2
 @Service
-public class ProposalQueryEventServiceGrpcStub {
-    private static final String SERVICE_NAME = ProposalQueryEventServiceGrpc.class.getSimpleName();
-    private static final String LAYER_NAME = "L3";
-
+public class ProposalQueryEventServiceGrpcStub extends AbstractGrpcClientStub {
     private final ProposalQueryEventServiceGrpc.ProposalQueryEventServiceBlockingStub stub;
-    private final String grpcHost;
-    private final int grpcPort;
 
     public ProposalQueryEventServiceGrpcStub(
             @Value("${grpc.server.event.proposal.query.host}") String host,
             @Value("${grpc.server.event.proposal.query.port}") int port
     ) {
-        this.grpcHost = host;
-        this.grpcPort = port;
-
-        ManagedChannel channel = GrpcChannelHandler.getPlainedManagedChannel(LAYER_NAME, SERVICE_NAME, host, port);
+        super("L3", ProposalQueryEventServiceGrpc.class.getSimpleName(), host, port);
 
         this.stub = ProposalQueryEventServiceGrpc.newBlockingStub(channel);
     }
@@ -43,7 +35,7 @@ public class ProposalQueryEventServiceGrpcStub {
             String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
 
             throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, LAYER_NAME, SERVICE_NAME, rpcName, grpcHost, grpcPort, request
+                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
             );
         }
     }
@@ -63,7 +55,7 @@ public class ProposalQueryEventServiceGrpcStub {
             String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
 
             throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, LAYER_NAME, SERVICE_NAME, rpcName, grpcHost, grpcPort, request
+                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
             );
         }
     }

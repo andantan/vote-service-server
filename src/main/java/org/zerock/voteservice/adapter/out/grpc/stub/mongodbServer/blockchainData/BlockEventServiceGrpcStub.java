@@ -3,32 +3,24 @@ package org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.blockchainDat
 import domain.event.block.protocol.BlockEventServiceGrpc;
 import domain.event.block.protocol.BlockCreatedEventRequest;
 import domain.event.block.protocol.BlockCreatedEventResponse;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.common.GrpcChannelHandler;
+import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
+
 
 @Log4j2
 @Service
-public class BlockEventServiceGrpcStub {
-    private static final String SERVICE_NAME = BlockEventServiceGrpc.class.getSimpleName();
-    private static final String LAYER_NAME = "L3";
-
+public class BlockEventServiceGrpcStub extends AbstractGrpcClientStub {
     private final BlockEventServiceGrpc.BlockEventServiceBlockingStub stub;
-    private final String grpcHost;
-    private final int grpcPort;
 
     public BlockEventServiceGrpcStub(
             @Value("${grpc.server.event.block.host}") String host,
-            @Value("${grpc.server.event.block.port}") int port) {
-        this.grpcHost = host;
-        this.grpcPort = port;
-
-        ManagedChannel channel = GrpcChannelHandler.getPlainedManagedChannel(LAYER_NAME, SERVICE_NAME, host, port);
+            @Value("${grpc.server.event.block.port}") int port
+    ) {
+        super("L3", BlockEventServiceGrpc.class.getSimpleName(), host, port);
 
         stub = BlockEventServiceGrpc.newBlockingStub(channel);
     }
@@ -48,7 +40,7 @@ public class BlockEventServiceGrpcStub {
             String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
 
             throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, LAYER_NAME, SERVICE_NAME, rpcName, grpcHost, grpcPort, request
+                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
             );
         }
     }

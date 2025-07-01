@@ -1,6 +1,5 @@
 package org.zerock.voteservice.adapter.out.grpc.stub.blockchainNode;
 
-import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 
@@ -9,29 +8,23 @@ import domain.vote.submit.protocol.SubmitBallotTransactionRequest;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.common.GrpcChannelHandler;
+import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
+
 
 @Log4j2
 @Service
-public class BallotTransactionServiceGrpcStub {
-    private static final String SERVICE_NAME = BlockchainVoteSubmitServiceGrpc.class.getSimpleName();
-    private static final String LAYER_NAME = "L4";
+public class BallotTransactionServiceGrpcStub extends AbstractGrpcClientStub {
 
     private final BlockchainVoteSubmitServiceGrpc.BlockchainVoteSubmitServiceBlockingStub stub;
-    private final String grpcHost;
-    private final int grpcPort;
 
     public BallotTransactionServiceGrpcStub(
             @Value("${grpc.server.vote.submit.host}") String host,
             @Value("${grpc.server.vote.submit.port}") int port
     ) {
-        this.grpcHost = host;
-        this.grpcPort = port;
+        super("L4", BlockchainVoteSubmitServiceGrpc.class.getSimpleName(), host, port);
 
-        ManagedChannel channel = GrpcChannelHandler.getPlainedManagedChannel(LAYER_NAME, SERVICE_NAME, host, port);
-
-        stub = BlockchainVoteSubmitServiceGrpc.newBlockingStub(channel);
+        this.stub = BlockchainVoteSubmitServiceGrpc.newBlockingStub(channel);
     }
 
     public SubmitBallotTransactionResponse submitBallotTransaction(
@@ -49,8 +42,10 @@ public class BallotTransactionServiceGrpcStub {
             String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
 
             throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, LAYER_NAME, SERVICE_NAME, rpcName, grpcHost, grpcPort, request
+                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
             );
         }
     }
+
+
 }

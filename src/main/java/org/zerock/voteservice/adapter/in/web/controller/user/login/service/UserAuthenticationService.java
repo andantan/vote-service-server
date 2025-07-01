@@ -24,7 +24,7 @@ public class UserAuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String logPrefix = String.format("[Username: %s] ", username);
+        String logPrefix = String.format("[Username:%s] ", username);
 
         log.debug("{}Attempting to load user details", logPrefix);
 

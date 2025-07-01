@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.common;
+package org.zerock.voteservice.adapter.out.grpc.stub.common;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
