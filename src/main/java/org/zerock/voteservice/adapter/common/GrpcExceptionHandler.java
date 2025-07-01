@@ -28,6 +28,11 @@ public class GrpcExceptionHandler {
                     logPrefix, layer, e.getStatus().getCode(), e.getStatus().getDescription());
 
             return new GrpcServiceUnavailableException(layer, serviceName, rpcName, grpcHost, grpcPort, errorMessage, e);
+        } else if (e.getStatus().getCode() == Status.Code.UNIMPLEMENTED) {
+            String errorMessage = String.format("%sgRPC call failed due to executing %s server unimplemented rpc: [Status: %s, Description: \"%s\"]",
+                    logPrefix, layer, e.getStatus().getCode(), e.getStatus().getDescription());
+
+            return new GrpcServiceUnavailableException(layer, serviceName, rpcName, grpcHost, grpcPort, errorMessage, e);
         } else {
             log.error("{}gRPC call failed with status: {} (Description: {}). Request: {}",
                     logPrefix, e.getStatus().getCode(), e.getStatus().getDescription(), requestMessage, e);
@@ -69,6 +74,11 @@ public class GrpcExceptionHandler {
             case INTERNAL -> {
                 log.error("{}gRPC server internal error occurred [Status: {}, Description: \"{}\"]",
                         logPrefix, statusCode, statusDescription, exception);
+                yield errorResponseProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
+            }
+            case UNIMPLEMENTED -> {
+                log.error("{}Unimplemented rpc executed [Status: {}, Description: \"{}\"]",
+                        logPrefix, statusCode, statusDescription);
                 yield errorResponseProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
             }
             default -> {
