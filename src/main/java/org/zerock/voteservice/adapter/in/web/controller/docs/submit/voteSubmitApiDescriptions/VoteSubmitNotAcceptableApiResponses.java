@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "투표가 마감되어 정산 중입니다.",
-                                          "status": "TIMEOUT_PROPOSAL",
+                                          "grpcServerStatus": "TIMEOUT_PROPOSAL",
                                           "http_status_code": 406
                                         }"""
                         )

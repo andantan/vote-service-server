@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
                                      {
                                        "success": false,
                                        "message": "알 수 없는 서버 오류가 발생했습니다.",
-                                       "status": "UNKNOWN_ERROR",
+                                       "grpcServerStatus": "UNKNOWN_ERROR",
                                        "http_status_code": 500
                                      }"""
                                 )

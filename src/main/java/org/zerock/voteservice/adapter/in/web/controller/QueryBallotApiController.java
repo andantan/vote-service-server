@@ -47,7 +47,7 @@ public class QueryBallotApiController extends QueryApiEndpointMapper {
         String logPrefix = String.format("[UID:%d] ", currentUid);
 
         log.debug("{}>>>>>> Initiating getUserVotes API call: [Path: /{}/votes, Method: GET]", logPrefix, userHash);
-        log.debug("{}Authenticated User Info: [Username:{}, Role: {}]", logPrefix, userDetails.getUsername(), role);
+        log.debug("{}Authenticated User Info: [Username: {}, Role: {}]", logPrefix, userDetails.getUsername(), role);
         log.debug("{}Received Path Variable: [Userhash: {}]", logPrefix, userHash);
 
         try {

@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "이미 참가한 투표입니다. (재투표 불가)",
-                                          "status": "DUPLICATE_VOTE_SUBMISSION",
+                                          "grpcServerStatus": "DUPLICATE_VOTE_SUBMISSION",
                                           "http_status_code": 409
                                         }"""
                         )

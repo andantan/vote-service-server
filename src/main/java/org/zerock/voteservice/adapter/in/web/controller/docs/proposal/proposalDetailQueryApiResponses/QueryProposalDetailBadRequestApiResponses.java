@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "유효하지 않은 투표 이름입니다.",
-                                          "status": "INVALID_PARAMETER",
+                                          "grpcServerStatus": "INVALID_PARAMETER",
                                           "http_status_code": 400
                                         }"""
                                 )

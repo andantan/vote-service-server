@@ -16,7 +16,6 @@ import org.zerock.voteservice.adapter.in.web.dto.QueryBallotRequestDto;
 import org.zerock.voteservice.adapter.in.web.dto.QueryBallotResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.error.QueryErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.dto.query.error.status.QueryBallotErrorStatus;
-
 import org.zerock.voteservice.tool.time.DateConverter;
 
 import java.time.LocalDateTime;

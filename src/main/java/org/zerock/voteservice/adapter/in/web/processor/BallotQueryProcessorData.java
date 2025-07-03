@@ -13,5 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class BallotQueryProcessorData implements ProcessorData {
+    private Boolean success;
+    private String status;
     private List<Ballot> ballotList;
 }

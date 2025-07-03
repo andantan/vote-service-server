@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "이미 진행되었던 투표입니다.",
-                                                  "status": "PROPOSAL_EXPIRED",
+                                                  "grpcServerStatus": "PROPOSAL_EXPIRED",
                                                   "http_status_code": 400
                                                 }"""
                                 )

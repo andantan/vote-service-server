@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "존재하는 로그인 아이디입니다.",
-                                                  "status": "EXIST_USERNAME",
+                                                  "grpcServerStatus": "EXIST_USERNAME",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "존재하는 회원 이메일입니다.",
-                                                  "status": "EXIST_EMAIL",
+                                                  "grpcServerStatus": "EXIST_EMAIL",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "존재하는 유저 해시값입니다.",
-                                                  "status": "EXIST_USERHASH",
+                                                  "grpcServerStatus": "EXIST_USERHASH",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -63,7 +63,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "존재하는 유저 UID입니다.",
-                                                  "status": "EXIST_UID",
+                                                  "grpcServerStatus": "EXIST_UID",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -74,7 +74,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "유효하지 않은 회원 정보가 존재합니다.",
-                                                  "status": "INVALID_PARAMETER",
+                                                  "grpcServerStatus": "INVALID_PARAMETER",
                                                   "http_status_code": 400
                                                 }"""
                                 )

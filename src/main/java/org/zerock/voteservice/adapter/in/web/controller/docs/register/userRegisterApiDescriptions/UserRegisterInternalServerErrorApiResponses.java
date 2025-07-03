@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "알 수 없는 오류가 발생했습니다.",
-                                                  "status": "UNKNOWN_ERROR",
+                                                  "grpcServerStatus": "UNKNOWN_ERROR",
                                                   "http_status_code": 500
                                                 }"""
                                 ),
@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "데이터베이스 서버에서 알 수 없는 오류가 발생했습니다.",
-                                                  "status": "DATABASE_ACCESS_ERROR",
+                                                  "grpcServerStatus": "DATABASE_ACCESS_ERROR",
                                                   "http_status_code": 500
                                                 }"""
                                 )

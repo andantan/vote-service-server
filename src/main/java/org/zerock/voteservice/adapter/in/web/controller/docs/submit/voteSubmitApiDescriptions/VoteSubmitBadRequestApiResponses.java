@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "이미 진행이 완료된 투표입니다.",
-                                                  "status": "PROPOSAL_EXPIRED",
+                                                  "grpcServerStatus": "PROPOSAL_EXPIRED",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "비정상적인 투표 선택 사항입니다.",
-                                                  "status": "INVALID_OPTION",
+                                                  "grpcServerStatus": "INVALID_OPTION",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "비정상적인 해시값입니다. (해시 길이 오류)",
-                                                  "status": "INVALID_HASH_LENGTH",
+                                                  "grpcServerStatus": "INVALID_HASH_LENGTH",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -63,7 +63,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "비정상적인 해시값입니다. (해시 해독 오류)",
-                                                  "status": "DECODE_ERROR",
+                                                  "grpcServerStatus": "DECODE_ERROR",
                                                   "http_status_code": 400
                                                 }"""
                                 )

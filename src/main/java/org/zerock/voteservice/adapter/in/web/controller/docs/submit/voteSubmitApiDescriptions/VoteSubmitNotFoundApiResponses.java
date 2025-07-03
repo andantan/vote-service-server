@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "현재 존재하지 않는 투표입니다.",
-                                          "status": "PROPOSAL_NOT_OPEN",
+                                          "grpcServerStatus": "PROPOSAL_NOT_OPEN",
                                           "http_status_code": 404
                                         }"""
                         )

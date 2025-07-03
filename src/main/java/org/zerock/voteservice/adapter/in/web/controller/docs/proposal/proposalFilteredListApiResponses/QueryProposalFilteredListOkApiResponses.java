@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": true,
                                                   "message": "조회가 완료되었습니다.",
-                                                  "status": "OK",
+                                                  "grpcServerStatus": "OK",
                                                   "http_status_code": 200,
                                                   "summarize": false,
                                                   "expired": true,
@@ -124,7 +124,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": true,
                                                   "message": "조회가 완료되었습니다.",
-                                                  "status": "OK",
+                                                  "grpcServerStatus": "OK",
                                                   "http_status_code": 200,
                                                   "summarize": true,
                                                   "expired": true,

@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": true,
                                           "message": "신규 회원 검증 및 등록에 성공했습니다.",
-                                          "status": "OK",
+                                          "grpcServerStatus": "OK",
                                           "http_status_code": 200,
                                           "uid": 156597113,
                                           "user_hash": "c947c3d95603d42a4c2c58f756c9d35dde729fcf85fa69ae0012dd59b06b6e83",

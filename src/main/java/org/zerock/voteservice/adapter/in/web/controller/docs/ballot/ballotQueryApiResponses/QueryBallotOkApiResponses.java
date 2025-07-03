@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
                                             {
                                               "success": true,
                                               "message": "조회가 완료되었습니다.",
-                                              "status": "OK",
+                                              "grpcServerStatus": "OK",
                                               "http_status_code": 200,
                                               "user_hash": "e78ee58ca6cd9b4e9d167332845fb458f444f62bc9ac35b0b3c3d6079dfbbed9",
                                               "ballot_list": [
@@ -202,7 +202,7 @@ import java.lang.annotation.Target;
                                             {
                                               "success": true,
                                               "message": "조회가 완료되었습니다.",
-                                              "status": "OK",
+                                              "grpcServerStatus": "OK",
                                               "http_status_code": 200,
                                               "user_hash": "e78ee58ca6cd9b4e9d167332845fb458f444f62bc9ac35b0b3c3d6079dfbbed9",
                                               "ballot_list": [],

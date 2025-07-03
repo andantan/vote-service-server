@@ -1,9 +1,9 @@
-package org.zerock.voteservice.adapter.in.common;
+package org.zerock.voteservice.adapter.in.common.extern;
 
 import lombok.Getter;
 
 @Getter
-public enum ServiceLayer {
+public enum Layer {
     WAS("L2", "Layer-2", "Web Application Server"),
 
     // Downstream servers
@@ -14,19 +14,9 @@ public enum ServiceLayer {
     private final String layerName;
     private final String fullName;
 
-    ServiceLayer(String layerCode, String LayerName, String fullName) {
+    Layer(String layerCode, String LayerName, String fullName) {
         this.layerCode = layerCode;
         this.layerName = LayerName;
         this.fullName = fullName;
-    }
-
-    public static ServiceLayer fromLayerCode(String code) {
-        for (ServiceLayer layer : values()) {
-            if (layer.layerCode.equalsIgnoreCase(code)) {
-                return layer;
-            }
-        }
-
-        throw new IllegalArgumentException("Unknown service layer code: " + code);
     }
 }

@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
                                                   "proposal": {
                                                     "success": true,
                                                     "message": "조회가 완료되었습니다.",
-                                                    "status": "OK",
+                                                    "grpcServerStatus": "OK",
                                                     "http_status_code": 200,
                                                     "topic": "원격 근무 활성화를 위한 제도 개선",
                                                     "duration": 10,
@@ -93,7 +93,7 @@ import java.lang.annotation.Target;
                                                   "proposal": {
                                                     "success": true,
                                                     "message": "조회가 완료되었습니다.",
-                                                    "status": "OK",
+                                                    "grpcServerStatus": "OK",
                                                     "http_status_code": 200,
                                                     "topic": "기후 동행 카드 사용처 확대 찬반 투표",
                                                     "duration": 1,

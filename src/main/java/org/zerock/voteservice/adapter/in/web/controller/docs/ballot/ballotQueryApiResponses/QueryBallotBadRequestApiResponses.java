@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "유효하지 않은 해시입니다.",
-                                          "status": "DECODE_ERROR",
+                                          "grpcServerStatus": "DECODE_ERROR",
                                           "http_status_code": 400
                                         }"""
                                 ),
@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "유효하지 않은 해시 길이입니다.",
-                                          "status": "INVALID_HASH_LENGTH",
+                                          "grpcServerStatus": "INVALID_HASH_LENGTH",
                                           "http_status_code": 400
                                         }"""
                                 )

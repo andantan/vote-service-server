@@ -1,10 +1,10 @@
-package org.zerock.voteservice.adapter.in.common;
+package org.zerock.voteservice.adapter.in.common.extern;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum DownStreamServiceStatus {
+public enum GrpcServerStatus {
     OK(
             "OK",
             "%s 서버와의 통신에 성공했습니다.",
@@ -30,31 +30,31 @@ public enum DownStreamServiceStatus {
     private final String messageTemplate;
     private final HttpStatus httpStatusCode;
 
-    DownStreamServiceStatus(String code, String messageTemplate, HttpStatus httpStatusCode) {
+    GrpcServerStatus(String code, String messageTemplate, HttpStatus httpStatusCode) {
         this.code = code;
         this.messageTemplate = messageTemplate;
         this.httpStatusCode = httpStatusCode;
     }
 
-    public static DownStreamServiceStatus fromCode(String code) {
-        for (DownStreamServiceStatus status : DownStreamServiceStatus.values()) {
-            if (status.code.equals(code)) {
-                return status;
+    public static GrpcServerStatus fromCode(String code) {
+        for (GrpcServerStatus grpcServerStatus : GrpcServerStatus.values()) {
+            if (grpcServerStatus.code.equals(code)) {
+                return grpcServerStatus;
             }
         }
 
         return BAD_GATEWAY;
     }
 
-    public String getFormattedMessageByLayerCode(ServiceLayer layer) {
+    public String getFormattedMessageByLayerCode(Layer layer) {
         return String.format(this.messageTemplate, layer.getLayerCode());
     }
 
-    public String getFormattedMessageByLayerName(ServiceLayer layer) {
+    public String getFormattedMessageByLayerName(Layer layer) {
         return String.format(this.messageTemplate, layer.getLayerName());
     }
 
-    public String getFormattedMessageByFullName(ServiceLayer layer) {
+    public String getFormattedMessageByFullName(Layer layer) {
         return String.format(this.messageTemplate, layer.getFullName());
     }
 }

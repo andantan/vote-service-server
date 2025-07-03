@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "해당 유권자를 찾을 수 없습니다.",
-                                          "status": "USER_NOT_FOUND",
+                                          "grpcServerStatus": "USER_NOT_FOUND",
                                           "http_status_code": 404
                                         }"""
                         )

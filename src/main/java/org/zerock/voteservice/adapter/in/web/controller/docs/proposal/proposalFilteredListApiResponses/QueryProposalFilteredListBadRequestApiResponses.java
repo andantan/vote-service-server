@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "요청된 Limit 값이 유효하지 않습니다. Limit은 0보다 커야 합니다.",
-                                                  "status": "LIMIT_ZERO_PARAM",
+                                                  "grpcServerStatus": "LIMIT_ZERO_PARAM",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -44,7 +44,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "요청된 Skip 값이 유효하지 않습니다. Skip은 0보다 커야 합니다.",
-                                                  "status": "SKIP_ZERO_PARAM",
+                                                  "grpcServerStatus": "SKIP_ZERO_PARAM",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -55,7 +55,7 @@ import java.lang.annotation.Target;
                                                 {
                                                   "success": false,
                                                   "message": "조회 가능한 페이지 범위를 벗어났습니다.",
-                                                  "status": "PAGING_OUT_OF_BOUNDS",
+                                                  "grpcServerStatus": "PAGING_OUT_OF_BOUNDS",
                                                   "http_status_code": 400
                                                 }"""
                                 ),
@@ -66,7 +66,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "sortOrder 값은 'asc' 또는 'desc'만 가능합니다.",
-                                          "status": "INVALID_SORT_ORDER_PARAM",
+                                          "grpcServerStatus": "INVALID_SORT_ORDER_PARAM",
                                           "http_status_code": 400
                                         }"""
                                 ),
@@ -77,7 +77,7 @@ import java.lang.annotation.Target;
                                         {
                                           "success": false,
                                           "message": "sortOrder와 sortBy 파라미터는 함께 사용하거나 모두 생략해야 합니다.",
-                                          "status": "INVALID_SORT_BY_PARAM",
+                                          "grpcServerStatus": "INVALID_SORT_BY_PARAM",
                                           "http_status_code": 400
                                         }"""
                                 )

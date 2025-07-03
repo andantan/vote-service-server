@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
                                           "success": true,
                                           "topic": "법률 개정안 찬반 투표",
                                           "message": "투표 참여가 완료되었습니다.",
-                                          "status": "OK",
+                                          "grpcServerStatus": "OK",
                                           "http_status_code": 200,
                                           "user_hash": "1303522e0b59179b948c1713105ac8f9d13c62080a743118617fecef799e92e5",
                                           "vote_option": "찬성",

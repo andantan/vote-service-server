@@ -2,11 +2,14 @@ package org.zerock.voteservice.adapter.out.grpc.stub.common;
 
 import io.grpc.ManagedChannel;
 import jakarta.annotation.PreDestroy;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
+@Getter
 public abstract class AbstractGrpcClientStub implements GrpcGracefullyShutDownHook {
 
     protected final ManagedChannel channel;
@@ -14,7 +17,7 @@ public abstract class AbstractGrpcClientStub implements GrpcGracefullyShutDownHo
     protected final String serviceName;
     protected final String grpcHost;
     protected final int grpcPort;
-    protected final String logPrefix;
+    @Setter protected String logPrefix;
 
     public AbstractGrpcClientStub(
             String layerName,

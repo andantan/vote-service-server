@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
                                           "topic": "법률 개정안 찬반 투표",
                                           "duration": 60,
                                           "message": "투표 등록이 완료되었습니다.",
-                                          "status": "OK",
+                                          "grpcServerStatus": "OK",
                                           "http_status_code": 200
                                         }"""
                         )
