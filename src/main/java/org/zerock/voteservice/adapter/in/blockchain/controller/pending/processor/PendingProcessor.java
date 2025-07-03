@@ -4,7 +4,7 @@ import domain.event.pending.protocol.PendingExpiredEventResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.blockchain.dto.pending.PendingExpiredEventDto;
-import org.zerock.voteservice.adapter.out.grpc.stub.mongodbServer.blockchainData.PendingEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.PendingEventServiceGrpcStub;
 
 import java.util.HashMap;
 import java.util.Map;

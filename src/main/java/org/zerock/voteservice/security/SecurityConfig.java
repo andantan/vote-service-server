@@ -19,7 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
-import org.zerock.voteservice.adapter.in.web.controller.user.login.service.UserAuthenticationService;
+import org.zerock.voteservice.security.user.UserAuthenticationService;
 import org.zerock.voteservice.security.filter.UserHashValidationFilter;
 import org.zerock.voteservice.security.handler.*;
 import org.zerock.voteservice.security.jwt.JwtUtil;

@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.zerock.voteservice.adapter.in.web.dto.user.register.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.web.dto.UserRegisterRequestDto;
 import org.zerock.voteservice.security.role.UserAuthorizationRole;
 
 @Entity

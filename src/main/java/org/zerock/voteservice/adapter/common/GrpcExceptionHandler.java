@@ -4,8 +4,9 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.zerock.voteservice.adapter.in.web.dto.ResponseDto;
-import org.zerock.voteservice.adapter.out.grpc.stub.exception.GrpcServiceUnavailableException;
+import org.zerock.voteservice.adapter.in.common.ErrorResponseProcessor;
+import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
+import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 public class GrpcExceptionHandler {
@@ -22,17 +23,18 @@ public class GrpcExceptionHandler {
             Req requestMessage
     ) {
         String logPrefix = String.format("[%s:%d] [gRPC-%s-%s::%s] ", grpcHost, grpcPort, layer, serviceName, rpcName);
+        Status.Code code = e.getStatus().getCode();
 
-        if (e.getStatus().getCode() == Status.Code.UNAVAILABLE) {
+        if (code == Status.Code.UNAVAILABLE) {
             String errorMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
                     logPrefix, layer, e.getStatus().getCode(), e.getStatus().getDescription());
 
-            return new GrpcServiceUnavailableException(layer, serviceName, rpcName, grpcHost, grpcPort, errorMessage, e);
-        } else if (e.getStatus().getCode() == Status.Code.UNIMPLEMENTED) {
+            return new GrpcServiceUnavailableException(layer, serviceName, rpcName, grpcHost, grpcPort, e.getStatus(), errorMessage, e);
+        } else if (code == Status.Code.UNIMPLEMENTED) {
             String errorMessage = String.format("%sgRPC call failed due to executing %s server unimplemented rpc: [Status: %s, Description: \"%s\"]",
                     logPrefix, layer, e.getStatus().getCode(), e.getStatus().getDescription());
 
-            return new GrpcServiceUnavailableException(layer, serviceName, rpcName, grpcHost, grpcPort, errorMessage, e);
+            return new GrpcServiceUnavailableException(layer, serviceName, rpcName, grpcHost, grpcPort, e.getStatus(), errorMessage, e);
         } else {
             log.error("{}gRPC call failed with status: {} (Description: {}). Request: {}",
                     logPrefix, e.getStatus().getCode(), e.getStatus().getDescription(), requestMessage, e);
