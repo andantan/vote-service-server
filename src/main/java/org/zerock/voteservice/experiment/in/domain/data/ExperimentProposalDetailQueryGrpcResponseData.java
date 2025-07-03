@@ -8,12 +8,12 @@ import domain.event.proposal.query.protocol.Proposal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExperimentProposalDetailQueryData implements ExperimentData {
+public class ExperimentProposalDetailQueryGrpcResponseData implements ExperimentGrpcResponseData {
     Boolean success;
     String status;
     Proposal proposal;
 
-    public ExperimentProposalDetailQueryData(GetProposalDetailResponse response) {
+    public ExperimentProposalDetailQueryGrpcResponseData(GetProposalDetailResponse response) {
         this.success = response.getQueried();
         this.status = response.getStatus();
         this.proposal = response.getProposal();

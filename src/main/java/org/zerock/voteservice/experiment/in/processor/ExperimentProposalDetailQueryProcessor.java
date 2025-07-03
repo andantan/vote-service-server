@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.web.dto.schema.BlockHeightSchema;
 import org.zerock.voteservice.adapter.in.web.dto.schema.ProposalDetailSchema;
 import org.zerock.voteservice.adapter.in.web.dto.schema.ResultSchema;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryData;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryResult;
+import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryGrpcResult;
 import org.zerock.voteservice.experiment.in.domain.dto.*;
 import org.zerock.voteservice.experiment.out.proxy.ExperimentProposalQueryProxy;
 import org.zerock.voteservice.tool.time.DateConverter;
@@ -23,7 +22,7 @@ import java.util.List;
 @Service
 public class ExperimentProposalDetailQueryProcessor implements ExperimentProcessor<
         ExperimentProposalDetailQueryRequestDto,
-        ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData>
+        ExperimentProposalDetailQueryGrpcResult
         > {
 
     private final ExperimentProposalQueryProxy experimentProxy;
@@ -32,7 +31,7 @@ public class ExperimentProposalDetailQueryProcessor implements ExperimentProcess
         this.experimentProxy = experimentProxy;
     }
 
-    public ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> getProposalDetail(
+    public ExperimentProposalDetailQueryGrpcResult getProposalDetail(
             ExperimentProposalDetailQueryRequestDto dto
     ) {
         return this.experimentProxy.getProposalDetail(dto);
@@ -41,9 +40,9 @@ public class ExperimentProposalDetailQueryProcessor implements ExperimentProcess
     @Override
     public ResponseEntity<? extends ExperimentResponseDto> getSuccessResponseEntity(
             ExperimentProposalDetailQueryRequestDto dto,
-            ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> result
+            ExperimentProposalDetailQueryGrpcResult result
     ) {
-        ProposalDetailSchema proposalDetailSchema = this.mappingProposalDetailSchema(result.getData().getProposal());
+        ProposalDetailSchema proposalDetailSchema = this.mappingProposalDetailSchema(result.getExperimentGrpcResponseData().getProposal());
 
         ExperimentProposalDetailQuerySuccessResponseDto successDto = ExperimentProposalDetailQuerySuccessResponseDto
                 .builder()
@@ -60,7 +59,7 @@ public class ExperimentProposalDetailQueryProcessor implements ExperimentProcess
 
     @Override
     public ResponseEntity<? extends ExperimentResponseDto> getfailureResponseEntity(
-            ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> result
+            ExperimentProposalDetailQueryGrpcResult result
     ) {
         ExperimentProposalDetailQueryFailureResponseDto errorDto = ExperimentProposalDetailQueryFailureResponseDto
                 .builder()

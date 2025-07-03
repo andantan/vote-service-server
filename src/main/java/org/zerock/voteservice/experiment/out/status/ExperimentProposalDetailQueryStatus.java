@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum ExperimentProposalDetailQueryStatus {
+public enum ExperimentProposalDetailQueryStatus implements ExperimentGrpcResponseStatus {
     OK(
             "OK",
             "요청 처리 성공",

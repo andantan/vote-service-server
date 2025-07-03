@@ -4,8 +4,8 @@ import domain.event.proposal.query.protocol.GetProposalDetailResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.zerock.voteservice.experiment.common.ExperimentGrpcExceptionHandler;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryData;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryResult;
+import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryGrpcResponseData;
+import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryGrpcResult;
 import org.zerock.voteservice.experiment.in.domain.dto.ExperimentProposalDetailQueryRequestDto;
 import org.zerock.voteservice.experiment.out.status.ExperimentExternalGrpcRuntimeStatus;
 import org.zerock.voteservice.experiment.out.status.ExperimentProposalDetailQueryStatus;
@@ -20,23 +20,23 @@ public class ExperimentProposalQueryProxy {
         this.stub = stub;
     }
 
-    public ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> getProposalDetail(
+    public ExperimentProposalDetailQueryGrpcResult getProposalDetail(
             ExperimentProposalDetailQueryRequestDto dto
     ) {
-        ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> result
-                = new ExperimentProposalDetailQueryResult<>();
+        ExperimentProposalDetailQueryGrpcResult result
+                = new ExperimentProposalDetailQueryGrpcResult();
 
         GetProposalDetailResponse response;
         ExperimentExternalGrpcRuntimeStatus serverStatus;
         ExperimentProposalDetailQueryStatus serviceStatus;
-        ExperimentProposalDetailQueryData data;
+        ExperimentProposalDetailQueryGrpcResponseData data;
 
         try {
             response = this.stub.getProposalDetail(dto.getTopic());
 
             serverStatus = ExperimentExternalGrpcRuntimeStatus.OK;
             serviceStatus = ExperimentProposalDetailQueryStatus.fromCode(response.getStatus());
-            data = new ExperimentProposalDetailQueryData(response);
+            data = new ExperimentProposalDetailQueryGrpcResponseData(response);
 
         } catch (io.grpc.StatusRuntimeException e) {
             serverStatus = ExperimentGrpcExceptionHandler.mapStatusRuntimeExceptionToExternalStatus(e);
@@ -56,7 +56,7 @@ public class ExperimentProposalQueryProxy {
 
         result.setExperimentGrpcServerStatus(serverStatus);
         result.setExperimentGrpcResponseStatus(serviceStatus);
-        result.setData(data);
+        result.setExperimentGrpcResponseData(data);
 
         return result;
     }

@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryData;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryResult;
+import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryGrpcResult;
 import org.zerock.voteservice.experiment.in.domain.dto.ExperimentProposalDetailQueryRequestDto;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,16 +23,19 @@ class ExperimentProposalQueryProxyTest extends BaseTestSettings {
 
         ExperimentProposalDetailQueryRequestDto dto = ExperimentProposalDetailQueryRequestDto.builder().topic(topic).build();
 
-        ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> result = proxy.getProposalDetail(dto);
+        ExperimentProposalDetailQueryGrpcResult result = proxy.getProposalDetail(dto);
 
         assertNotNull(result);
 
         if (result.getSuccess()) {
-            assertNotNull(result.getData());
+            assertNotNull(result.getExperimentGrpcResponseData());
         } else {
-            assertNull(result.getData());
+            assertNull(result.getExperimentGrpcResponseData());
         }
 
+        log.info(result.getSuccess());
+        log.info(result.getStatus());
         log.info(result.getMessage());
+        log.info(result.getHttpStatusCode());
     }
 }

@@ -2,7 +2,7 @@ package org.zerock.voteservice.experiment.in.domain.data;
 
 import org.springframework.http.HttpStatus;
 
-public interface ExperimentResult {
+public interface ExperimentGrpcResult {
     Boolean getSuccess();
     String getMessage();
     String getStatus();

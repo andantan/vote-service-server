@@ -1,21 +1,22 @@
 package org.zerock.voteservice.experiment.in.domain.data;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
-import org.zerock.voteservice.experiment.out.status.ExperimentProposalDetailQueryStatus;
+import org.zerock.voteservice.experiment.out.status.ExperimentGrpcResponseStatus;
 import org.zerock.voteservice.experiment.out.status.ExperimentExternalGrpcRuntimeStatus;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExperimentProposalDetailQueryResult<T extends ExperimentData>
-        implements ExperimentResult {
+public abstract class ExperimentAbstractGrpcResult<T extends ExperimentGrpcResponseStatus, S extends ExperimentGrpcResponseData>
+        implements ExperimentGrpcResult {
 
     private ExperimentExternalGrpcRuntimeStatus experimentGrpcServerStatus;
-    private ExperimentProposalDetailQueryStatus experimentGrpcResponseStatus;
-    private T data;
+    private T experimentGrpcResponseStatus;
+    private S experimentGrpcResponseData;
 
     @Override
     public Boolean getSuccess() {
@@ -23,7 +24,7 @@ public class ExperimentProposalDetailQueryResult<T extends ExperimentData>
                 && experimentGrpcServerStatus.isOk()
                 && experimentGrpcResponseStatus != null
                 && experimentGrpcResponseStatus.isOk()
-                && data != null;
+                && experimentGrpcResponseData != null;
     }
 
     @Override

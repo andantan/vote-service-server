@@ -7,8 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryData;
-import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryResult;
+import org.zerock.voteservice.experiment.in.domain.data.ExperimentProposalDetailQueryGrpcResult;
 import org.zerock.voteservice.experiment.in.domain.dto.ExperimentResponseDto;
 import org.zerock.voteservice.experiment.in.domain.dto.ExperimentProposalDetailQueryRequestDto;
 import org.zerock.voteservice.experiment.in.processor.ExperimentProposalDetailQueryProcessor;
@@ -46,7 +45,7 @@ public class ExperimentApiController extends ExperimentApiEndpointMapper {
 
         ExperimentProposalDetailQueryRequestDto dto = ExperimentProposalDetailQueryRequestDto.builder().topic(topic).build();
 
-        ExperimentProposalDetailQueryResult<ExperimentProposalDetailQueryData> result = this.processor.getProposalDetail(dto);
+        ExperimentProposalDetailQueryGrpcResult result = this.processor.getProposalDetail(dto);
 
         if (!result.getSuccess()) {
             return processor.getfailureResponseEntity(result);
