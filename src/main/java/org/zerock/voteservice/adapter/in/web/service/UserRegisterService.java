@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
-import org.zerock.voteservice.adapter.in.web.dto.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.status.UserRegisterErrorStatus;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
 

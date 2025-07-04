@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.UserErrorResponseDto;
 import org.zerock.voteservice.security.filter.UserAuthenticationFilter;
 
 import java.io.IOException;

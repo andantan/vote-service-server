@@ -5,13 +5,22 @@ import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.zerock.voteservice.adapter.in.common.ErrorResponseProcessor;
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;
 import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 public class GrpcExceptionHandler {
 
     private GrpcExceptionHandler() {}
+
+    public static GrpcRuntimeStatus mapToGrpcRuntimeStatus(StatusRuntimeException e) {
+        return switch (e.getStatus().getCode()) {
+            case UNAVAILABLE -> GrpcRuntimeStatus.SERVICE_UNAVAILABLE;
+            case DEADLINE_EXCEEDED -> GrpcRuntimeStatus.BAD_GATEWAY;
+            default -> GrpcRuntimeStatus.INTERNAL_SERVER_ERROR;
+        };
+    }
 
     public static <Req> RuntimeException mapStatusRuntimeException(
             StatusRuntimeException e,

@@ -14,10 +14,10 @@ import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.in.web.controller.docs.submit.VoteSubmitApiDoc;
 import org.zerock.voteservice.adapter.in.web.processor.BallotCreateProcessorResult;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.in.web.dto.VoteSubmitBallotDto;
-import org.zerock.voteservice.adapter.in.web.dto.VoteSubmitRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteSubmitBallotDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteSubmitRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.BallotCreateProcessor;
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 
 @Log4j2

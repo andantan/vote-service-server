@@ -7,7 +7,7 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
 
-import org.zerock.voteservice.adapter.in.web.dto.VoteProposalRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteProposalRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.ProposalPendingServiceGrpcStub;
 import org.zerock.voteservice.adapter.out.grpc.stub.ProposalCreateEventServiceGrpcStub;
 

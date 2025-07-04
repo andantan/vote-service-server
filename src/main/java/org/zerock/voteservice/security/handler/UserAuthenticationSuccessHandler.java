@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.in.web.dto.UserAuthenticationResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserAuthenticationResponseDto;
 import org.zerock.voteservice.security.jwt.JwtUtil;
 
 import java.io.IOException;

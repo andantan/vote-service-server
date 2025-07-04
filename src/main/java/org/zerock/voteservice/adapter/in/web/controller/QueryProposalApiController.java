@@ -1,46 +1,48 @@
 package org.zerock.voteservice.adapter.in.web.controller;
 
-
 import lombok.extern.log4j.Log4j2;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.controller.docs.proposal.QueryProposalDetailApiDoc;
-import org.zerock.voteservice.adapter.in.web.controller.docs.proposal.QueryProposalFilteredListApiDoc;
-
-import org.zerock.voteservice.adapter.in.web.processor.ProposalQueryProcessorResult;
-import org.zerock.voteservice.adapter.in.web.processor.ProposalQueryProcessor;
-
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.QueryProposalDetailRequestDto;
-import org.zerock.voteservice.adapter.in.web.dto.QueryProposalFilteredListRequestDto;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
+
+import org.zerock.voteservice.adapter.in.web.processor.impl.ProposalDetailQueryProcessor;
+import org.zerock.voteservice.adapter.in.web.processor.impl.ProposalFilteredListQueryProcessor;
+
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResult;
 
 @Log4j2
 @RestController
 public class QueryProposalApiController extends QueryApiEndpointMapper {
 
-    private final ProposalQueryProcessor proposalQueryProcessor;
+    private final ControllerHelper controllerHelper;
+    private final ProposalDetailQueryProcessor proposalDetailQueryProcessor;
+    private final ProposalFilteredListQueryProcessor proposalFilteredListQueryProcessor;
 
-    public QueryProposalApiController(ProposalQueryProcessor proposalQueryProcessor) {
-        this.proposalQueryProcessor = proposalQueryProcessor;
+    public QueryProposalApiController(
+            ControllerHelper controllerHelper,
+            ProposalDetailQueryProcessor proposalDetailQueryProcessor,
+            ProposalFilteredListQueryProcessor proposalFilteredListQueryProcessor
+    ) {
+        this.controllerHelper = controllerHelper;
+        this.proposalDetailQueryProcessor = proposalDetailQueryProcessor;
+        this.proposalFilteredListQueryProcessor = proposalFilteredListQueryProcessor;
     }
 
-    @QueryProposalDetailApiDoc
     @GetMapping("/proposal/{topic}/detail")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity<? extends ResponseDto> getProposalDetail(
             @PathVariable(value = "topic") final String topic
     ) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
+        UserAuthenticationDetails userDetails = this.controllerHelper.getUserDetails();
 
         Integer currentUid = userDetails.getUid();
         String role = userDetails.getAuthorities().stream()
@@ -53,49 +55,18 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
         log.debug("{}Authenticated User Info: [Username: {}, Role: {}]", logPrefix, userDetails.getUsername(), role);
         log.debug("{}Received Path Variable: [Topic: {}]", logPrefix, topic);
 
-        try {
-            ProposalQueryProcessorResult topicValidationResult = this.proposalQueryProcessor.validateTopic(topic);
+        ProposalDetailQueryRequestDto requestDto = ProposalDetailQueryRequestDto
+                .builder()
+                .topic(topic)
+                .build();
 
-            if (!topicValidationResult.getSuccess()) {
-                log.warn("{}Proposal topic validation failed: [Topic: {}, Status: {}, Message: {}]",
-                        logPrefix, topic, topicValidationResult.getStatus(), topicValidationResult.getMessage());
+        GrpcProposalDetailQueryResult result = this.proposalDetailQueryProcessor.process(requestDto);
 
-                return this.proposalQueryProcessor.getErrorResponse(topicValidationResult);
-            }
-
-            QueryProposalDetailRequestDto dto = QueryProposalDetailRequestDto.builder()
-                    .topic(topic)
-                    .build();
-
-            ProposalQueryProcessorResult result = this.proposalQueryProcessor.processProposalDetailQuery(dto);
-
-            if (!result.getSuccess()) {
-                log.warn("{}Proposal detail query processing failed: [Topic: {}, Status: {}, Message: {}]",
-                        logPrefix, topic, result.getStatus(), result.getMessage());
-
-                return this.proposalQueryProcessor.getErrorResponse(result);
-            }
-
-            log.info("{}Proposal detail query successful: [Topic: {}, Status: {}]",
-                    logPrefix, topic, result.getStatus());
-
-            return this.proposalQueryProcessor.getSuccessResponse(dto, result);
-
-        } catch (GrpcServiceUnavailableException e) {
-            log.error("{}{}", logPrefix, e.getMessage());
-            return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
-
-        } catch (io.grpc.StatusRuntimeException e) {
-            return GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
-                    currentUid, e, this.proposalQueryProcessor
-            );
-        } catch (Exception e) {
-            log.error("{}An unexpected error occurred during proposal detail query for topic: {}. Error: {}", logPrefix, topic, e.getMessage(), e);
-            return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
-        }
+        return result.getSuccess()
+                ? this.proposalDetailQueryProcessor.getSuccessResponseEntity(requestDto, result)
+                : this.proposalDetailQueryProcessor.getFailureResponseEntity(result);
     }
 
-    @QueryProposalFilteredListApiDoc
     @GetMapping("/proposal/list")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity<? extends ResponseDto> getFilteredProposals(
@@ -107,8 +78,7 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
             @RequestParam(name = "limit", defaultValue = "15") Integer limit
     ) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
+        UserAuthenticationDetails userDetails = this.controllerHelper.getUserDetails();
 
         Integer currentUid = userDetails.getUid();
         String role = userDetails.getAuthorities().stream()
@@ -124,7 +94,7 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
 
         Integer skip = (page - 1) * limit;
 
-        QueryProposalFilteredListRequestDto dto = QueryProposalFilteredListRequestDto.builder()
+        ProposalFilteredListQueryRequestDto requestDto = ProposalFilteredListQueryRequestDto.builder()
                 .summarize(summarize)
                 .expired(expired)
                 .sortOrder(sortOrder)
@@ -133,31 +103,10 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
                 .limit(limit)
                 .build();
 
-        try {
-            ProposalQueryProcessorResult result = this.proposalQueryProcessor.processFilteredProposalsQuery(dto);
+        GrpcProposalFilteredListQueryResult result = this.proposalFilteredListQueryProcessor.process(requestDto);
 
-            if (!result.getSuccess()) {
-                log.warn("{}Filtered proposals query processing failed: [Status: {}]",
-                        logPrefix, result.getStatus());
-
-                return this.proposalQueryProcessor.getErrorResponse(result);
-            }
-
-            log.info("{}Filtered proposals query successful: [Status: {}, Found {} proposals]",
-                    logPrefix, result.getStatus(), result.getProposalList() != null ? result.getProposalList().size() : 0);
-
-            return this.proposalQueryProcessor.getSuccessResponse(dto, result);
-        } catch (GrpcServiceUnavailableException e) {
-            log.error("{}{}", logPrefix, e.getMessage());
-            return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
-
-        } catch (io.grpc.StatusRuntimeException e) {
-            return GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
-                    currentUid, e, this.proposalQueryProcessor
-            );
-        } catch (Exception e) {
-            log.error("{}An unexpected error occurred during filtered proposals query. Error: {}", logPrefix, e.getMessage(), e);
-            return this.proposalQueryProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
-        }
+        return result.getSuccess()
+                ? this.proposalFilteredListQueryProcessor.getSuccessResponseEntity(requestDto, result)
+                : this.proposalFilteredListQueryProcessor.getFailureResponseEntity(result);
     }
 }

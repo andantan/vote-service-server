@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zerock.voteservice.adapter.in.web.dto.UserAuthenticationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserAuthenticationRequestDto;
 import java.io.IOException;
 
 @Log4j2

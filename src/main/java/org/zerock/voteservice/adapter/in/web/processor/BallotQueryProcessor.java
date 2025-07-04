@@ -11,11 +11,11 @@ import domain.event.ballot.query.protocol.GetUserBallotsResponse;
 import org.zerock.voteservice.adapter.in.common.*;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotQueryProxy;
 
-import org.zerock.voteservice.adapter.in.web.dto.schema.BallotSchema;
-import org.zerock.voteservice.adapter.in.web.dto.QueryBallotRequestDto;
-import org.zerock.voteservice.adapter.in.web.dto.QueryBallotResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.query.error.QueryErrorResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.query.error.status.QueryBallotErrorStatus;
+import org.zerock.voteservice.adapter.in.web.domain.dto.schema.BallotSchema;
+import org.zerock.voteservice.adapter.in.web.domain.dto.QueryBallotRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.QueryBallotResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.query.error.QueryErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.query.error.status.QueryBallotErrorStatus;
 import org.zerock.voteservice.tool.time.DateConverter;
 
 import java.time.LocalDateTime;

@@ -11,8 +11,8 @@ import org.zerock.voteservice.adapter.in.web.processor.UserRegisterProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.UserRegisterProcessorResult;
 import org.zerock.voteservice.adapter.in.web.service.UserRegisterService;
 import org.zerock.voteservice.adapter.in.web.service.UserRegisterServiceResult;
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 
 @Log4j2

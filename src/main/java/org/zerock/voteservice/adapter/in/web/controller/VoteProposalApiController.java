@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.VoteProposalRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteProposalRequestDto;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 import org.zerock.voteservice.adapter.in.web.controller.docs.proposal.VoteProposalApiDoc;
 import org.zerock.voteservice.adapter.in.web.processor.ProposalCreateProcessor;

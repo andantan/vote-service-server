@@ -1,17 +1,16 @@
 package org.zerock.voteservice.adapter.out.grpc.stub;
 
 import lombok.extern.log4j.Log4j2;
-import io.grpc.StatusRuntimeException;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import domain.event.proposal.query.protocol.*;
+
 import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 
 @Log4j2
-@Service
+@Component
 public class ProposalQueryEventServiceGrpcStub extends AbstractGrpcClientStub {
     private final ProposalQueryEventServiceGrpc.ProposalQueryEventServiceBlockingStub stub;
 
@@ -29,15 +28,7 @@ public class ProposalQueryEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setTopic(topic)
                 .build();
 
-        try {
-            return stub.getProposalDetail(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return this.stub.getProposalDetail(request);
     }
 
     public GetFilteredProposalListResponse getFilteredProposalList(
@@ -49,14 +40,6 @@ public class ProposalQueryEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setPaging(paging)
                 .build();
 
-        try {
-            return stub.getFilteredProposalList(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.getFilteredProposalList(request);
     }
 }

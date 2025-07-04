@@ -3,7 +3,7 @@ package org.zerock.voteservice.experiment.in.domain.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.zerock.voteservice.adapter.in.web.dto.schema.ProposalDetailSchema;
+import org.zerock.voteservice.adapter.in.web.domain.dto.schema.ProposalDetailSchema;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

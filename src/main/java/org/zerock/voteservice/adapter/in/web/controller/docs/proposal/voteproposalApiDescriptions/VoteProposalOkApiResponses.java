@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
-import org.zerock.voteservice.adapter.in.web.dto.VoteProposalResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteProposalResponseDto;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

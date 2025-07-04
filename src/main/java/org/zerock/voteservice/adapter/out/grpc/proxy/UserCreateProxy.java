@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
-import org.zerock.voteservice.adapter.in.web.dto.UserCacheRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserCacheRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.stub.UserCreateEventServiceGrpcStub;
 
 @Log4j2

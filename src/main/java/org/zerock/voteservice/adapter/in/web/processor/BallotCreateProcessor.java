@@ -6,12 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.zerock.voteservice.adapter.in.common.ErrorResponseProcessor;
-import org.zerock.voteservice.adapter.in.web.dto.VoteSubmitBallotDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteSubmitBallotDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotCreateProxy;
 
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.VoteErrorResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.VoteSubmitResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteBallotErrorStatus;
+import org.zerock.voteservice.adapter.in.web.domain.dto.vote.error.VoteErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteSubmitResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.vote.error.status.VoteBallotErrorStatus;
 
 import domain.event.ballot.create.protocol.BallotValidateEventResponse;
 import domain.event.ballot.create.protocol.BallotCacheEventResponse;

@@ -10,7 +10,7 @@ import org.zerock.voteservice.BaseTestSettings;
 import org.zerock.voteservice.adapter.in.common.ProcessorResult;
 import org.zerock.voteservice.adapter.in.common.extern.GrpcServerStatus;
 import org.zerock.voteservice.adapter.in.common.extern.GrpcStatus;
-import org.zerock.voteservice.adapter.in.web.dto.QueryBallotRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.QueryBallotRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotQueryProxy;
 import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 

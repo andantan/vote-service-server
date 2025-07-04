@@ -11,10 +11,10 @@ import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 
 import org.zerock.voteservice.adapter.in.common.ErrorResponseProcessor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalCreateProxy;
-import org.zerock.voteservice.adapter.in.web.dto.VoteProposalRequestDto;
-import org.zerock.voteservice.adapter.in.web.dto.VoteProposalResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.VoteErrorResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.vote.error.status.VoteProposalErrorStatus;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteProposalRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.VoteProposalResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.vote.error.VoteErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.vote.error.status.VoteProposalErrorStatus;
 
 
 @Log4j2

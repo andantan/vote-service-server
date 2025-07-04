@@ -15,8 +15,8 @@ import org.zerock.voteservice.adapter.in.web.controller.docs.ballot.QueryBallotA
 import org.zerock.voteservice.adapter.in.web.processor.BallotQueryProcessorResult;
 import org.zerock.voteservice.adapter.in.web.processor.BallotQueryProcessor;
 
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.QueryBallotRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.QueryBallotRequestDto;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 

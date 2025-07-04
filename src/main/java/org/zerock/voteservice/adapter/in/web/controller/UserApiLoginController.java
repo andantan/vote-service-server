@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.voteservice.adapter.in.web.dto.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.UserAuthenticationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserAuthenticationRequestDto;
 
 @Log4j2
 @RestController

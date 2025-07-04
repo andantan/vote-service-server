@@ -10,11 +10,11 @@ import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
 import org.zerock.voteservice.adapter.in.common.ErrorResponseProcessor;
-import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
-import org.zerock.voteservice.adapter.in.web.dto.user.error.status.UserRegisterErrorStatus;
-import org.zerock.voteservice.adapter.in.web.dto.UserCacheRequestDto;
-import org.zerock.voteservice.adapter.in.web.dto.UserRegisterRequestDto;
-import org.zerock.voteservice.adapter.in.web.dto.UserRegisterResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.status.UserRegisterErrorStatus;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserCacheRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterResponseDto;
 import org.zerock.voteservice.adapter.in.web.service.UserRegisterServiceResult;
 
 import org.zerock.voteservice.adapter.out.grpc.proxy.UserCreateProxy;

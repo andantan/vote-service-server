@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
-import org.zerock.voteservice.adapter.in.web.dto.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterRequestDto;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
