@@ -1,6 +1,5 @@
 package org.zerock.voteservice.adapter.out.grpc.stub;
 
-import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 
 import domain.vote.submit.protocol.BlockchainVoteSubmitServiceGrpc;
@@ -8,8 +7,7 @@ import domain.vote.submit.protocol.SubmitBallotTransactionRequest;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
+import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 
 @Log4j2
@@ -36,14 +34,6 @@ public class BallotTransactionServiceGrpcStub extends AbstractGrpcClientStub {
                 .setTopic(topic)
                 .build();
 
-        try {
-            return stub.submitBallotTransaction(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.submitBallotTransaction(request);
     }
 }

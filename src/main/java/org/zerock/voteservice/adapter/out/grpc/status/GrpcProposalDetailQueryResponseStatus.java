@@ -2,6 +2,7 @@ package org.zerock.voteservice.adapter.out.grpc.status;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.zerock.voteservice.adapter.out.grpc.common.GrpcResponseStatus;
 
 @Getter
 public enum GrpcProposalDetailQueryResponseStatus implements GrpcResponseStatus {

@@ -2,9 +2,10 @@ package org.zerock.voteservice.adapter.out.grpc.status;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.zerock.voteservice.adapter.out.grpc.common.GrpcResponseStatus;
 
 @Getter
-public enum GrpcProposalFilteredListQueryResponseStatus implements GrpcResponseStatus  {
+public enum GrpcProposalFilteredListQueryResponseStatus implements GrpcResponseStatus {
     OK(
             "OK",
             "요청 처리 성공",

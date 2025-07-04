@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.zerock.voteservice.adapter.in.web.domain.dto.RequestDto;
+import org.zerock.voteservice.adapter.in.common.RequestDto;
 
 import java.util.List;
 

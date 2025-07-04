@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
+import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 import java.util.List;
 

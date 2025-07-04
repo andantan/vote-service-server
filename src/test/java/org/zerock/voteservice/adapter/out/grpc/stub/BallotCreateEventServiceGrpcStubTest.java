@@ -7,9 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.parameters.P;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
+import org.zerock.voteservice.adapter.out.grpc.common.exception.GrpcServiceUnavailableException;
 import org.zerock.voteservice.tool.hash.Sha256;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +32,7 @@ class BallotCreateEventServiceGrpcStubTest extends BaseTestSettings {
             log.info(response);
 
             assertNotNull(response);
-        } catch (GrpcServiceUnavailableException e) {
+        } catch (io.grpc.StatusRuntimeException e) {
             log.error(e.getMessage());
 
             if (e.getStatus().getCode() != Status.Code.UNAVAILABLE) {

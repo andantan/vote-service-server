@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import org.zerock.voteservice.adapter.in.web.domain.dto.CommonResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.schema.ProposalResponseSchema;
+import org.zerock.voteservice.adapter.in.common.CommonResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.schema.ProposalResponseSchema;
 
 import java.util.List;
 

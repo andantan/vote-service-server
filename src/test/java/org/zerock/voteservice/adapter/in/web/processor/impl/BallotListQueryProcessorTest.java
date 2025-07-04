@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcBallotListQueryResponseResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotListQueryRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotQueryProxy;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Log4j2

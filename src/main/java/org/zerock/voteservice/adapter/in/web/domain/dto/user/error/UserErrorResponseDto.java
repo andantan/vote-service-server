@@ -3,7 +3,7 @@ package org.zerock.voteservice.adapter.in.web.domain.dto.user.error;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.status.UserRegisterErrorStatus;
 
 @Getter

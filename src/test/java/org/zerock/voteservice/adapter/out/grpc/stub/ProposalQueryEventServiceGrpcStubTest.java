@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +27,7 @@ class ProposalQueryEventServiceGrpcStubTest extends BaseTestSettings {
             log.info(response);
 
             assertNotNull(response);
-        }  catch (GrpcServiceUnavailableException e) {
+        }  catch (io.grpc.StatusRuntimeException e) {
             log.error(e.getMessage());
 
             if (e.getStatus().getCode() != Status.Code.UNAVAILABLE) {
@@ -51,7 +50,7 @@ class ProposalQueryEventServiceGrpcStubTest extends BaseTestSettings {
             log.info(response);
 
             assertNotNull(response);
-        } catch (GrpcServiceUnavailableException e) {
+        } catch (io.grpc.StatusRuntimeException e) {
             log.error(e.getMessage());
             if (e.getStatus().getCode() != Status.Code.UNAVAILABLE) {
                 fail("Unexpected exception occurred during test: " + e.getMessage());

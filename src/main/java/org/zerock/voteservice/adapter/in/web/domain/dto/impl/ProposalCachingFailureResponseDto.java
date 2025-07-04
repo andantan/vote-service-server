@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.zerock.voteservice.adapter.in.web.domain.dto.CommonResponseDto;
+import org.zerock.voteservice.adapter.in.common.CommonResponseDto;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ class ProposalCreateEventServiceGrpcStubTest extends BaseTestSettings {
                     topic, response.getValidation(), response.getStatus());
 
             assertNotNull(response);
-        } catch (GrpcServiceUnavailableException e) {
+        } catch (io.grpc.StatusRuntimeException e) {
             log.error(e.getMessage());
 
             if (e.getStatus().getCode() != Status.Code.UNAVAILABLE) {
@@ -56,7 +55,7 @@ class ProposalCreateEventServiceGrpcStubTest extends BaseTestSettings {
                     topic, response.getCached(), response.getStatus());
 
             assertNotNull(response);
-        } catch (GrpcServiceUnavailableException e) {
+        } catch (io.grpc.StatusRuntimeException e) {
             log.error(e.getMessage());
 
             if (e.getStatus().getCode() != Status.Code.UNAVAILABLE) {

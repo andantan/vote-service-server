@@ -1,0 +1,66 @@
+package org.zerock.voteservice.adapter.in.web.processor;
+
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotCachingResponseResult;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingFailureResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingSuccessResponseDto;
+import org.zerock.voteservice.adapter.in.common.Processor;
+import org.zerock.voteservice.adapter.out.grpc.proxy.BallotCreateProxy;
+
+@Log4j2
+@Service
+public class BallotCachingProcessor implements Processor<
+        BallotCachingRequestDto,
+        GrpcBallotCachingResponseResult
+        > {
+
+    private final BallotCreateProxy proxy;
+
+    public BallotCachingProcessor(BallotCreateProxy proxy) {
+        this.proxy = proxy;
+    }
+
+    @Override
+    public GrpcBallotCachingResponseResult execute(
+            BallotCachingRequestDto dto
+    ) {
+        return this.proxy.cacheBallot(dto);
+    }
+
+    @Override
+    public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
+            BallotCachingRequestDto dto,
+            GrpcBallotCachingResponseResult result
+    ) {
+        BallotCachingSuccessResponseDto successDto = BallotCachingSuccessResponseDto.builder()
+                .success(result.getSuccess())
+                .status(result.getStatus())
+                .message(result.getMessage())
+                .httpStatusCode(result.getHttpStatusCode())
+                .userHash(dto.getUserHash())
+                .voteHash(dto.getVoteHash())
+                .option(dto.getOption())
+                .build();
+
+        return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
+    }
+
+    @Override
+    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(
+            GrpcBallotCachingResponseResult result
+    ) {
+        BallotCachingFailureResponseDto failureDto = BallotCachingFailureResponseDto.builder()
+                .success(result.getSuccess())
+                .status(result.getStatus())
+                .message(result.getMessage())
+                .httpStatusCode(result.getHttpStatusCode())
+                .build();
+
+        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
+    }
+}

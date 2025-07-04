@@ -6,7 +6,7 @@ import domain.event.proposal.query.protocol.ProposalQueryEventServiceGrpc;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
+import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 @Log4j2
 @Component

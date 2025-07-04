@@ -1,6 +1,5 @@
 package org.zerock.voteservice.adapter.out.grpc.stub;
 
-import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 
 import domain.event.ballot.create.protocol.BallotCreateEventServiceGrpc;
@@ -11,8 +10,7 @@ import domain.event.ballot.create.protocol.BallotCacheEventResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
+import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 @Log4j2
 @Service
@@ -37,15 +35,7 @@ public class BallotCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setOption(option)
                 .build();
 
-        try {
-            return stub.validateBallotEvent(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.validateBallotEvent(request);
     }
 
     public BallotCacheEventResponse cacheBallot(
@@ -57,14 +47,6 @@ public class BallotCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setTopic(topic)
                 .build();
 
-        try {
-            return stub.cacheBallotEvent(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.cacheBallotEvent(request);
     }
 }

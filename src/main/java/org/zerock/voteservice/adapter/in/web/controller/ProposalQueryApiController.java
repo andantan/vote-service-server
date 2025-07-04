@@ -9,14 +9,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 
-import org.zerock.voteservice.adapter.in.web.processor.impl.ProposalDetailQueryProcessor;
-import org.zerock.voteservice.adapter.in.web.processor.impl.ProposalFilteredListQueryProcessor;
+import org.zerock.voteservice.adapter.in.web.processor.ProposalDetailQueryProcessor;
+import org.zerock.voteservice.adapter.in.web.processor.ProposalFilteredListQueryProcessor;
 
-import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResponseResult;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResponseResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
 
 @Log4j2
 @RestController

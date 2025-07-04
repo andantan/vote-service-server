@@ -3,40 +3,51 @@ package org.zerock.voteservice.adapter.in.web.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.controller.docs.submit.VoteSubmitApiDoc;
-import org.zerock.voteservice.adapter.in.web.processor.BallotCreateProcessorResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotCachingResponseResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotTransactionResponseResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotValidationResponseResult;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCreateRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotTransactionRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.processor.BallotCachingProcessor;
+import org.zerock.voteservice.adapter.in.web.processor.BallotTransactionProcessor;
+import org.zerock.voteservice.adapter.in.web.processor.BallotValidationProcessor;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.in.web.domain.dto.VoteSubmitBallotDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.VoteSubmitRequestDto;
-import org.zerock.voteservice.adapter.in.web.processor.BallotCreateProcessor;
-import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
 
 @Log4j2
 @RestController
 public class VoteSubmitApiController extends VoteApiEndpointMapper {
-    private final BallotCreateProcessor ballotCreateProcessor;
 
-    public VoteSubmitApiController(BallotCreateProcessor ballotCreateProcessor) {
-        this.ballotCreateProcessor = ballotCreateProcessor;
+    private final ControllerHelper controllerHelper;
+    private final BallotValidationProcessor ballotValidationProcessor;
+    private final BallotTransactionProcessor ballotTransactionProcessor;
+    private final BallotCachingProcessor ballotCachingProcessor;
+
+    public VoteSubmitApiController(
+            ControllerHelper controllerHelper,
+            BallotValidationProcessor ballotValidationProcessor,
+            BallotTransactionProcessor ballotTransactionProcessor,
+            BallotCachingProcessor ballotCachingProcessor
+    ) {
+        this.controllerHelper = controllerHelper;
+        this.ballotValidationProcessor = ballotValidationProcessor;
+        this.ballotTransactionProcessor = ballotTransactionProcessor;
+        this.ballotCachingProcessor = ballotCachingProcessor;
     }
 
-    @VoteSubmitApiDoc
     @PostMapping("/submit")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity<? extends ResponseDto> submitVote(
-            @RequestBody VoteSubmitRequestDto dto
+            @RequestBody BallotCreateRequestDto dto
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
+        UserAuthenticationDetails userDetails = this.controllerHelper.getUserDetails();
 
         Integer currentUid = userDetails.getUid();
         String roles = userDetails.getAuthorities().stream()
@@ -49,37 +60,61 @@ public class VoteSubmitApiController extends VoteApiEndpointMapper {
         log.debug("{}Authenticated User Info: [Username: {}, Roles: {}]", logPrefix, userDetails.getUsername(), roles);
         log.debug("{}Received Request DTO: [Topic: {}, Option: {}]", logPrefix, dto.getTopic(), dto.getOption());
 
-        VoteSubmitBallotDto voteSubmitBallotDto = VoteSubmitBallotDto.builder()
+        log.info("{}Attempting create ballot for topic: {}", logPrefix, dto.getTopic());
+
+        // Start ballot validation
+        log.debug("{}Starting Ballot Validation Process for topic: {}", logPrefix, dto.getTopic());
+
+        BallotValidationRequestDto validationRequestDto = BallotValidationRequestDto.builder()
                 .userHash(userDetails.getUserHash())
                 .topic(dto.getTopic())
                 .option(dto.getOption())
                 .build();
 
-        try {
-            BallotCreateProcessorResult result = this.ballotCreateProcessor.processBallotCreation(voteSubmitBallotDto);
+        GrpcBallotValidationResponseResult validationResult = this.ballotValidationProcessor.execute(validationRequestDto);
 
-            if (!result.getSuccess()) {
-                log.warn("{}Vote submission processing failed: [Topic: {}, Status: {}, Message: {}]",
-                        logPrefix, dto.getTopic(), result.getStatus(), result.getMessage());
-                return this.ballotCreateProcessor.getErrorResponse(result);
-            }
+        if (!validationResult.getSuccess()) {
+            log.warn("{}Ballot Validation FAILED for topic: {}. Reason: {}", logPrefix, dto.getTopic(), validationResult.getMessage());
 
-            log.info("{}Vote submission successful: [Topic: {}, Status: {}, Message: {}]",
-                    logPrefix, dto.getTopic(), result.getStatus(), result.getMessage());
-            return this.ballotCreateProcessor.getSuccessResponse(voteSubmitBallotDto, result);
+            return this.ballotValidationProcessor.getFailureResponseEntity(validationResult);
+        }
 
-        } catch (GrpcServiceUnavailableException e) {
-            log.error("{}{}", logPrefix, e.getMessage());
-            return this.ballotCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
+        // Start ballot transaction
+        log.debug("{}Starting Ballot Transaction Process to blockchain for topic: {}", logPrefix, dto.getTopic());
 
-        } catch (io.grpc.StatusRuntimeException e) {
-            return GrpcExceptionHandler.handleGrpcStatusRuntimeExceptionInController(
-                    currentUid, e, this.ballotCreateProcessor
-            );
-        } catch (Exception e) {
-            log.error("{}An unexpected error occurred during vote submission for topic: {}, option: {}. Error: {}", logPrefix, dto.getTopic(), dto.getOption(), e.getMessage(), e);
+        BallotTransactionRequestDto transactionRequestDto = BallotTransactionRequestDto.builder()
+                .userHash(userDetails.getUserHash())
+                .topic(dto.getTopic())
+                .option(dto.getOption())
+                .build();
 
-            return this.ballotCreateProcessor.getErrorResponse("INTERNAL_SERVER_ERROR");
+        GrpcBallotTransactionResponseResult transactionResult = this.ballotTransactionProcessor.execute(transactionRequestDto);
+
+        if (!transactionResult.getSuccess()) {
+            log.warn("{}Ballot Transaction FAILED for topic: {}", logPrefix, dto.getTopic());
+
+            return this.ballotTransactionProcessor.getFailureResponseEntity(transactionResult);
+        }
+
+        log.info("{}Ballot Transaction PASSED for topic: {}", logPrefix, dto.getTopic());
+
+        // Start ballot caching
+        log.debug("{}Starting Ballot Caching Process for userHash: {}", logPrefix, userDetails.getUserHash());
+
+        BallotCachingRequestDto cachingRequestDto = BallotCachingRequestDto.builder()
+                .userHash(userDetails.getUserHash())
+                .voteHash(transactionResult.getVoteHash())
+                .option(dto.getOption())
+                .build();
+
+        GrpcBallotCachingResponseResult cachingResult = this.ballotCachingProcessor.execute(cachingRequestDto);
+
+        if (cachingResult.getSuccess()) {
+            log.info("{}Ballot Creation SUCCESS for topic: {}", logPrefix, dto.getTopic());
+            return this.ballotCachingProcessor.getSuccessResponseEntity(cachingRequestDto, cachingResult);
+        } else {
+            log.warn("{}Ballot Caching FAILED for topic: {}. Reason: {}", logPrefix, dto.getTopic(), cachingResult.getMessage());
+            return this.ballotCachingProcessor.getFailureResponseEntity(cachingResult);
         }
     }
 }

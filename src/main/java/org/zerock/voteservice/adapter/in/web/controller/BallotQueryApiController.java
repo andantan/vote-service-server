@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcBallotListQueryResponseResult;
+import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotListQueryRequestDto;
 
-import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.processor.impl.BallotListQueryProcessor;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.processor.BallotListQueryProcessor;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 
 @Log4j2

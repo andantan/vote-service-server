@@ -5,9 +5,9 @@ import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.zerock.voteservice.adapter.in.common.ErrorResponseProcessor;
-import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;
-import org.zerock.voteservice.adapter.out.grpc.stub.common.exception.GrpcServiceUnavailableException;
+import org.zerock.voteservice.adapter.out.grpc.common.exception.GrpcServiceUnavailableException;
 
 @Log4j2
 public class GrpcExceptionHandler {
