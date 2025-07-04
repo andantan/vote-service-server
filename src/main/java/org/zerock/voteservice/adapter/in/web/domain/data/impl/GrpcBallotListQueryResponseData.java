@@ -1,7 +1,10 @@
 package org.zerock.voteservice.adapter.in.web.domain.data.impl;
 
 import domain.event.ballot.query.protocol.GetUserBallotsResponse;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.util.List;
 
 import domain.event.ballot.query.protocol.Ballot;

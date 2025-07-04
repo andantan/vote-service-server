@@ -10,13 +10,7 @@ import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 @Component
 public class ControllerHelper {
     public UserAuthenticationDetails getUserDetails() {
-        log.debug(">>>>> Attempting get UserAuthenticationDetails");
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAuthenticationDetails userDetails = (UserAuthenticationDetails) authentication.getPrincipal();
-
-        log.debug(">>>>> User Authentication Details: {}", userDetails.getUsername());
-
-        return userDetails;
+        return (UserAuthenticationDetails) authentication.getPrincipal();
     }
 }

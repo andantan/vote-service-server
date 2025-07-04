@@ -6,19 +6,16 @@ import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
 import domain.event.proposal.create.protocol.ProposalCacheEventRequest;
 import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 
-import io.grpc.StatusRuntimeException;
-
 import lombok.extern.log4j.Log4j2;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 import org.zerock.voteservice.adapter.out.grpc.stub.common.AbstractGrpcClientStub;
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 
 import java.util.List;
 
 @Log4j2
-@Service
+@Component
 public class ProposalCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
     private final ProposalCreateEventServiceGrpc.ProposalCreateEventServiceBlockingStub stub;
 
@@ -36,15 +33,7 @@ public class ProposalCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setTopic(topic)
                 .build();
 
-        try {
-            return stub.validateProposalEvent(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.validateProposalEvent(request);
     }
 
     public ProposalCacheEventResponse cacheProposal(
@@ -56,14 +45,6 @@ public class ProposalCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .addAllOptions(options)
                 .build();
 
-        try {
-            return stub.cacheProposalEvent(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.cacheProposalEvent(request);
     }
 }

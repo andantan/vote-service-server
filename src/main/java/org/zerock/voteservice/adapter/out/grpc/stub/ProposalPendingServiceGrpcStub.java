@@ -35,14 +35,6 @@ public class ProposalPendingServiceGrpcStub extends AbstractGrpcClientStub {
                 .setDuration(duration)
                 .build();
 
-        try {
-            return stub.openProposalPending(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.openProposalPending(request);
     }
 }
