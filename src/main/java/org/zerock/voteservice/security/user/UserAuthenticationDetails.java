@@ -3,7 +3,7 @@ package org.zerock.voteservice.security.user;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.tool.hash.Sha256;
 
 import java.util.ArrayList;

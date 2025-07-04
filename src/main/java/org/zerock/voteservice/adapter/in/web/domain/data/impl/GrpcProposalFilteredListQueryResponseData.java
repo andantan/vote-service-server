@@ -1,14 +1,13 @@
 package org.zerock.voteservice.adapter.in.web.domain.data.impl;
 
-import domain.event.proposal.query.protocol.GetFilteredProposalListResponse;
+import lombok.*;
+import java.util.List;
+
 import domain.event.proposal.query.protocol.Proposal;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import domain.event.proposal.query.protocol.GetFilteredProposalListResponse;
+
 import org.zerock.voteservice.adapter.in.web.domain.data.GrpcResponseData;
 
-import java.util.List;
 
 @Data
 @Builder

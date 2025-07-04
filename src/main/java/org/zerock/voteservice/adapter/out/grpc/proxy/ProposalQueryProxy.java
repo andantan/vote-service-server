@@ -2,20 +2,21 @@ package org.zerock.voteservice.adapter.out.grpc.proxy;
 
 import domain.event.proposal.query.protocol.*;
 import lombok.extern.log4j.Log4j2;
+
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResponseData;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResponseData;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryRequestDto;
-import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalFilteredListQueryResponseStatus;
+
+import org.zerock.voteservice.adapter.out.grpc.stub.ProposalQueryEventServiceGrpcStub;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalDetailQueryResponseStatus;
-import org.zerock.voteservice.adapter.out.grpc.stub.ProposalQueryEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalFilteredListQueryResponseStatus;
 
 @Log4j2
 @Component
@@ -29,8 +30,8 @@ public class ProposalQueryProxy {
         this.cahceServerStub = cacheServerStub;
     }
 
-    public GrpcProposalDetailQueryResult getProposalDetail(ProposalDetailQueryRequestDto dto) {
-        GrpcProposalDetailQueryResult result = new GrpcProposalDetailQueryResult();
+    public GrpcProposalDetailQueryResponseResult getProposalDetail(ProposalDetailQueryRequestDto dto) {
+        GrpcProposalDetailQueryResponseResult result = new GrpcProposalDetailQueryResponseResult();
 
         GrpcRuntimeStatus serverStatus;
         GrpcProposalDetailQueryResponseStatus serviceStatus;
@@ -66,8 +67,8 @@ public class ProposalQueryProxy {
         return result;
     }
 
-    public GrpcProposalFilteredListQueryResult getFilteredProposalList(ProposalFilteredListQueryRequestDto dto) {
-        GrpcProposalFilteredListQueryResult result = new GrpcProposalFilteredListQueryResult();
+    public GrpcProposalFilteredListQueryResponseResult getFilteredProposalList(ProposalFilteredListQueryRequestDto dto) {
+        GrpcProposalFilteredListQueryResponseResult result = new GrpcProposalFilteredListQueryResponseResult();
 
         GrpcRuntimeStatus serverStatus;
         GrpcProposalFilteredListQueryResponseStatus serviceStatus;

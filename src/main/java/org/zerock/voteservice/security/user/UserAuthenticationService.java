@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
-import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.repository.UserRepository;
 
 import java.util.Optional;
 

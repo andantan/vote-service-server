@@ -13,7 +13,7 @@ import org.zerock.voteservice.adapter.in.web.domain.dto.RequestDto;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProposalDetailQueryRequestDto implements RequestDto {
-    @JsonProperty("topic")
-    private String topic;
+public class BallotListQueryRequestDto implements RequestDto {
+    @JsonProperty("user_hash")
+    private String userHash;
 }

@@ -12,7 +12,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.zerock.voteservice.security.user.UserAuthenticationService;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.security.property.PublicEndpointsProperties;
 import org.zerock.voteservice.tool.hash.Sha256;
 

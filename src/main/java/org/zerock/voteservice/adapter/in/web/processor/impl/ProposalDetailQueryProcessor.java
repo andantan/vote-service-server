@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryFailureResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryRequestDto;
@@ -17,7 +17,7 @@ import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalQueryProxy;
 @Service
 public class ProposalDetailQueryProcessor implements Processor<
         ProposalDetailQueryRequestDto,
-        GrpcProposalDetailQueryResult
+        GrpcProposalDetailQueryResponseResult
         > {
 
     private final ProposalQueryProxy proxy;
@@ -31,7 +31,8 @@ public class ProposalDetailQueryProcessor implements Processor<
         this.processorHelper = processorHelper;
     }
 
-    public GrpcProposalDetailQueryResult process(
+    @Override
+    public GrpcProposalDetailQueryResponseResult execute(
             ProposalDetailQueryRequestDto dto
     ) {
         return this.proxy.getProposalDetail(dto);
@@ -40,9 +41,9 @@ public class ProposalDetailQueryProcessor implements Processor<
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
             ProposalDetailQueryRequestDto dto,
-            GrpcProposalDetailQueryResult result
+            GrpcProposalDetailQueryResponseResult result
     ) {
-        ProposalDetailSchema proposalDetailSchema = this.processorHelper.mappingProposalDetailSchema(
+        ProposalDetailSchema proposalDetailSchema = this.processorHelper.mapToProposalDetailSchema(
                 result.getGrpcResponseData().getProposal()
         );
 
@@ -61,7 +62,7 @@ public class ProposalDetailQueryProcessor implements Processor<
 
     @Override
     public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(
-            GrpcProposalDetailQueryResult result
+            GrpcProposalDetailQueryResponseResult result
     ) {
         ProposalDetailQueryFailureResponseDto failureDto = ProposalDetailQueryFailureResponseDto
                 .builder()

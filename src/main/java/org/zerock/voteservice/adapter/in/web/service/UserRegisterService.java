@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.UserErrorResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.status.UserRegisterErrorStatus;
 import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterRequestDto;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
-import org.zerock.voteservice.adapter.out.persistence.repository.UserRepository;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.repository.UserRepository;
 
 @Service
 @Log4j2

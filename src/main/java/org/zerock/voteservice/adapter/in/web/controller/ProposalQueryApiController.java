@@ -15,18 +15,18 @@ import org.zerock.voteservice.adapter.in.web.processor.impl.ProposalFilteredList
 import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResult;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalDetailQueryResponseResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResponseResult;
 
 @Log4j2
 @RestController
-public class QueryProposalApiController extends QueryApiEndpointMapper {
+public class ProposalQueryApiController extends QueryApiEndpointMapper {
 
     private final ControllerHelper controllerHelper;
     private final ProposalDetailQueryProcessor proposalDetailQueryProcessor;
     private final ProposalFilteredListQueryProcessor proposalFilteredListQueryProcessor;
 
-    public QueryProposalApiController(
+    public ProposalQueryApiController(
             ControllerHelper controllerHelper,
             ProposalDetailQueryProcessor proposalDetailQueryProcessor,
             ProposalFilteredListQueryProcessor proposalFilteredListQueryProcessor
@@ -55,12 +55,11 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
         log.debug("{}Authenticated User Info: [Username: {}, Role: {}]", logPrefix, userDetails.getUsername(), role);
         log.debug("{}Received Path Variable: [Topic: {}]", logPrefix, topic);
 
-        ProposalDetailQueryRequestDto requestDto = ProposalDetailQueryRequestDto
-                .builder()
+        ProposalDetailQueryRequestDto requestDto = ProposalDetailQueryRequestDto.builder()
                 .topic(topic)
                 .build();
 
-        GrpcProposalDetailQueryResult result = this.proposalDetailQueryProcessor.process(requestDto);
+        GrpcProposalDetailQueryResponseResult result = this.proposalDetailQueryProcessor.execute(requestDto);
 
         return result.getSuccess()
                 ? this.proposalDetailQueryProcessor.getSuccessResponseEntity(requestDto, result)
@@ -103,7 +102,7 @@ public class QueryProposalApiController extends QueryApiEndpointMapper {
                 .limit(limit)
                 .build();
 
-        GrpcProposalFilteredListQueryResult result = this.proposalFilteredListQueryProcessor.process(requestDto);
+        GrpcProposalFilteredListQueryResponseResult result = this.proposalFilteredListQueryProcessor.execute(requestDto);
 
         return result.getSuccess()
                 ? this.proposalFilteredListQueryProcessor.getSuccessResponseEntity(requestDto, result)

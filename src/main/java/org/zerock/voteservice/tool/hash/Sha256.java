@@ -1,7 +1,7 @@
 package org.zerock.voteservice.tool.hash;
 
 import lombok.extern.log4j.Log4j2;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

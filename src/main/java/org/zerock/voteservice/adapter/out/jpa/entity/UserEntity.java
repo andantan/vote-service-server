@@ -1,4 +1,4 @@
-package org.zerock.voteservice.adapter.out.persistence.entity;
+package org.zerock.voteservice.adapter.out.jpa.entity;
 
 import lombok.*;
 import jakarta.persistence.*;

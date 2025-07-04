@@ -57,7 +57,7 @@ public enum GrpcProposalFilteredListQueryResponseStatus implements GrpcResponseS
     }
 
     public static GrpcProposalFilteredListQueryResponseStatus fromCode(String code) {
-        for (GrpcProposalFilteredListQueryResponseStatus status : GrpcProposalFilteredListQueryResponseStatus.values()) {
+        for (GrpcProposalFilteredListQueryResponseStatus status : values()) {
             if (status.getCode().equals(code)) {
                 return status;
             }

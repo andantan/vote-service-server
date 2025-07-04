@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.tool.hash.Sha256;
 
 import java.time.LocalDate;

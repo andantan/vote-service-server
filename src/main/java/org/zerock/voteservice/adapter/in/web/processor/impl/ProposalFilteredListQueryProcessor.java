@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResult;
+import org.zerock.voteservice.adapter.in.web.domain.data.impl.GrpcProposalFilteredListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.web.domain.dto.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryFailureResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class ProposalFilteredListQueryProcessor implements Processor<
         ProposalFilteredListQueryRequestDto,
-        GrpcProposalFilteredListQueryResult
+        GrpcProposalFilteredListQueryResponseResult
         > {
 
     private final ProposalQueryProxy proxy;
@@ -34,7 +34,7 @@ public class ProposalFilteredListQueryProcessor implements Processor<
     }
 
     @Override
-    public GrpcProposalFilteredListQueryResult process(
+    public GrpcProposalFilteredListQueryResponseResult execute(
             ProposalFilteredListQueryRequestDto dto
     ) {
         return this.proxy.getFilteredProposalList(dto);
@@ -43,9 +43,9 @@ public class ProposalFilteredListQueryProcessor implements Processor<
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
             ProposalFilteredListQueryRequestDto dto,
-            GrpcProposalFilteredListQueryResult result
+            GrpcProposalFilteredListQueryResponseResult result
     ) {
-        List<? extends ProposalResponseSchema> filteredProposalList = this.processorHelper.mappingFilteredProposalList(
+        List<? extends ProposalResponseSchema> filteredProposalList = this.processorHelper.mapToFilteredProposalList(
                 dto.getSummarize(), result.getGrpcResponseData().getProposalList()
         );
 
@@ -70,10 +70,9 @@ public class ProposalFilteredListQueryProcessor implements Processor<
 
     @Override
     public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(
-            GrpcProposalFilteredListQueryResult result
+            GrpcProposalFilteredListQueryResponseResult result
     ) {
-        ProposalFilteredListQueryFailureResponseDto failureDto = ProposalFilteredListQueryFailureResponseDto
-                .builder()
+        ProposalFilteredListQueryFailureResponseDto failureDto = ProposalFilteredListQueryFailureResponseDto.builder()
                 .success(result.getSuccess())
                 .status(result.getStatus())
                 .message(result.getMessage())

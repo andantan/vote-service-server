@@ -10,7 +10,7 @@ public interface Processor<
         Out extends GrpcResponseResult
         > {
 
-    Out process(In dto);
+    Out execute(In dto);
 
     ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(In dto, Out result);
     ResponseEntity<? extends ResponseDto> getFailureResponseEntity(Out result);

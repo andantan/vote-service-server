@@ -1,7 +1,7 @@
-package org.zerock.voteservice.adapter.out.persistence.repository;
+package org.zerock.voteservice.adapter.out.jpa.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 
 import java.util.Optional;
 

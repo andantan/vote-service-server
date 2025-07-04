@@ -4,20 +4,15 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum GrpcProposalDetailQueryResponseStatus implements GrpcResponseStatus {
+public enum GrpcBallotListQueryResponseStatus implements GrpcResponseStatus {
     OK(
             "OK",
             "요청 처리 성공",
             HttpStatus.OK // 200
     ),
-    INVALID_PARAMETER(
-      "INVALID_PARAMETER",
-      "유효하지 않은 투표 제목입니다.",
-            HttpStatus.BAD_REQUEST // 400
-    ),
-    PROPOSAL_NOT_FOUND(
-            "PROPOSAL_NOT_FOUND",
-            "해당 투표를 찾을 수 없습니다.",
+    USER_NOT_FOUND(
+            "USER_NOT_FOUND",
+            "해당 유권자를 찾을 수 없습니다.",
             HttpStatus.BAD_REQUEST // 400
     ),
     BUSINESS_LOGIC_ERROR(
@@ -35,14 +30,14 @@ public enum GrpcProposalDetailQueryResponseStatus implements GrpcResponseStatus 
     private final String message;
     private final HttpStatus httpStatusCode;
 
-    GrpcProposalDetailQueryResponseStatus(String code, String message, HttpStatus httpStatus) {
+    GrpcBallotListQueryResponseStatus(String code, String message, HttpStatus httpStatus) {
         this.code = code;
         this.message = message;
         this.httpStatusCode = httpStatus;
     }
 
-    public static GrpcProposalDetailQueryResponseStatus fromCode(String code) {
-        for (GrpcProposalDetailQueryResponseStatus status : values()) {
+    public static GrpcBallotListQueryResponseStatus fromCode(String code) {
+        for (GrpcBallotListQueryResponseStatus status : values()) {
             if (status.getCode().equals(code)) {
                 return status;
             }
