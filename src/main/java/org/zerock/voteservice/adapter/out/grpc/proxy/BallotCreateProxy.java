@@ -6,9 +6,9 @@ import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotTransactionRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.BallotCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.BallotTransactionRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.BallotValidationRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotCachingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotTransactionResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotValidationResponseResult;
@@ -129,7 +129,7 @@ public class BallotCreateProxy {
 
         try {
             BallotCacheEventResponse response = this.cahceServerStub.cacheBallot(
-                    dto.getUserHash(), dto.getVoteHash(), dto.getOption()
+                    dto.getUserHash(), dto.getVoteHash(), dto.getTopic()
             );
 
             serverStatus = GrpcRuntimeStatus.OK;

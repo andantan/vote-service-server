@@ -7,14 +7,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
+import org.zerock.voteservice.adapter.in.web.controller.mapper.QueryApiEndpointMapper;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 
 import org.zerock.voteservice.adapter.in.web.processor.ProposalDetailQueryProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.ProposalFilteredListQueryProcessor;
 
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalDetailQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalFilteredListQueryRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
 

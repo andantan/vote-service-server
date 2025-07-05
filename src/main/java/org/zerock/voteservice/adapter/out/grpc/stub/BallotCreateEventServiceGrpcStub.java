@@ -9,11 +9,11 @@ import domain.event.ballot.create.protocol.BallotCacheEventRequest;
 import domain.event.ballot.create.protocol.BallotCacheEventResponse;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 @Log4j2
-@Service
+@Component
 public class BallotCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
     private final BallotCreateEventServiceGrpc.BallotCreateEventServiceBlockingStub stub;
 

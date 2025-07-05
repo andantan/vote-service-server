@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.response.CommonFailureResponseDto;
 
 import java.io.IOException;
 
@@ -35,14 +35,14 @@ public class UserAuthenticationErrorHandler {
         response.setStatus(httpStatusCode);
         response.setContentType("application/json;charset=UTF-8");
 
-        UserErrorResponseDto errorResponseDto = UserErrorResponseDto.builder()
+        CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
                 .success(false)
                 .message(message)
                 .status(status)
                 .httpStatusCode(httpStatusCode)
                 .build();
 
-        response.getWriter().write(objectMapper.writeValueAsString(errorResponseDto));
+        response.getWriter().write(objectMapper.writeValueAsString(failureDto));
         response.getWriter().flush();
     }
 }

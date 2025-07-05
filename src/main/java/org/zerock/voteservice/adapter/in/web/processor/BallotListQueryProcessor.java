@@ -7,9 +7,8 @@ import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.web.processor.helper.BallotQueryProcessorHelper;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotListQueryFailureResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotListQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotListQuerySuccessResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.BallotListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.response.BallotListQuerySuccessResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.schema.BallotSchema;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotQueryProxy;
@@ -61,19 +60,5 @@ public class BallotListQueryProcessor implements Processor<
                 .build();
 
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
-    }
-
-    @Override
-    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(
-            GrpcBallotListQueryResponseResult result
-    ) {
-        BallotListQueryFailureResponseDto failureDto = BallotListQueryFailureResponseDto.builder()
-                .success(result.getSuccess())
-                .status(result.getStatus())
-                .message(result.getMessage())
-                .httpStatusCode(result.getHttpStatusCode())
-                .build();
-
-        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
     }
 }

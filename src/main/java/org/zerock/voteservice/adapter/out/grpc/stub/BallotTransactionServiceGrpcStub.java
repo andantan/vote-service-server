@@ -6,12 +6,12 @@ import domain.vote.submit.protocol.BlockchainVoteSubmitServiceGrpc;
 import domain.vote.submit.protocol.SubmitBallotTransactionRequest;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 
 @Log4j2
-@Service
+@Component
 public class BallotTransactionServiceGrpcStub extends AbstractGrpcClientStub {
 
     private final BlockchainVoteSubmitServiceGrpc.BlockchainVoteSubmitServiceBlockingStub stub;

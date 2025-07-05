@@ -8,16 +8,14 @@ import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventRequest;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
-import io.grpc.StatusRuntimeException;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
-import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
 import org.zerock.voteservice.adapter.out.grpc.common.AbstractGrpcClientStub;
 
 
 @Log4j2
-@Service
+@Component
 public class UserCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
     private final UserCreateEventServiceGrpc.UserCreateEventServiceBlockingStub stub;
 
@@ -38,15 +36,7 @@ public class UserCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setUserHash(userHash)
                 .build();
 
-        try {
-            return stub.validateUserEvent(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.validateUserEvent(request);
     }
 
     public UserCacheEventResponse cacheUser(
@@ -59,14 +49,6 @@ public class UserCreateEventServiceGrpcStub extends AbstractGrpcClientStub {
                 .setBirthDate(birthDate)
                 .build();
 
-        try {
-            return stub.cacheUserEvent(request);
-        } catch (StatusRuntimeException e) {
-            String rpcName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-            throw GrpcExceptionHandler.mapStatusRuntimeException(
-                    e, layerName, serviceName, rpcName, grpcHost, grpcPort, request
-            );
-        }
+        return stub.cacheUserEvent(request);
     }
 }

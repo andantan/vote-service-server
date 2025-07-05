@@ -6,9 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotCachingResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingFailureResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.BallotCachingSuccessResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.BallotCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.response.BallotCachingSuccessResponseDto;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotCreateProxy;
 
@@ -44,23 +43,9 @@ public class BallotCachingProcessor implements Processor<
                 .httpStatusCode(result.getHttpStatusCode())
                 .userHash(dto.getUserHash())
                 .voteHash(dto.getVoteHash())
-                .option(dto.getOption())
+                .topic(dto.getTopic())
                 .build();
 
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
-    }
-
-    @Override
-    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(
-            GrpcBallotCachingResponseResult result
-    ) {
-        BallotCachingFailureResponseDto failureDto = BallotCachingFailureResponseDto.builder()
-                .success(result.getSuccess())
-                .status(result.getStatus())
-                .message(result.getMessage())
-                .httpStatusCode(result.getHttpStatusCode())
-                .build();
-
-        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
     }
 }

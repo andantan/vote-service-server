@@ -7,9 +7,8 @@ import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.web.processor.helper.ProposalQueryProcessHelper;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryFailureResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.impl.ProposalFilteredListQuerySuccessResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalFilteredListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.response.ProposalFilteredListQuerySuccessResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.schema.ProposalResponseSchema;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalQueryProxy;
@@ -67,19 +66,5 @@ public class ProposalFilteredListQueryProcessor implements Processor<
                 .build();
 
         return new ResponseEntity<>(successDto, HttpStatus.valueOf(successDto.getHttpStatusCode()));
-    }
-
-    @Override
-    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(
-            GrpcProposalFilteredListQueryResponseResult result
-    ) {
-        ProposalFilteredListQueryFailureResponseDto failureDto = ProposalFilteredListQueryFailureResponseDto.builder()
-                .success(result.getSuccess())
-                .status(result.getStatus())
-                .message(result.getMessage())
-                .httpStatusCode(result.getHttpStatusCode())
-                .build();
-
-        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
     }
 }

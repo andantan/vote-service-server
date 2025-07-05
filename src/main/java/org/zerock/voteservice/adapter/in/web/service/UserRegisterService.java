@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.UserErrorResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.user.error.status.UserRegisterErrorStatus;
-import org.zerock.voteservice.adapter.in.web.domain.dto.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.common.ResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.response.CommonFailureResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.jpa.repository.UserRepository;
 
@@ -27,13 +27,19 @@ public class UserRegisterService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserRegisterServiceResult validateUserExistence(String username, String email) {
+    public UserRegisterServiceResult validateUserExistence(
+            String username, String email, String phoneNumber
+    ) {
         if (userRepository.existsByUsername(username)) {
-            return UserRegisterServiceResult.failure("EXIST_USERNAME");
+            return UserRegisterServiceResult.failure(UserRegisterServiceStatus.EXIST_USERNAME);
         }
 
         if (userRepository.existsByEmail(email)) {
-            return UserRegisterServiceResult.failure("EXIST_EMAIL");
+            return UserRegisterServiceResult.failure(UserRegisterServiceStatus.EXIST_EMAIL);
+        }
+
+        if (userRepository.existsByPhoneNumber(phoneNumber)) {
+            return UserRegisterServiceResult.failure(UserRegisterServiceStatus.EXIST_PHONENUMBER);
         }
 
         return UserRegisterServiceResult.successWithoutData();
@@ -46,16 +52,16 @@ public class UserRegisterService {
         try {
             newUserEntity = UserEntity.newUserEntity(dto, passwordEncoder);
         } catch (IllegalArgumentException e) {
-            return UserRegisterServiceResult.failureWithMessage("INVALID_PARAMETER", e.getMessage());
+            return UserRegisterServiceResult.failure(UserRegisterServiceStatus.INVALID_PARAMETER);
         }
 
         try {
             UserEntity savedUserEntity = userRepository.save(newUserEntity);
 
-            return UserRegisterServiceResult.success("OK", savedUserEntity);
+            return UserRegisterServiceResult.success(savedUserEntity);
         } catch (Exception e) {
             log.error("Failed to save user to MariaDB: {}", dto.getUsername(), e);
-            return UserRegisterServiceResult.failureWithMessage("DATABASE_SAVE_ERROR", "Failed to save user in MariaDB: " + e.getMessage());
+            return UserRegisterServiceResult.failure(UserRegisterServiceStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -77,16 +83,16 @@ public class UserRegisterService {
         }
     }
 
-    public ResponseEntity<UserErrorResponseDto> getErrorResponse(UserRegisterServiceResult result) {
-        UserRegisterErrorStatus errorStatus = UserRegisterErrorStatus.fromCode(result.getStatus());
-        UserErrorResponseDto errorDto;
+    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(UserRegisterServiceResult result) {
+        UserRegisterServiceStatus failureStatus = result.getStatus();
 
-        if (!result.isExistMessage()) {
-            errorDto = UserErrorResponseDto.from(errorStatus);
-        } else {
-            errorDto = UserErrorResponseDto.fromWithCustomMessage(errorStatus, result.getMessage());
-        }
+        CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
+                .success(false)
+                .status(failureStatus.getCode())
+                .message(failureStatus.getMessage())
+                .httpStatusCode(failureStatus.getHttpStatusCode().value())
+                .build();
 
-        return new ResponseEntity<>(errorDto, HttpStatus.valueOf(errorDto.getHttpStatusCode()));
+        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
     }
 }
