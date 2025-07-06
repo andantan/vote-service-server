@@ -139,7 +139,6 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
 
         for (String pattern : excludedPaths) {
             if (pathMatcher.match(pattern, requestUri)) {
-                log.debug("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
                 return true;
             }
         }
