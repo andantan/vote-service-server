@@ -6,12 +6,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.data.GrpcProposalDetailQueryResponseData;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.data.GrpcProposalFilteredListQueryResponseData;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalFilteredListQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryRequestDto;
 
 import org.zerock.voteservice.adapter.out.grpc.stub.ProposalQueryEventServiceGrpcStub;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;

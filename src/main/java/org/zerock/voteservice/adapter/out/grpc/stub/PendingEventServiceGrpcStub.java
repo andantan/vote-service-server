@@ -19,7 +19,7 @@ public class PendingEventServiceGrpcStub extends AbstractGrpcClientStub {
            @Value("${grpc.server.event.pending.host}") String host,
            @Value("${grpc.server.event.pending.port}") int port
    ) {
-       super("L3", PendingEventServiceGrpc.class.getSimpleName(), host, port);
+       super("L4", PendingEventServiceGrpc.class.getSimpleName(), host, port);
 
        stub = PendingEventServiceGrpc.newBlockingStub(channel);
    }

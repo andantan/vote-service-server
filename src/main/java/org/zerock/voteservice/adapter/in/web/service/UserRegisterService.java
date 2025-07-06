@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.response.CommonFailureResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.UserRegisterRequestDto;
+import org.zerock.voteservice.adapter.in.common.extend.CommonFailureResponseDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.internal.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.adapter.out.jpa.repository.UserRepository;
 

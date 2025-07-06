@@ -4,38 +4,29 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
 import org.zerock.voteservice.adapter.in.web.controller.mapper.QueryApiEndpointMapper;
-import org.zerock.voteservice.security.user.UserAuthenticationDetails;
-
-import org.zerock.voteservice.adapter.in.web.processor.ProposalDetailQueryProcessor;
-import org.zerock.voteservice.adapter.in.web.processor.ProposalFilteredListQueryProcessor;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalDetailQueryWebClientRequestDto;
+import org.zerock.voteservice.adapter.in.web.orchestrator.ProposalDetailQueryOrchestrator;
+import org.zerock.voteservice.adapter.in.web.orchestrator.ProposalFilteredListQueryOrchestrator;
 
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalDetailQueryRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalFilteredListQueryRequestDto;
-import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
-import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalFilteredListQueryWebClientRequestDto;
 
 @Log4j2
 @RestController
 public class ProposalQueryApiController extends QueryApiEndpointMapper {
 
-    private final ControllerHelper controllerHelper;
-    private final ProposalDetailQueryProcessor proposalDetailQueryProcessor;
-    private final ProposalFilteredListQueryProcessor proposalFilteredListQueryProcessor;
+    private final ProposalDetailQueryOrchestrator proposalDetailQueryOrchestrator;
+    private final ProposalFilteredListQueryOrchestrator proposalFilteredListQueryOrchestrator;
 
     public ProposalQueryApiController(
-            ControllerHelper controllerHelper,
-            ProposalDetailQueryProcessor proposalDetailQueryProcessor,
-            ProposalFilteredListQueryProcessor proposalFilteredListQueryProcessor
+            ProposalDetailQueryOrchestrator proposalDetailQueryOrchestrator,
+            ProposalFilteredListQueryOrchestrator proposalFilteredListQueryOrchestrator
     ) {
-        this.controllerHelper = controllerHelper;
-        this.proposalDetailQueryProcessor = proposalDetailQueryProcessor;
-        this.proposalFilteredListQueryProcessor = proposalFilteredListQueryProcessor;
+        this.proposalDetailQueryOrchestrator = proposalDetailQueryOrchestrator;
+        this.proposalFilteredListQueryOrchestrator = proposalFilteredListQueryOrchestrator;
     }
 
     @GetMapping("/proposal/{topic}/detail")
@@ -43,29 +34,13 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getProposalDetail(
             @PathVariable(value = "topic") final String topic
     ) {
+        log.debug(">>>>>> Received /submit request. Delegating to ProposalDetailQueryOrchestrator.");
 
-        UserAuthenticationDetails userDetails = this.controllerHelper.getUserDetails();
-
-        Integer currentUid = userDetails.getUid();
-        String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(java.util.stream.Collectors.joining(", "));
-
-        String logPrefix = String.format("[UID:%d] ", currentUid);
-
-        log.debug("{}>>>>>> Initiating getProposalDetail API call: [Path: /proposal/{}/detail, Method: GET]", logPrefix, topic);
-        log.debug("{}Authenticated User Info: [Username: {}, Role: {}]", logPrefix, userDetails.getUsername(), role);
-        log.debug("{}Received Path Variable: [Topic: {}]", logPrefix, topic);
-
-        ProposalDetailQueryRequestDto requestDto = ProposalDetailQueryRequestDto.builder()
+        ProposalDetailQueryWebClientRequestDto requestDto = ProposalDetailQueryWebClientRequestDto.builder()
                 .topic(topic)
                 .build();
 
-        GrpcProposalDetailQueryResponseResult result = this.proposalDetailQueryProcessor.execute(requestDto);
-
-        return result.getSuccess()
-                ? this.proposalDetailQueryProcessor.getSuccessResponseEntity(requestDto, result)
-                : this.proposalDetailQueryProcessor.getFailureResponseEntity(result);
+        return proposalDetailQueryOrchestrator.orchestrate(requestDto);
     }
 
     @GetMapping("/proposal/list")
@@ -78,24 +53,11 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "15") Integer limit
     ) {
-
-        UserAuthenticationDetails userDetails = this.controllerHelper.getUserDetails();
-
-        Integer currentUid = userDetails.getUid();
-        String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(java.util.stream.Collectors.joining(", "));
-
-        String logPrefix = String.format("[UID:%d] ", currentUid);
-
-        log.debug("{}>>>>>> Initiating getFilteredProposals API call: [Path: /proposal/list, Method: GET]", logPrefix);
-        log.debug("{}Authenticated User Info: [UID: {}, Role: {}]", logPrefix, currentUid, role);
-        log.debug("{}Received Request Parameters: [Summarize: {}, Expired: {}, SortBy: {}, SortOrder: {}, Page: {}, Limit: {}]",
-                logPrefix, summarize, expired, sortBy, sortOrder, page, limit);
+        log.debug(">>>>>> Received /submit request. Delegating to ProposalFilteredListQueryOrchestrator.");
 
         Integer skip = (page - 1) * limit;
 
-        ProposalFilteredListQueryRequestDto requestDto = ProposalFilteredListQueryRequestDto.builder()
+        ProposalFilteredListQueryWebClientRequestDto requestDto = ProposalFilteredListQueryWebClientRequestDto.builder()
                 .summarize(summarize)
                 .expired(expired)
                 .sortOrder(sortOrder)
@@ -104,10 +66,6 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
                 .limit(limit)
                 .build();
 
-        GrpcProposalFilteredListQueryResponseResult result = this.proposalFilteredListQueryProcessor.execute(requestDto);
-
-        return result.getSuccess()
-                ? this.proposalFilteredListQueryProcessor.getSuccessResponseEntity(requestDto, result)
-                : this.proposalFilteredListQueryProcessor.getFailureResponseEntity(result);
+        return proposalFilteredListQueryOrchestrator.orchestrate(requestDto);
     }
 }

@@ -18,7 +18,7 @@ public class BlockEventServiceGrpcStub extends AbstractGrpcClientStub {
             @Value("${grpc.server.event.block.host}") String host,
             @Value("${grpc.server.event.block.port}") int port
     ) {
-        super("L3", BlockEventServiceGrpc.class.getSimpleName(), host, port);
+        super("L4", BlockEventServiceGrpc.class.getSimpleName(), host, port);
 
         stub = BlockEventServiceGrpc.newBlockingStub(channel);
     }

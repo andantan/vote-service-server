@@ -7,8 +7,8 @@ import domain.event.user.create.protocol.UserValidateEventResponse;
 import domain.event.user.create.protocol.UserCacheEventResponse;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.UserCachingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.UserValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.data.GrpcUserCachingResponseData;
 import org.zerock.voteservice.adapter.out.grpc.data.GrpcUserValidationResponseData;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserCachingResponseResult;

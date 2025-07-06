@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotValidationResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.BallotValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotValidationRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.BallotValidationSuccessResponseDto;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotCreateProxy;

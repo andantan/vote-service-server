@@ -2,11 +2,12 @@ package org.zerock.voteservice.adapter.in.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.zerock.voteservice.adapter.in.web.domain.dto.response.CommonFailureResponseDto;
+import org.zerock.voteservice.adapter.in.common.extend.CommonFailureResponseDto;
+import org.zerock.voteservice.adapter.in.common.extend.GrpcRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.common.GrpcResponseResult;
 
 public interface Processor<
-        In extends RequestDto,
+        In extends GrpcRequestDto,
         Out extends GrpcResponseResult
         > {
 

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.UserValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserValidationResponseResult;
 
 @SpringBootTest

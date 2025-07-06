@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.zerock.voteservice.adapter.in.web.domain.dto.response.CommonFailureResponseDto;
+import org.zerock.voteservice.adapter.in.common.extend.CommonFailureResponseDto;
 
 import java.io.IOException;
 

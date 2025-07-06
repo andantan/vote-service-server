@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.web.processor.helper.ProposalQueryProcessHelper;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.ProposalDetailQuerySuccessResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.schema.ProposalDetailSchema;
 import org.zerock.voteservice.adapter.in.common.Processor;

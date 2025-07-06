@@ -1,6 +1,7 @@
 package org.zerock.voteservice.adapter.out.grpc.proxy;
 
 import domain.event.proposal.create.protocol.ProposalValidateEventResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +9,9 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalCachingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalPendingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.ProposalValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalPendingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalCachingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalPendingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalValidationResponseResult;
@@ -26,17 +27,10 @@ import org.zerock.voteservice.adapter.out.grpc.stub.ProposalCreateEventServiceGr
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class ProposalCreateProxy {
     private final ProposalCreateEventServiceGrpcStub cahceServerStub;
     private final ProposalPendingServiceGrpcStub blockchainNodeStub;
-
-    public ProposalCreateProxy(
-            ProposalCreateEventServiceGrpcStub cahceServerStub,
-            ProposalPendingServiceGrpcStub blockchainNodeStub
-    ) {
-        this.cahceServerStub = cahceServerStub;
-        this.blockchainNodeStub = blockchainNodeStub;
-    }
 
     public GrpcProposalValidationResponseResult validateProposal(ProposalValidationRequestDto dto) {
         GrpcProposalValidationResponseResult result = new GrpcProposalValidationResponseResult();
