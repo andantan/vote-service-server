@@ -1,7 +1,7 @@
 package org.zerock.voteservice.tool.hash;
 
 import lombok.extern.log4j.Log4j2;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -14,23 +14,27 @@ public class Sha256 {
     }
 
     public static String sum(UserEntity userEntity) {
-        String userHash = "";
+        String digest = String.format("\"%d\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"",
+                userEntity.getUid(),
+                userEntity.getUsername(),
+                userEntity.getRealName(),
+                userEntity.getEmail(),
+                userEntity.getBirthDate().toString(),
+                userEntity.getGender(),
+                userEntity.getPhoneNumber()
+        );
 
+        return sum(digest);
+    }
+
+    public static String sum(String digest) {
         try {
-            MessageDigest digest = Sha256.getSha256MessageDigest();
-            String dataToHash = String.format("\"%d\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"|\"%s\"",
-                    userEntity.getUid(),
-                    userEntity.getUsername(),
-                    userEntity.getRealName(),
-                    userEntity.getEmail(),
-                    userEntity.getBirthDate().toString(),
-                    userEntity.getGender(),
-                    userEntity.getPhoneNumber()
-            );  // Example: "2719847284"|"user123"|"홍길동"|"userMail@mail.com"|"20001209"|"M"|"01012345678"
+            MessageDigest messageDigest = Sha256.getSha256MessageDigest();
 
-            byte[] hashBytes = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
+            byte[] hashBytes = messageDigest.digest(digest.getBytes(StandardCharsets.UTF_8));
 
             StringBuilder hexString = new StringBuilder();
+
             for (byte b : hashBytes) {
                 String hex = Integer.toHexString(0xff & b);
                 if (hex.length() == 1) {
@@ -38,12 +42,10 @@ public class Sha256 {
                 }
                 hexString.append(hex);
             }
-            userHash = hexString.toString();
+
+            return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.error(e);
+            throw new RuntimeException(e);
         }
-
-
-        return userHash;
     }
 }

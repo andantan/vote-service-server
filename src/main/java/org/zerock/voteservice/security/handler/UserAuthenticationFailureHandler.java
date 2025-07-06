@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.zerock.voteservice.adapter.in.web.dto.user.error.UserErrorResponseDto;
+import org.zerock.voteservice.adapter.in.common.extend.CommonFailureResponseDto;
 import org.zerock.voteservice.security.filter.UserAuthenticationFilter;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json; charset=utf-8");
 
-        UserErrorResponseDto failureDto = this.getErrorResponseDto(exception);
+        CommonFailureResponseDto failureDto = this.getErrorResponseDto(exception);
 
         response.getWriter().write(objectMapper.writeValueAsString(failureDto));
         response.getWriter().flush();
@@ -48,7 +48,7 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
                 logPrefix, failureDto.getHttpStatusCode(), failureDto.getMessage());
     }
 
-    private UserErrorResponseDto getErrorResponseDto(AuthenticationException exception) {
+    private CommonFailureResponseDto getErrorResponseDto(AuthenticationException exception) {
         String errorMessage;
         String errorStatus;
 
@@ -75,7 +75,7 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
             errorStatus = "UNKNOWN_ERROR";
         }
 
-        return UserErrorResponseDto.builder()
+        return CommonFailureResponseDto.builder()
                 .success(false)
                 .message(errorMessage)
                 .status(errorStatus)

@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationResponseDto;
+import org.zerock.voteservice.security.user.UserAuthenticationDetails;
+import org.zerock.voteservice.adapter.in.web.domain.dto.response.UserAuthenticationSuccessResponseDto;
 import org.zerock.voteservice.security.jwt.JwtUtil;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         response.setContentType("application/json; charset=utf-8");
 
         String token = this.getJwtAccessToken(userDetails, authentication);
-        UserAuthenticationResponseDto successDto = this.getSuccessResponseDto(userDetails);
+        UserAuthenticationSuccessResponseDto successDto = this.getSuccessResponseDto(userDetails);
 
         response.addHeader("Authorization", "Bearer " + token);
 
@@ -68,8 +68,8 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         return jwtUtil.createJwt(uid, userHash, username, role);
     }
 
-    private UserAuthenticationResponseDto getSuccessResponseDto(UserAuthenticationDetails userDetails) {
-        return UserAuthenticationResponseDto.builder()
+    private UserAuthenticationSuccessResponseDto getSuccessResponseDto(UserAuthenticationDetails userDetails) {
+        return UserAuthenticationSuccessResponseDto.builder()
                 .success(true)
                 .message("로그인에 성공하였습니다.")
                 .status("OK")

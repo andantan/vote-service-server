@@ -40,8 +40,10 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // lombok dependencies
-    annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     // JDBC dependencies
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -82,6 +84,8 @@ sourceSets {
 
 tasks.named('test') {
     useJUnitPlatform()
+    jvmArgs '-Xshare:off'
+    jvmArgs '-Dfile.encoding=UTF-8'
 }
 
 protobuf {

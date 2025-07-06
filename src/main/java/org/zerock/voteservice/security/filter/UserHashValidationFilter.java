@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.zerock.voteservice.adapter.in.web.controller.user.login.service.UserAuthenticationService;
-import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.security.user.UserAuthenticationService;
+import org.zerock.voteservice.security.user.UserAuthenticationDetails;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.security.property.PublicEndpointsProperties;
 import org.zerock.voteservice.tool.hash.Sha256;
 
@@ -139,7 +139,6 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
 
         for (String pattern : excludedPaths) {
             if (pathMatcher.match(pattern, requestUri)) {
-                log.debug("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
                 return true;
             }
         }

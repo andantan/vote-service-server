@@ -9,8 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserAuthenticationWebClientRequestDto;
 import java.io.IOException;
 
 @Log4j2
@@ -29,10 +28,10 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             HttpServletRequest request, HttpServletResponse response
     ) throws AuthenticationException {
         String logPrefix = "[Unauth] ";
-        UserAuthenticationRequestDto dto;
+        UserAuthenticationWebClientRequestDto dto;
 
         try {
-            dto = this.objectMapper.readValue(request.getInputStream(), UserAuthenticationRequestDto.class);
+            dto = this.objectMapper.readValue(request.getInputStream(), UserAuthenticationWebClientRequestDto.class);
 
             request.setAttribute(ATTEMPTED_USERNAME_ATTRIBUTE, dto.getUsername());
             logPrefix = String.format("[Username:%s] ", dto.getUsername());

@@ -11,8 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.zerock.voteservice.adapter.in.web.dto.user.authentication.UserAuthenticationDetails;
-import org.zerock.voteservice.adapter.out.persistence.entity.UserEntity;
+import org.zerock.voteservice.security.user.UserAuthenticationDetails;
+import org.zerock.voteservice.adapter.out.jpa.entity.UserEntity;
 import org.zerock.voteservice.security.jwt.JwtUtil;
 import org.zerock.voteservice.security.property.PublicEndpointsProperties;
 
@@ -150,7 +150,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         for (String pattern : excludedPaths) {
             if (pathMatcher.match(pattern, requestUri)) {
-                log.debug("Skipping JwtAuthenticationFilter for permitted path: {}", requestUri);
                 return true;
             }
         }
