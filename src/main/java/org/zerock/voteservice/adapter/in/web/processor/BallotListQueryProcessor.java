@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.web.processor.helper.BallotQueryProcessorHelper;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotListQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.BallotListQuerySuccessResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.schema.BallotSchema;
 import org.zerock.voteservice.adapter.in.common.Processor;
@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 @Service
 public class BallotListQueryProcessor implements Processor<
-        BallotListQueryRequestDto,
+        BallotListQueryGrpcRequestDto,
         GrpcBallotListQueryResponseResult
         > {
 
@@ -35,17 +35,17 @@ public class BallotListQueryProcessor implements Processor<
 
     @Override
     public GrpcBallotListQueryResponseResult execute(
-            BallotListQueryRequestDto dto
+            BallotListQueryGrpcRequestDto dto
     ) {
         return this.proxy.getBallotList(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            BallotListQueryRequestDto dto,
+            BallotListQueryGrpcRequestDto dto,
             GrpcBallotListQueryResponseResult result
     ) {
-        List<BallotSchema> ballotSchemas = result.getGrpcResponseData().getBallotList().stream()
+        List<BallotSchema> ballotSchemas = result.getData().getBallotList().stream()
                 .map(this.helper::mapToBallotSchema)
                 .toList();
 

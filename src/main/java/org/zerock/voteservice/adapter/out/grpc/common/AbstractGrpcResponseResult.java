@@ -57,6 +57,10 @@ public abstract class AbstractGrpcResponseResult<S extends GrpcResponseStatus, D
         return getGrpcResponsetatusMessage();
     }
 
+    public D getData() {
+        return this.GrpcResponseData;
+    }
+
     @Override
     public String getGrpcServerStatusCode() {
         return GrpcServerStatus.getCode();

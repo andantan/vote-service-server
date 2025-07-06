@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserCachingGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.internal.UserRegisterRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserRegisterWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.UserCachingProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.UserValidationProcessor;
@@ -82,7 +82,7 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
 
         log.debug("{}User successfully saved to DB: [UID: {}]", logPrefix, savedUserUid);
 
-        UserValidationRequestDto validationRequestDto = UserValidationRequestDto.builder()
+        UserValidationGrpcRequestDto validationRequestDto = UserValidationGrpcRequestDto.builder()
                 .uid(savedUserUid)
                 .userHash(userSavedServiceResult.getUserHash())
                 .build();
@@ -99,7 +99,7 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
             );
         }
 
-        UserCachingRequestDto cachingRequestDto = UserCachingRequestDto.builder()
+        UserCachingGrpcRequestDto cachingRequestDto = UserCachingGrpcRequestDto.builder()
                 .uid(savedUserUid)
                 .userHash(userSavedServiceResult.getUserHash())
                 .gender(userSavedServiceResult.getUserEntity().getGender())

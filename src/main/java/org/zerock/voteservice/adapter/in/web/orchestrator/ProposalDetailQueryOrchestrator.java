@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalDetailQueryWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.ProposalDetailQueryProcessor;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
@@ -44,7 +44,7 @@ public class ProposalDetailQueryOrchestrator extends AbstractOrchestrator<Propos
 
         log.debug("{}Attempting query ballot list for topic: {}", logPrefix, requestDto.getTopic());
 
-        ProposalDetailQueryRequestDto queryRequestDto = ProposalDetailQueryRequestDto.builder()
+        ProposalDetailQueryGrpcRequestDto queryRequestDto = ProposalDetailQueryGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
                 .build();
 

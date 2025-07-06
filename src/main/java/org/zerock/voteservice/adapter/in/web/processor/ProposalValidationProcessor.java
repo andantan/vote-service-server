@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalValidationResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.ProposalValidationSuccessResponseDto;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalCreateProxy;
@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalCreateProxy;
 @Log4j2
 @Service
 public class ProposalValidationProcessor implements Processor<
-        ProposalValidationRequestDto,
+        ProposalValidationGrpcRequestDto,
         GrpcProposalValidationResponseResult
         > {
 
@@ -25,13 +25,13 @@ public class ProposalValidationProcessor implements Processor<
     }
 
     @Override
-    public GrpcProposalValidationResponseResult execute(ProposalValidationRequestDto dto) {
+    public GrpcProposalValidationResponseResult execute(ProposalValidationGrpcRequestDto dto) {
         return this.proxy.validateProposal(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            ProposalValidationRequestDto dto,
+            ProposalValidationGrpcRequestDto dto,
             GrpcProposalValidationResponseResult result
     ) {
         ProposalValidationSuccessResponseDto successDto = ProposalValidationSuccessResponseDto.builder()

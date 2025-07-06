@@ -32,7 +32,7 @@ public class BallotQueryApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getUserVotes(
             @PathVariable(value = "userHash") final String userHash
     ) {
-        log.debug(">>>>>> Received /submit request. Delegating to BallotListQueryOrchestrator.");
+        log.debug(">>>>>> Received /{}/votes request. Delegating to BallotListQueryOrchestrator.", userHash);
 
         BallotListQueryWebClientRequestDto requestDto = BallotListQueryWebClientRequestDto.builder().userHash(userHash).build();
 

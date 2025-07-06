@@ -28,7 +28,7 @@ public class UserRegisterApiController extends UserApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> register(
             @RequestBody UserRegisterWebClientRequestDto dto
     ) {
-        log.debug(">>>>>> Received /submit request. Delegating to UserCreateOrchestrator.");
+        log.debug(">>>>>> Received /register request. Delegating to UserCreateOrchestrator.");
 
         return userCreateOrchestrator.orchestrate(dto);
     }

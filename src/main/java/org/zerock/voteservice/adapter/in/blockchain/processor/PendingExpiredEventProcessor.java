@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.zerock.voteservice.adapter.in.blockchain.domain.dto.requests.grpc.PendingExpiredEventRequestDto;
+import org.zerock.voteservice.adapter.in.blockchain.domain.dto.requests.grpc.PendingExpiredEventGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.blockchain.domain.dto.response.PendingExpiredEventSuccessResponseDto;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
@@ -16,7 +16,7 @@ import org.zerock.voteservice.adapter.out.grpc.result.GrpcPendingExpiredEventRes
 @Component
 @RequiredArgsConstructor
 public class PendingExpiredEventProcessor implements Processor<
-        PendingExpiredEventRequestDto,
+        PendingExpiredEventGrpcRequestDto,
         GrpcPendingExpiredEventResponseResult
         > {
 
@@ -24,14 +24,14 @@ public class PendingExpiredEventProcessor implements Processor<
 
     @Override
     public GrpcPendingExpiredEventResponseResult execute(
-            PendingExpiredEventRequestDto dto
+            PendingExpiredEventGrpcRequestDto dto
     ) {
         return proxy.reportPendingExpiredEvent(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            PendingExpiredEventRequestDto dto,
+            PendingExpiredEventGrpcRequestDto dto,
             GrpcPendingExpiredEventResponseResult result
     ) {
         PendingExpiredEventSuccessResponseDto successDto = PendingExpiredEventSuccessResponseDto.builder()

@@ -37,6 +37,9 @@ public abstract class AbstractOrchestrator<In extends RestApiRequestDto, Out ext
             if (requestDto instanceof UnauthenticatedRequestDto unauthenticatedDto) {
                 logPrefix = String.format("[%s] ", unauthenticatedDto.identifier());
 
+            } else if (requestDto instanceof AdminRequestDto adminRequestDto) {
+                logPrefix = String.format("[AdminCommands:%s] ", adminRequestDto.command());
+
             } else {
                 // DTO class name
                 log.warn("Failed to get user details or specific identifier for log prefix.", e);

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalCachingResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.ProposalCachingSuccessResponseDto;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalCreateProxy;
@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalCreateProxy;
 @Log4j2
 @Service
 public class ProposalCachingProcessor implements Processor<
-        ProposalCachingRequestDto,
+        ProposalCachingGrpcRequestDto,
         GrpcProposalCachingResponseResult
         > {
 
@@ -26,14 +26,14 @@ public class ProposalCachingProcessor implements Processor<
 
     @Override
     public GrpcProposalCachingResponseResult execute(
-            ProposalCachingRequestDto dto
+            ProposalCachingGrpcRequestDto dto
     ) {
         return this.proxy.cachingProposal(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            ProposalCachingRequestDto dto,
+            ProposalCachingGrpcRequestDto dto,
             GrpcProposalCachingResponseResult result
     ) {
         ProposalCachingSuccessResponseDto successDto = ProposalCachingSuccessResponseDto.builder()

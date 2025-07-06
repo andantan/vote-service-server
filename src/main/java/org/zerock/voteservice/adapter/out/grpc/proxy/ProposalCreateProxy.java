@@ -9,9 +9,9 @@ import domain.vote.proposal.protocol.OpenProposalPendingResponse;
 import domain.event.proposal.create.protocol.ProposalCacheEventResponse;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalPendingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingGrpcRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalPendingGrpcRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalCachingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalPendingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalValidationResponseResult;
@@ -22,17 +22,17 @@ import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalCachingRespons
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalPendingResponseStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalValidationResponseStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;
-import org.zerock.voteservice.adapter.out.grpc.stub.ProposalPendingServiceGrpcStub;
-import org.zerock.voteservice.adapter.out.grpc.stub.ProposalCreateEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.GrpcProposalPendingServiceStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.GrpcProposalCreateEventServiceStub;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
 public class ProposalCreateProxy {
-    private final ProposalCreateEventServiceGrpcStub cahceServerStub;
-    private final ProposalPendingServiceGrpcStub blockchainNodeStub;
+    private final GrpcProposalCreateEventServiceStub cacheServerStub;
+    private final GrpcProposalPendingServiceStub blockchainNodeStub;
 
-    public GrpcProposalValidationResponseResult validateProposal(ProposalValidationRequestDto dto) {
+    public GrpcProposalValidationResponseResult validateProposal(ProposalValidationGrpcRequestDto dto) {
         GrpcProposalValidationResponseResult result = new GrpcProposalValidationResponseResult();
 
         GrpcRuntimeStatus serverStatus;
@@ -40,7 +40,7 @@ public class ProposalCreateProxy {
         GrpcProposalValidationResponseData data;
 
         try {
-            ProposalValidateEventResponse response = this.cahceServerStub.validateProposal(dto.getTopic());
+            ProposalValidateEventResponse response = this.cacheServerStub.validateProposal(dto.getTopic());
 
             serverStatus = GrpcRuntimeStatus.OK;
             serviceStatus = GrpcProposalValidationResponseStatus.fromCode(response.getStatus());
@@ -52,7 +52,7 @@ public class ProposalCreateProxy {
             data = null;
 
             String errorLogMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
-                    cahceServerStub.getLogPrefix(), cahceServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
+                    cacheServerStub.getLogPrefix(), cacheServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
 
             log.error(errorLogMessage);
 
@@ -69,7 +69,7 @@ public class ProposalCreateProxy {
         return result;
     }
 
-    public GrpcProposalPendingResponseResult pendingProposal(ProposalPendingRequestDto dto) {
+    public GrpcProposalPendingResponseResult pendingProposal(ProposalPendingGrpcRequestDto dto) {
         GrpcProposalPendingResponseResult result =  new GrpcProposalPendingResponseResult();
 
         GrpcRuntimeStatus serverStatus;
@@ -108,7 +108,7 @@ public class ProposalCreateProxy {
         return result;
     }
 
-    public GrpcProposalCachingResponseResult cachingProposal(ProposalCachingRequestDto dto) {
+    public GrpcProposalCachingResponseResult cachingProposal(ProposalCachingGrpcRequestDto dto) {
         GrpcProposalCachingResponseResult result = new GrpcProposalCachingResponseResult();
 
         GrpcRuntimeStatus serverStatus;
@@ -116,7 +116,7 @@ public class ProposalCreateProxy {
         GrpcProposalCachingResponseData data;
 
         try {
-            ProposalCacheEventResponse response = this.cahceServerStub.cacheProposal(
+            ProposalCacheEventResponse response = this.cacheServerStub.cacheProposal(
                     dto.getTopic(), dto.getDuration(), dto.getOptions()
             );
 
@@ -130,7 +130,7 @@ public class ProposalCreateProxy {
             data = null;
 
             String errorLogMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
-                    cahceServerStub.getLogPrefix(), cahceServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
+                    cacheServerStub.getLogPrefix(), cacheServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
 
             log.error(errorLogMessage);
 

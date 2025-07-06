@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.web.processor.helper.ProposalQueryProcessHelper;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.ProposalDetailQuerySuccessResponseDto;
 import org.zerock.voteservice.adapter.in.web.domain.schema.ProposalDetailSchema;
 import org.zerock.voteservice.adapter.in.common.Processor;
@@ -16,7 +16,7 @@ import org.zerock.voteservice.adapter.out.grpc.proxy.ProposalQueryProxy;
 @Log4j2
 @Service
 public class ProposalDetailQueryProcessor implements Processor<
-        ProposalDetailQueryRequestDto,
+        ProposalDetailQueryGrpcRequestDto,
         GrpcProposalDetailQueryResponseResult
         > {
 
@@ -33,18 +33,18 @@ public class ProposalDetailQueryProcessor implements Processor<
 
     @Override
     public GrpcProposalDetailQueryResponseResult execute(
-            ProposalDetailQueryRequestDto dto
+            ProposalDetailQueryGrpcRequestDto dto
     ) {
         return this.proxy.getProposalDetail(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            ProposalDetailQueryRequestDto dto,
+            ProposalDetailQueryGrpcRequestDto dto,
             GrpcProposalDetailQueryResponseResult result
     ) {
         ProposalDetailSchema proposalDetailSchema = this.helper.mapToProposalDetailSchema(
-                result.getGrpcResponseData().getProposal()
+                result.getData().getProposal()
         );
 
         ProposalDetailQuerySuccessResponseDto successDto = ProposalDetailQuerySuccessResponseDto

@@ -3,12 +3,13 @@ package org.zerock.voteservice.adapter.out.grpc.proxy;
 import domain.event.ballot.create.protocol.BallotCacheEventResponse;
 import domain.event.ballot.create.protocol.BallotValidateEventResponse;
 import domain.vote.submit.protocol.SubmitBallotTransactionResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotCachingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotTransactionRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotCachingGrpcRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotTransactionGrpcRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotCachingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotTransactionResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotValidationResponseResult;
@@ -19,25 +20,18 @@ import org.zerock.voteservice.adapter.out.grpc.status.GrpcBallotCachingResponseS
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcBallotTransactionResponseStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcBallotValidationResponseStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;
-import org.zerock.voteservice.adapter.out.grpc.stub.BallotTransactionServiceGrpcStub;
-import org.zerock.voteservice.adapter.out.grpc.stub.BallotCreateEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.GrpcBallotTransactionServiceStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.GrpcBallotCreateEventServiceStub;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class BallotCreateProxy {
-    private final BallotTransactionServiceGrpcStub blockchainNodeStub;
-    private final BallotCreateEventServiceGrpcStub cahceServerStub;
-
-    public BallotCreateProxy(
-            BallotTransactionServiceGrpcStub blockchainNodeStub,
-            BallotCreateEventServiceGrpcStub cahceServerStub
-    ) {
-        this.blockchainNodeStub = blockchainNodeStub;
-        this.cahceServerStub = cahceServerStub;
-    }
+    private final GrpcBallotTransactionServiceStub blockchainNodeStub;
+    private final GrpcBallotCreateEventServiceStub cacheServerStub;
 
     public GrpcBallotValidationResponseResult validateBallot(
-            BallotValidationRequestDto dto
+            BallotValidationGrpcRequestDto dto
     ) {
         GrpcBallotValidationResponseResult result = new GrpcBallotValidationResponseResult();
 
@@ -46,7 +40,7 @@ public class BallotCreateProxy {
         GrpcBallotValidationResponseData data;
 
         try {
-            BallotValidateEventResponse response = this.cahceServerStub.validateBallot(
+            BallotValidateEventResponse response = this.cacheServerStub.validateBallot(
                     dto.getUserHash(), dto.getTopic(), dto.getOption()
             );
 
@@ -60,7 +54,7 @@ public class BallotCreateProxy {
             data = null;
 
             String errorLogMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
-                    cahceServerStub.getLogPrefix(), cahceServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
+                    cacheServerStub.getLogPrefix(), cacheServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
 
             log.error(errorLogMessage);
 
@@ -78,7 +72,7 @@ public class BallotCreateProxy {
     }
 
     public GrpcBallotTransactionResponseResult submitBallotTransaction(
-            BallotTransactionRequestDto dto
+            BallotTransactionGrpcRequestDto dto
     ) {
         GrpcBallotTransactionResponseResult result = new GrpcBallotTransactionResponseResult();
 
@@ -119,7 +113,7 @@ public class BallotCreateProxy {
     }
 
     public GrpcBallotCachingResponseResult cacheBallot(
-            BallotCachingRequestDto dto
+            BallotCachingGrpcRequestDto dto
     ) {
         GrpcBallotCachingResponseResult result = new GrpcBallotCachingResponseResult();
 
@@ -128,7 +122,7 @@ public class BallotCreateProxy {
         GrpcBallotCachingResponseData data;
 
         try {
-            BallotCacheEventResponse response = this.cahceServerStub.cacheBallot(
+            BallotCacheEventResponse response = this.cacheServerStub.cacheBallot(
                     dto.getUserHash(), dto.getVoteHash(), dto.getTopic()
             );
 
@@ -142,7 +136,7 @@ public class BallotCreateProxy {
             data = null;
 
             String errorLogMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
-                    cahceServerStub.getLogPrefix(), cahceServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
+                    cacheServerStub.getLogPrefix(), cacheServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
 
             log.error(errorLogMessage);
 

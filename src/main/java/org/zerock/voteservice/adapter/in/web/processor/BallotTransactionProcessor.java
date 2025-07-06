@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotTransactionResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotTransactionRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotTransactionGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.BallotTransactionSuccessResponseDto;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotCreateProxy;
@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.out.grpc.proxy.BallotCreateProxy;
 @Log4j2
 @Service
 public class BallotTransactionProcessor implements Processor<
-        BallotTransactionRequestDto,
+        BallotTransactionGrpcRequestDto,
         GrpcBallotTransactionResponseResult
         > {
 
@@ -26,14 +26,14 @@ public class BallotTransactionProcessor implements Processor<
 
     @Override
     public GrpcBallotTransactionResponseResult execute(
-            BallotTransactionRequestDto dto
+            BallotTransactionGrpcRequestDto dto
     ) {
         return this.proxy.submitBallotTransaction(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            BallotTransactionRequestDto dto,
+            BallotTransactionGrpcRequestDto dto,
             GrpcBallotTransactionResponseResult result
     ) {
         BallotTransactionSuccessResponseDto successDto = BallotTransactionSuccessResponseDto.builder()

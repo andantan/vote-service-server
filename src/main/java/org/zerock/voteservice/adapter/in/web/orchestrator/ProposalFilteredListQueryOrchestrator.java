@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalFilteredListQueryWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.ProposalFilteredListQueryProcessor;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
@@ -45,7 +45,7 @@ public class ProposalFilteredListQueryOrchestrator
 
         log.debug("{}Attempting query proposal filtered list: {} propsals", logPrefix, requestDto.getLimit());
 
-        ProposalFilteredListQueryRequestDto queryRequestDto = ProposalFilteredListQueryRequestDto.builder()
+        ProposalFilteredListQueryGrpcRequestDto queryRequestDto = ProposalFilteredListQueryGrpcRequestDto.builder()
                 .summarize(requestDto.getSummarize())
                 .expired(requestDto.getExpired())
                 .sortOrder(requestDto.getSortOrder())

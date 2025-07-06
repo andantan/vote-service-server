@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotCachingGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.BallotCreateWebClientRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotTransactionRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotTransactionGrpcRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.BallotCachingProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.BallotTransactionProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.BallotValidationProcessor;
@@ -57,7 +57,7 @@ public class BallotCreateOrchestrator extends AbstractOrchestrator<BallotCreateW
         log.debug("{}Attempting create ballot for topic: {}", logPrefix, requestDto.getTopic());
 
         // 1. Ballot Validation Process
-        BallotValidationRequestDto validationRequestDto = BallotValidationRequestDto.builder()
+        BallotValidationGrpcRequestDto validationRequestDto = BallotValidationGrpcRequestDto.builder()
                 .userHash(userDetails.getUserHash())
                 .topic(requestDto.getTopic())
                 .option(requestDto.getOption())
@@ -73,7 +73,7 @@ public class BallotCreateOrchestrator extends AbstractOrchestrator<BallotCreateW
             );
         }
 
-        BallotTransactionRequestDto transactionRequestDto = BallotTransactionRequestDto.builder()
+        BallotTransactionGrpcRequestDto transactionRequestDto = BallotTransactionGrpcRequestDto.builder()
                 .userHash(userDetails.getUserHash())
                 .topic(requestDto.getTopic())
                 .option(requestDto.getOption())
@@ -90,7 +90,7 @@ public class BallotCreateOrchestrator extends AbstractOrchestrator<BallotCreateW
         }
 
         // 3. Ballot Caching Process
-        BallotCachingRequestDto cachingRequestDto = BallotCachingRequestDto.builder()
+        BallotCachingGrpcRequestDto cachingRequestDto = BallotCachingGrpcRequestDto.builder()
                 .userHash(userDetails.getUserHash())
                 .voteHash(transactionResult.getVoteHash())
                 .topic(requestDto.getTopic())

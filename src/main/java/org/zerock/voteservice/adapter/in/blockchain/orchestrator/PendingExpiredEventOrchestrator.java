@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.blockchain.domain.dto.requests.blockchain.PendingExpiredEventBlockchainRequestDto;
-import org.zerock.voteservice.adapter.in.blockchain.domain.dto.requests.grpc.PendingExpiredEventRequestDto;
+import org.zerock.voteservice.adapter.in.blockchain.domain.dto.requests.grpc.PendingExpiredEventGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.blockchain.processor.PendingExpiredEventProcessor;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
@@ -35,7 +35,7 @@ public class PendingExpiredEventOrchestrator
     ) {
         log.debug("{}Attempting report expired pending for topic: {}", logPrefix, requestDto.getVoteId());
 
-        PendingExpiredEventRequestDto requestReportDto = PendingExpiredEventRequestDto.builder()
+        PendingExpiredEventGrpcRequestDto requestReportDto = PendingExpiredEventGrpcRequestDto.builder()
                 .voteId(requestDto.getVoteId())
                 .voteCount(requestDto.getVoteCount())
                 .voteOptions(requestDto.getVoteOptions())

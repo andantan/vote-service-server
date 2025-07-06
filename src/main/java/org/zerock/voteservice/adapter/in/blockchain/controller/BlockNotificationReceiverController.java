@@ -24,7 +24,7 @@ public class BlockNotificationReceiverController extends UnicastNotificationEndp
     public ResponseEntity<? extends ResponseDto> receiveBlockCreatedEvent(
             @RequestBody BlockCreatedEventBlockchainRequestDto dto
     ) {
-        log.debug(">>>>>> Received /submit request. Delegating to BlockCreatedEventOrchestrator.");
+        log.debug(">>>>>> Received /new-block request. Delegating to BlockCreatedEventOrchestrator.");
 
         return blockCreatedEventOrchestrator.orchestrate(dto);
     }

@@ -1,36 +1,32 @@
 package org.zerock.voteservice.adapter.out.grpc.proxy;
 
 import domain.event.proposal.query.protocol.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
 import org.zerock.voteservice.adapter.common.GrpcExceptionHandler;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.data.GrpcProposalDetailQueryResponseData;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalDetailQueryResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.data.GrpcProposalFilteredListQueryResponseData;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalDetailQueryGrpcRequestDto;
 
-import org.zerock.voteservice.adapter.out.grpc.stub.ProposalQueryEventServiceGrpcStub;
+import org.zerock.voteservice.adapter.out.grpc.stub.GrpcProposalQueryEventServiceStub;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcRuntimeStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalDetailQueryResponseStatus;
 import org.zerock.voteservice.adapter.out.grpc.status.GrpcProposalFilteredListQueryResponseStatus;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class ProposalQueryProxy {
 
-    private final ProposalQueryEventServiceGrpcStub cahceServerStub;
+    private final GrpcProposalQueryEventServiceStub cacheServerStub;
 
-    public ProposalQueryProxy(
-            ProposalQueryEventServiceGrpcStub cacheServerStub
-    ) {
-        this.cahceServerStub = cacheServerStub;
-    }
-
-    public GrpcProposalDetailQueryResponseResult getProposalDetail(ProposalDetailQueryRequestDto dto) {
+    public GrpcProposalDetailQueryResponseResult getProposalDetail(ProposalDetailQueryGrpcRequestDto dto) {
         GrpcProposalDetailQueryResponseResult result = new GrpcProposalDetailQueryResponseResult();
 
         GrpcRuntimeStatus serverStatus;
@@ -38,7 +34,7 @@ public class ProposalQueryProxy {
         GrpcProposalDetailQueryResponseData data;
 
         try {
-            GetProposalDetailResponse response = this.cahceServerStub.getProposalDetail(dto.getTopic());
+            GetProposalDetailResponse response = this.cacheServerStub.getProposalDetail(dto.getTopic());
 
             serverStatus = GrpcRuntimeStatus.OK;
             serviceStatus = GrpcProposalDetailQueryResponseStatus.fromCode(response.getStatus());
@@ -50,7 +46,7 @@ public class ProposalQueryProxy {
             data = null;
 
             String errorLogMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
-                    cahceServerStub.getLogPrefix(), cahceServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
+                    cacheServerStub.getLogPrefix(), cacheServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
 
             log.error(errorLogMessage);
 
@@ -67,7 +63,7 @@ public class ProposalQueryProxy {
         return result;
     }
 
-    public GrpcProposalFilteredListQueryResponseResult getFilteredProposalList(ProposalFilteredListQueryRequestDto dto) {
+    public GrpcProposalFilteredListQueryResponseResult getFilteredProposalList(ProposalFilteredListQueryGrpcRequestDto dto) {
         GrpcProposalFilteredListQueryResponseResult result = new GrpcProposalFilteredListQueryResponseResult();
 
         GrpcRuntimeStatus serverStatus;
@@ -82,7 +78,7 @@ public class ProposalQueryProxy {
                 .build();
 
         try {
-            GetFilteredProposalListResponse response = this.cahceServerStub.getFilteredProposalList(filter, sort, paging);
+            GetFilteredProposalListResponse response = this.cacheServerStub.getFilteredProposalList(filter, sort, paging);
 
             serverStatus = GrpcRuntimeStatus.OK;
             serviceStatus = GrpcProposalFilteredListQueryResponseStatus.fromCode(response.getStatus());
@@ -94,7 +90,7 @@ public class ProposalQueryProxy {
             data = null;
 
             String errorLogMessage = String.format("%sgRPC call failed due to %s server unavailability or host resolution issue: [Status: %s, Description: \"%s\"]",
-                    cahceServerStub.getLogPrefix(), cahceServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
+                    cacheServerStub.getLogPrefix(), cacheServerStub.getLayerName(), e.getStatus().getCode(), e.getStatus().getDescription());
 
             log.error(errorLogMessage);
 
@@ -111,7 +107,7 @@ public class ProposalQueryProxy {
         return result;
     }
 
-    private Filter extractFilter(ProposalFilteredListQueryRequestDto dto) {
+    private Filter extractFilter(ProposalFilteredListQueryGrpcRequestDto dto) {
         Filter.Builder filterBuilder = Filter.newBuilder();
 
         if (dto.isExpiredFiltered()) {
@@ -121,7 +117,7 @@ public class ProposalQueryProxy {
         return filterBuilder.build();
     }
 
-    public Sort extractSort(ProposalFilteredListQueryRequestDto dto) {
+    public Sort extractSort(ProposalFilteredListQueryGrpcRequestDto dto) {
         Sort.Builder sortBuilder = Sort.newBuilder();
 
         if (dto.isSortFiltered()) {

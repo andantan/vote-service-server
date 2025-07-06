@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserCachingGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.UserCachingSuccessResponseDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.UserCreateProxy;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserCachingResponseResult;
@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserCachingResponseRes
 @Log4j2
 @Service
 public class UserCachingProcessor implements Processor<
-        UserCachingRequestDto,
+        UserCachingGrpcRequestDto,
         GrpcUserCachingResponseResult
         > {
 
@@ -26,14 +26,14 @@ public class UserCachingProcessor implements Processor<
 
     @Override
     public GrpcUserCachingResponseResult execute(
-            UserCachingRequestDto dto
+            UserCachingGrpcRequestDto dto
     ) {
         return this.proxy.cacheUser(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            UserCachingRequestDto dto,
+            UserCachingGrpcRequestDto dto,
             GrpcUserCachingResponseResult result
     ) {
         UserCachingSuccessResponseDto successDto = UserCachingSuccessResponseDto.builder()

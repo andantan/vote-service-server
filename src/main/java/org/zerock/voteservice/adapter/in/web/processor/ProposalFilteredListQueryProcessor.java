@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalFilteredListQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.helper.ProposalQueryProcessHelper;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalFilteredListQueryResponseResult;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 @Service
 public class ProposalFilteredListQueryProcessor implements Processor<
-        ProposalFilteredListQueryRequestDto,
+        ProposalFilteredListQueryGrpcRequestDto,
         GrpcProposalFilteredListQueryResponseResult
         > {
 
@@ -35,18 +35,18 @@ public class ProposalFilteredListQueryProcessor implements Processor<
 
     @Override
     public GrpcProposalFilteredListQueryResponseResult execute(
-            ProposalFilteredListQueryRequestDto dto
+            ProposalFilteredListQueryGrpcRequestDto dto
     ) {
         return this.proxy.getFilteredProposalList(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            ProposalFilteredListQueryRequestDto dto,
+            ProposalFilteredListQueryGrpcRequestDto dto,
             GrpcProposalFilteredListQueryResponseResult result
     ) {
         List<? extends ProposalResponseSchema> filteredProposalList = this.helper.mapToFilteredProposalList(
-                dto.getSummarize(), result.getGrpcResponseData().getProposalList()
+                dto.getSummarize(), result.getData().getProposalList()
         );
 
         ProposalFilteredListQuerySuccessResponseDto successDto = ProposalFilteredListQuerySuccessResponseDto

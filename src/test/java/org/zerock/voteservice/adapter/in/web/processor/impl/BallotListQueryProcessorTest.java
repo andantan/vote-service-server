@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotListQueryResponseResult;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotListQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.BallotQueryProxy;
 
 @SpringBootTest
@@ -20,7 +20,7 @@ class BallotListQueryProcessorTest extends BaseTestSettings {
     void execute() {
         String userHash = "f786c22ff8faf35a0ece645064e48ad2d36c4beacfb19a4c1ae1dbb7da753a";
 
-        BallotListQueryRequestDto dto = BallotListQueryRequestDto.builder().userHash(userHash).build();
+        BallotListQueryGrpcRequestDto dto = BallotListQueryGrpcRequestDto.builder().userHash(userHash).build();
 
         GrpcBallotListQueryResponseResult result = proxy.getBallotList(dto);
 

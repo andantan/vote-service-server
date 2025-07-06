@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotListQueryRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.BallotListQueryGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.BallotListQueryWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.BallotListQueryProcessor;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcBallotListQueryResponseResult;
@@ -44,7 +44,7 @@ public class BallotListQueryOrchestrator extends AbstractOrchestrator<BallotList
 
         log.debug("{}Attempting query ballot list for userHash: {}", logPrefix, requestDto.getUserHash());
 
-        BallotListQueryRequestDto queryRequestDto = BallotListQueryRequestDto.builder()
+        BallotListQueryGrpcRequestDto queryRequestDto = BallotListQueryGrpcRequestDto.builder()
                 .userHash(requestDto.getUserHash())
                 .build();
 

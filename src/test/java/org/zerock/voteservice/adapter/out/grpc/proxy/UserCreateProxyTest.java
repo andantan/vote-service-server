@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.voteservice.BaseTestSettings;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserValidationResponseResult;
 
 @SpringBootTest
@@ -20,7 +20,7 @@ class UserCreateProxyTest extends BaseTestSettings {
         Integer uid = 5;
         String userHash = "0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
-        UserValidationRequestDto dto = UserValidationRequestDto.builder()
+        UserValidationGrpcRequestDto dto = UserValidationGrpcRequestDto.builder()
                 .uid(uid)
                 .userHash(userHash)
                 .build();

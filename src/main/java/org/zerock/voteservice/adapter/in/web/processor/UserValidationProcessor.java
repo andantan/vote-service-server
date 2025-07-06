@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.zerock.voteservice.adapter.in.common.Processor;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.UserValidationSuccessResponseDto;
 import org.zerock.voteservice.adapter.out.grpc.proxy.UserCreateProxy;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserValidationResponseResult;
@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserValidationResponse
 @Log4j2
 @Service
 public class UserValidationProcessor implements Processor<
-        UserValidationRequestDto,
+        UserValidationGrpcRequestDto,
         GrpcUserValidationResponseResult
         > {
 
@@ -26,14 +26,14 @@ public class UserValidationProcessor implements Processor<
 
     @Override
     public GrpcUserValidationResponseResult execute(
-            UserValidationRequestDto dto
+            UserValidationGrpcRequestDto dto
     ) {
         return this.proxy.validateUser(dto);
     }
 
     @Override
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(
-            UserValidationRequestDto dto,
+            UserValidationGrpcRequestDto dto,
             GrpcUserValidationResponseResult result
     ) {
         UserValidationSuccessResponseDto successDto = UserValidationSuccessResponseDto.builder()

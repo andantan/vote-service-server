@@ -38,7 +38,7 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> getProposalDetail(
             @PathVariable(value = "topic") final String topic
     ) {
-        log.debug(">>>>>> Received /submit request. Delegating to ProposalDetailQueryOrchestrator.");
+        log.debug(">>>>>> Received /proposal/{}/detail request. Delegating to ProposalDetailQueryOrchestrator.", topic);
 
         ProposalDetailQueryWebClientRequestDto requestDto = ProposalDetailQueryWebClientRequestDto.builder()
                 .topic(topic)
@@ -58,7 +58,7 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "limit", defaultValue = "15") Integer limit
     ) {
-        log.debug(">>>>>> Received /submit request. Delegating to ProposalFilteredListQueryOrchestrator.");
+        log.debug(">>>>>> Received /proposal/list request. Delegating to ProposalFilteredListQueryOrchestrator.");
 
         Integer skip = (page - 1) * limit;
 

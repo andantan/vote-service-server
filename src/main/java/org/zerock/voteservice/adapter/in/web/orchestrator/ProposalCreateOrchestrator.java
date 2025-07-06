@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalCreateWebClientRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalPendingRequestDto;
-import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalPendingGrpcRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.ProposalCachingProcessor;
-import org.zerock.voteservice.adapter.in.web.processor.ProposalPendingProcesor;
+import org.zerock.voteservice.adapter.in.web.processor.ProposalPendingProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.ProposalValidationProcessor;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalCachingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcProposalPendingResponseResult;
@@ -24,18 +24,18 @@ import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCreateWebClientRequestDto, ResponseDto> {
 
     private final ProposalValidationProcessor proposalValidationProcessor;
-    private final ProposalPendingProcesor proposalPendingProcesor;
+    private final ProposalPendingProcessor proposalPendingProcessor;
     private final ProposalCachingProcessor proposalCachingProcessor;
 
     public ProposalCreateOrchestrator(
             ControllerHelper controllerHelper,
             ProposalValidationProcessor proposalValidationProcessor,
-            ProposalPendingProcesor proposalPendingProcesor,
+            ProposalPendingProcessor proposalPendingProcessor,
             ProposalCachingProcessor proposalCachingProcessor
     ) {
         super(controllerHelper);
         this.proposalValidationProcessor = proposalValidationProcessor;
-        this.proposalPendingProcesor = proposalPendingProcesor;
+        this.proposalPendingProcessor = proposalPendingProcessor;
         this.proposalCachingProcessor = proposalCachingProcessor;
     }
 
@@ -56,7 +56,7 @@ public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCre
 
         log.debug("{}Attempting create propsoal for topic: {}", logPrefix, requestDto.getTopic());
 
-        ProposalValidationRequestDto validationRequestDto = ProposalValidationRequestDto.builder()
+        ProposalValidationGrpcRequestDto validationRequestDto = ProposalValidationGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
                 .build();
 
@@ -70,22 +70,22 @@ public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCre
             );
         }
 
-        ProposalPendingRequestDto pendingRequestDto = ProposalPendingRequestDto.builder()
+        ProposalPendingGrpcRequestDto pendingRequestDto = ProposalPendingGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
                 .duration(requestDto.getDuration())
                 .build();
 
         GrpcProposalPendingResponseResult pendingResult = processStep(
-                proposalPendingProcesor, pendingRequestDto, logPrefix, "Proposal Pending"
+                proposalPendingProcessor, pendingRequestDto, logPrefix, "Proposal Pending"
         );
 
         if (!pendingResult.getSuccess()) {
             return createFailureResponse(
-                    proposalPendingProcesor, pendingResult, logPrefix, "Proposal Pending"
+                    proposalPendingProcessor, pendingResult, logPrefix, "Proposal Pending"
             );
         }
 
-        ProposalCachingRequestDto cachingRequestDto = ProposalCachingRequestDto.builder()
+        ProposalCachingGrpcRequestDto cachingRequestDto = ProposalCachingGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
                 .duration(requestDto.getDuration())
                 .options(requestDto.getOptions())

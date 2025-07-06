@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,11 +16,14 @@ public class PublicEndpointsProperties {
     @Value("${springdoc.document.endpoint}")
     private String springdocDocumentEndpoint;   // /documents
 
+    @Value("${command.api.base-endpoint}")
+    private String commandApiBaseEndpoint;
+
     @Value("${web-client.api.user-endpoint}")
-    private String webClientUserEndpoint;   // /users
+    private String webClientUserEndpoint;   // /user
 
     @Value("${blockchain-node.unicast.notification-endpoint}")
-    private String blockchainNodeUnicastNotificationEndpoint;
+    private String blockchainNodeUnicastNotificationEndpoint;  // /unicast
 
     public String getRegisterEndpoint() {
         return this.webClientUserEndpoint + "/register";
@@ -33,6 +35,7 @@ public class PublicEndpointsProperties {
 
     public List<String> getPermittedEndpoints() {
         return List.of(
+                this.getCommandApiBaseEndpoint() + "/**",
                 this.getSpringdocDocumentEndpoint() + "/**",
                 this.getRegisterEndpoint() + "/**",
                 this.getLoginEndpoint() + "/**",
