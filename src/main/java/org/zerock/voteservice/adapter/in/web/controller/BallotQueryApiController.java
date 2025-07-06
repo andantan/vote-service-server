@@ -1,5 +1,7 @@
 package org.zerock.voteservice.adapter.in.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +17,7 @@ import org.zerock.voteservice.adapter.in.common.ResponseDto;
 
 @Log4j2
 @RestController
+@Tag(name = "투표지 조회", description = "사용자 투표지 조회 작업 API")
 public class BallotQueryApiController extends QueryApiEndpointMapper {
 
     private final BallotListQueryOrchestrator ballotListQueryOrchestrator;
@@ -23,6 +26,7 @@ public class BallotQueryApiController extends QueryApiEndpointMapper {
         this.ballotListQueryOrchestrator = ballotListQueryOrchestrator;
     }
 
+    @Operation(summary = "투표지 조회", description = "해당 UserHash 값에 대한 투표지 리스트 조회")
     @GetMapping("/{userHash}/votes")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity<? extends ResponseDto> getUserVotes(

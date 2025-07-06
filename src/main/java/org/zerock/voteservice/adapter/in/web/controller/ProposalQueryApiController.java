@@ -1,5 +1,7 @@
 package org.zerock.voteservice.adapter.in.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalF
 
 @Log4j2
 @RestController
+@Tag(name = "투표 내역 조회", description = "투표 내역 조회 작업 API")
 public class ProposalQueryApiController extends QueryApiEndpointMapper {
 
     private final ProposalDetailQueryOrchestrator proposalDetailQueryOrchestrator;
@@ -29,6 +32,7 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
         this.proposalFilteredListQueryOrchestrator = proposalFilteredListQueryOrchestrator;
     }
 
+    @Operation(summary = "투표 상세 내역 조회", description = "해당 Topic 값에 대한 투표 상세 내역 조회")
     @GetMapping("/proposal/{topic}/detail")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity<? extends ResponseDto> getProposalDetail(
@@ -43,6 +47,7 @@ public class ProposalQueryApiController extends QueryApiEndpointMapper {
         return proposalDetailQueryOrchestrator.orchestrate(requestDto);
     }
 
+    @Operation(summary = "투표 내역 리스트 조회", description = "해당 필터링 값에 대한 투표 내역 리스트 조회")
     @GetMapping("/proposal/list")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity<? extends ResponseDto> getFilteredProposals(
