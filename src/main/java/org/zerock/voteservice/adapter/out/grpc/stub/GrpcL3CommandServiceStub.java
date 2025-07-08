@@ -1,8 +1,8 @@
 package org.zerock.voteservice.adapter.out.grpc.stub;
 
-import domain.event.admin.l3.protocol.L3CommandsGrpc;
-import domain.event.admin.l3.protocol.L3HealthCheckRequest;
-import domain.event.admin.l3.protocol.L3HealthCheckResponse;
+import domain.event.admin.L3.protocol.L3CommandsGrpc;
+import domain.event.admin.L3.protocol.L3HealthCheckRequest;
+import domain.event.admin.L3.protocol.L3HealthCheckResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

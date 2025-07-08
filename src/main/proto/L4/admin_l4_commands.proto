@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_package = "domain.event.admin.L4.protocol";
+option java_outer_classname = "AdminL4Commands";
+option java_multiple_files = true;
+
+package admin_L4_commands;
+
+service L4Commands {
+  rpc CheckHealth (L4HealthCheckRequest)
+      returns (L4HealthCheckResponse);
+}
+
+message L4HealthCheckRequest {
+  string ping = 1;
+}
+
+message L4HealthCheckResponse {
+  bool connected = 1;
+  string status = 2;
+  string pong = 3;
+  string ip = 4;
+  repeated uint32 ports = 5;
+}

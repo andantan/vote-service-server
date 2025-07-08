@@ -17,6 +17,6 @@ public class CommandL3HealthCheckAdminRequestDto implements AdminRequestDto {
 
     @Override
     public String command() {
-        return "HealthCheck";
+        return "HealthCheck(L3)";
     }
 }

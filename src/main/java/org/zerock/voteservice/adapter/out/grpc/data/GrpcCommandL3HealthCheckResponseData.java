@@ -1,6 +1,6 @@
 package org.zerock.voteservice.adapter.out.grpc.data;
 
-import domain.event.admin.l3.protocol.L3HealthCheckResponse;
+import domain.event.admin.L3.protocol.L3HealthCheckResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
