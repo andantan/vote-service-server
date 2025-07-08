@@ -11,12 +11,12 @@ import org.zerock.voteservice.adapter.in.common.extend.AdminRequestDto;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommandL3HealthCheckAdminRequestDto implements AdminRequestDto {
+public class CommandL4HealthCheckAdminRequestDto implements AdminRequestDto {
     @JsonProperty("ping")
     private String ping;
 
     @Override
     public String command() {
-        return "HealthCheck(L3)";
+        return "HealthCheck(L4)";
     }
 }

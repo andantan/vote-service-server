@@ -2,6 +2,7 @@ package org.zerock.voteservice.adapter.in.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,16 +17,11 @@ import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.BallotCre
 
 @Log4j2
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "투표지 생성", description = "사용자 투표지 생성 및 검증 작업 API")
 public class BallotCreateApiController extends VoteApiEndpointMapper {
 
     private final BallotCreateOrchestrator ballotCreateOrchestrator;
-
-    public BallotCreateApiController(
-            BallotCreateOrchestrator ballotCreateOrchestrator
-    ) {
-        this.ballotCreateOrchestrator = ballotCreateOrchestrator;
-    }
 
     @Operation(summary = "새로운 투표지 제출", description = "투표지를 제출하고 블록체인에 기록")
     @PostMapping("/submit")

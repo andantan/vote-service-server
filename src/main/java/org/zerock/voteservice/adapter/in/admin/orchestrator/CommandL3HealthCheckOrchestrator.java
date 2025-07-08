@@ -33,24 +33,24 @@ public class CommandL3HealthCheckOrchestrator
             UserAuthenticationDetails userDetails,
             String logPrefix
     ) {
-        log.debug("{}Attempting {} for L3 ping: {}", logPrefix, requestDto.command(), requestDto.getPing());
+        log.debug("{}Attempting {} for L3 HealthCheck: {}", logPrefix, requestDto.command(), requestDto.getPing());
 
         CommandL3HealthCheckGrpcRequestDto healthRequestDto = CommandL3HealthCheckGrpcRequestDto.builder()
                 .ping(requestDto.getPing())
                 .build();
 
         GrpcCommandL3HealthCheckResponseResult healthResult = processStep(
-                commandL3HealthCheckProcessor, healthRequestDto, logPrefix, "Command Health Check"
+                commandL3HealthCheckProcessor, healthRequestDto, logPrefix, "Command Health Check L3"
         );
 
         if (!healthResult.getSuccess()) {
             return createFailureResponse(
-                    commandL3HealthCheckProcessor, healthResult, logPrefix, "Command Health Check"
+                    commandL3HealthCheckProcessor, healthResult, logPrefix, "Command Health Check L3"
             );
         }
 
         return createSuccessResponse(
-                commandL3HealthCheckProcessor, healthRequestDto, healthResult, logPrefix, "Command Health Check"
+                commandL3HealthCheckProcessor, healthRequestDto, healthResult, logPrefix, "Command Health Check L3"
         );
     }
 }

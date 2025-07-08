@@ -1,6 +1,6 @@
 package org.zerock.voteservice.adapter.out.grpc.data;
 
-import domain.event.admin.L3.protocol.L3HealthCheckResponse;
+import domain.event.admin.L4.protocol.L4HealthCheckResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,14 +13,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GrpcCommandL3HealthCheckResponseData implements GrpcResponseData {
+public class GrpcCommandL4HealthCheckResponseData implements GrpcResponseData {
     Boolean success;
     String status;
     String pong;
     String ip;
     List<Integer> ports;
 
-    public GrpcCommandL3HealthCheckResponseData(L3HealthCheckResponse response) {
+    public GrpcCommandL4HealthCheckResponseData(L4HealthCheckResponse response) {
         this.success = response.getConnected();
         this.status = response.getStatus();
         this.pong = response.getPong();
