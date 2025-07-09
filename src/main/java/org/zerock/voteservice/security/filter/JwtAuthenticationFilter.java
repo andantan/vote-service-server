@@ -55,11 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         Claims claims;
         Integer uid;
-        String userHash;
-        String username;
-        String role;
-
-        String logPrefix;
+        String userHash, username, role, logPrefix;
 
         try {
             claims = jwtUtil.extractAllClaims(token);
@@ -69,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 response.sendError(
                         HttpServletResponse.SC_UNAUTHORIZED,
-                        "토큰이 유효하지 않거나 손상되었습니다: 필수 클레임이 누락되었습니다."
+                        "토큰이 유효하지 않습니다."
                 );
 
                 return;

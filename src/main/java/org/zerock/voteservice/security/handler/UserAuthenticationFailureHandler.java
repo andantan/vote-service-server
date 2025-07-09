@@ -35,7 +35,6 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
         log.warn("{}Authentication failed: [Reason: {}, ExceptionType: {}]",
                 logPrefix, exception.getMessage(), exception.getClass().getSimpleName());
 
-
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json; charset=utf-8");
 
