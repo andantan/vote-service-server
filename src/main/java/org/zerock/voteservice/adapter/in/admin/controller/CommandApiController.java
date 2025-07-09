@@ -41,7 +41,7 @@ public class CommandApiController extends CommandApiEndPointMapper {
     public ResponseEntity<? extends ResponseDto> L34ealthCheck(
             @PathVariable(value = "ping") String ping
     ) {
-        log.debug(">>>>>> Received /L4/health/{} request. Delegating to CommandL3HealthCheckOrchestrator.", ping);
+        log.debug(">>>>>> Received /L4/health/{} request. Delegating to CommandL4HealthCheckOrchestrator.", ping);
 
         CommandL4HealthCheckAdminRequestDto requestDto = CommandL4HealthCheckAdminRequestDto.builder().ping(ping).build();
 

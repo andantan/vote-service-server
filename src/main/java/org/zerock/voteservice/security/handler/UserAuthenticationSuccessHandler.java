@@ -39,21 +39,24 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json; charset=utf-8");
 
-        String token = this.getJwtAccessToken(userDetails, authentication);
+        String accessToken = this.getJwtAccessToken(userDetails, authentication);
+        log.debug("{}Access-JWT generated and added to header for user", logPrefix);
+
+        String refreshToken = this.getJwtRefreshToken(userDetails, authentication);
+        log.debug("{}Refresh-JWT generated and added to header for user", logPrefix);
+
         UserAuthenticationSuccessResponseDto successDto = this.getSuccessResponseDto(userDetails);
 
-        response.addHeader("Authorization", "Bearer " + token);
-
-        log.debug("{}JWT token generated and added to header for user", logPrefix);
-
+        response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addCookie(jwtUtil.createRefreshJwtCookie(refreshToken));
         response.getWriter().write(objectMapper.writeValueAsString(successDto));
         response.getWriter().flush();
 
         log.debug("{}Authentication success response sent to client for user: [Status: {}, Message: {}]",
                 logPrefix, successDto.getStatus(), successDto.getMessage());
 
-        String maskedToken = "..." + token.substring(token.length() - 10);
-        log.info("{}Authentication successed. JWT issued: [Token: \"{}\"]", logPrefix, maskedToken);
+        String maskedAccessToken = "..." + accessToken.substring(accessToken.length() - 10);
+        log.info("{}Authentication successed. Access-JWT issued: [Token: \"{}\"]", logPrefix, maskedAccessToken);
     }
 
     private String getJwtAccessToken(UserAuthenticationDetails userDetails, Authentication authentication) {
@@ -65,7 +68,19 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("사용자에게 할당된 권한이 없습니다."));
 
-        return jwtUtil.createJwt(uid, userHash, username, role);
+        return jwtUtil.createAccessJwt(uid, userHash, username, role);
+    }
+
+    private String getJwtRefreshToken(UserAuthenticationDetails userDetails, Authentication authentication) {
+        Integer uid = userDetails.getUid();
+        String username = userDetails.getUsername();
+        String userHash = userDetails.getUserHash();
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("사용자에게 할당된 권한이 없습니다."));
+
+        return jwtUtil.createRefreshJwt(uid, userHash, username, role);
     }
 
     private UserAuthenticationSuccessResponseDto getSuccessResponseDto(UserAuthenticationDetails userDetails) {
@@ -76,7 +91,6 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                 .httpStatusCode(HttpStatus.OK.value())
                 .uid(userDetails.getUid())
                 .userHash(userDetails.getUserHash())
-                .expireMinutes(jwtUtil.getExpireMinutes())
                 .build();
     }
 }

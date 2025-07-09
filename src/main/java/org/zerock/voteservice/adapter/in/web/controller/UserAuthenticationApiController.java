@@ -13,8 +13,8 @@ import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserAuthe
 
 @Log4j2
 @RestController
-@Tag(name = "회원 로그인", description = "회원 로그인 작업 API")
-public class UserApiLoginController extends UserApiEndpointMapper {
+@Tag(name = "회원 인증", description = "회원 인증 관련 작업 API")
+public class UserAuthenticationApiController extends UserApiEndpointMapper {
 
     @PostMapping("/login")
     @Operation(summary = "회원 인증 요청", description = "회원 개인 정보를 통한 인증 요청")

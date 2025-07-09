@@ -17,7 +17,4 @@ public class UserAuthenticationSuccessResponseDto extends CommonResponseDto {
 
     @JsonProperty("user_hash")
     private String userHash;
-
-    @JsonProperty("expire_minutes")
-    private Long expireMinutes;
 }

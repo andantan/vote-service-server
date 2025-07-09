@@ -2,6 +2,7 @@ package org.zerock.voteservice.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -11,13 +12,10 @@ import java.io.IOException;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class UserAuthenticationErrorHandler {
 
     private final ObjectMapper objectMapper;
-
-    public UserAuthenticationErrorHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     public void handleGenericError(
             HttpServletResponse response, HttpStatus httpStatus, String message
