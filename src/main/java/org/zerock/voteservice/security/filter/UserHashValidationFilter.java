@@ -52,7 +52,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
             log.error("UserHashValidationFilter: {} Request URI: {}", errorMessage, request.getRequestURI());
 
             response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
+                    HttpServletResponse.SC_FORBIDDEN,
                     "사용자 인증에 실패했습니다. 다시 로그인해주세요."
             );
 
@@ -70,7 +70,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
                     logPrefix, USER_HASH_HEADER);
 
             response.sendError(
-                    HttpServletResponse.SC_BAD_REQUEST,
+                    HttpServletResponse.SC_FORBIDDEN,
                     "요청 헤더에 사용자 해시가 없습니다."
             );
 
@@ -127,7 +127,7 @@ public class UserHashValidationFilter extends OncePerRequestFilter {
             return;
         }
 
-        log.info("{}UserHash validation successful", logPrefix);
+        log.debug("{}UserHash validation successful", logPrefix);
         filterChain.doFilter(request, response);
     }
 

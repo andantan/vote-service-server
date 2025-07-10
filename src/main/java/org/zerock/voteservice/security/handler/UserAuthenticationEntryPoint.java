@@ -28,7 +28,7 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
         Integer statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String errorMessage = (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
 
-        HttpStatus httpStatus = statusCode != null ? HttpStatus.valueOf(statusCode) : HttpStatus.UNAUTHORIZED;
+        HttpStatus httpStatus = statusCode != null ? HttpStatus.valueOf(statusCode) : HttpStatus.FORBIDDEN;
         String message;
 
         if (errorMessage != null && !errorMessage.isEmpty()) {

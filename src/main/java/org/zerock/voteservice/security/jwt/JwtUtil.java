@@ -1,7 +1,8 @@
 package org.zerock.voteservice.security.jwt;
 
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
 import io.jsonwebtoken.Jwts;
@@ -14,18 +15,17 @@ import org.zerock.voteservice.tool.time.DateUtil;
 
 @Component
 public class JwtUtil {
-    private final CookieUtil cookieUtil;
+    private final static String ACCESS_TOKEN_CATEGORY = "access";
+    private final static String REFRESH_TOKEN_CATEGORY = "refresh";
     private final SecretKey secretKey;
-    private final Integer accessJwtExpireSeconds;
-    private final Integer refreshJwtExpireSeconds;
+    @Getter private final Integer accessJwtExpireSeconds;
+    @Getter private final Integer refreshJwtExpireSeconds;
 
     public JwtUtil(
-            CookieUtil cookieUtil,
             @Value("${spring.security.jwt.secret.key}") String secretKey,
             @Value("${spring.security.jwt.access.expire.delta}") Integer accessJwtExpireSeconds,
             @Value("${spring.security.jwt.refresh.expire.delta}") Integer refreshJwtExpireSeconds
     ) {
-        this.cookieUtil = cookieUtil;
         this.secretKey = new SecretKeySpec(
                 secretKey.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm()
@@ -42,8 +42,8 @@ public class JwtUtil {
             String role
     ) {
         Integer expireDelta = switch (category) {
-            case "access" -> this.accessJwtExpireSeconds;
-            case "refresh" -> this.refreshJwtExpireSeconds;
+            case ACCESS_TOKEN_CATEGORY -> this.accessJwtExpireSeconds;
+            case REFRESH_TOKEN_CATEGORY -> this.refreshJwtExpireSeconds;
             default -> 0;
         };
 
@@ -60,15 +60,11 @@ public class JwtUtil {
     }
 
     public String createAccessJwt(Integer uid, String userHash, String username, String role) {
-        return this.createJwtToken("access", uid, userHash, username, role);
+        return this.createJwtToken(ACCESS_TOKEN_CATEGORY, uid, userHash, username, role);
     }
 
     public String createRefreshJwt(Integer uid, String userHash, String username, String role) {
-        return this.createJwtToken("refresh", uid, userHash, username, role);
-    }
-
-    public Cookie createRefreshJwtCookie(String refreshToken) {
-        return this.cookieUtil.createHttpOnlyCookie("refresh", refreshToken, this.accessJwtExpireSeconds);
+        return this.createJwtToken(REFRESH_TOKEN_CATEGORY, uid, userHash, username, role);
     }
 
     public Claims extractAllClaims(String token) {
@@ -109,5 +105,24 @@ public class JwtUtil {
                 && getUserHash(claims) != null
                 && getRole(claims) != null
                 && getUsername(claims) != null;
+    }
+
+    public Boolean isExpiredToken(String token) {
+        try {
+            extractAllClaims(token);
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean isAccessToken(Claims claims) {
+        return this.getCategory(claims).equals(ACCESS_TOKEN_CATEGORY);
+    }
+
+    public Boolean isRefreshToken(Claims claims) {
+        return this.getCategory(claims).equals(REFRESH_TOKEN_CATEGORY);
     }
 }

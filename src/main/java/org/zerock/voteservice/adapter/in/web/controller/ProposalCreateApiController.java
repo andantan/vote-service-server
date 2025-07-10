@@ -32,7 +32,7 @@ public class ProposalCreateApiController extends VoteApiEndpointMapper {
     public ResponseEntity<? extends ResponseDto> proposalVote(
             @RequestBody ProposalCreateWebClientRequestDto dto
     ) {
-        log.debug(">>>>>> Received /proposal request. Delegating to BallotCreateOrchestrator.");
+        log.debug(">>>>>> Received /proposal request. Delegating to ProposalCreateOrchestrator.");
 
         return proposalCreateOrchestrator.orchestrate(dto);
     }

@@ -19,12 +19,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
+import org.zerock.voteservice.security.filter.*;
 import org.zerock.voteservice.security.user.UserAuthenticationService;
-import org.zerock.voteservice.security.filter.UserHashValidationFilter;
 import org.zerock.voteservice.security.handler.*;
 import org.zerock.voteservice.security.jwt.JwtUtil;
-import org.zerock.voteservice.security.filter.JwtAuthenticationFilter;
-import org.zerock.voteservice.security.filter.UserAuthenticationFilter;
 import org.zerock.voteservice.security.property.PublicEndpointsProperties;
 
 @Log4j2
@@ -114,17 +112,25 @@ public class SecurityConfig {
     private void customizeSecurityFilterChain(
             HttpSecurity httpSecurity, AuthenticationManager authenticationManager
     ) {
-        httpSecurity.addFilterBefore(
-                this.createJwtAuthenticationFilter(),
-                UsernamePasswordAuthenticationFilter.class
-        );
-        httpSecurity.addFilterAfter(
-                this.createUserHashValidationFilter(),
-                JwtAuthenticationFilter.class
-        );
         httpSecurity.addFilterAt(
                 this.createUserAuthenticationFilter(authenticationManager),
                 UsernamePasswordAuthenticationFilter.class
+        );
+        httpSecurity.addFilterBefore(
+                this.createJwtAccessAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class
+        );
+        httpSecurity.addFilterBefore(
+                this.createJwtRefreshAuthenticationFilter(),
+                JwtAccessAuthenticationFilter.class
+        );
+        httpSecurity.addFilterBefore(
+                this.createJwtValidationFilter(),
+                JwtRefreshAuthenticationFilter.class
+        );
+        httpSecurity.addFilterAfter(
+                this.createUserHashValidationFilter(),
+                JwtAccessAuthenticationFilter.class
         );
     }
 
@@ -147,8 +153,16 @@ public class SecurityConfig {
         return filter;
     }
 
-    private JwtAuthenticationFilter createJwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, publicEndpointsProperties);
+    private JwtValidationFilter createJwtValidationFilter() {
+        return new JwtValidationFilter(jwtUtil, publicEndpointsProperties);
+    }
+
+    private JwtRefreshAuthenticationFilter createJwtRefreshAuthenticationFilter() {
+        return new JwtRefreshAuthenticationFilter(jwtUtil, objectMapper, publicEndpointsProperties);
+    }
+
+    private JwtAccessAuthenticationFilter createJwtAccessAuthenticationFilter() {
+        return new JwtAccessAuthenticationFilter(jwtUtil, publicEndpointsProperties);
     }
 
     private UserHashValidationFilter createUserHashValidationFilter() {
