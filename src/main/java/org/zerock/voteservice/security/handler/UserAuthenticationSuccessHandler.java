@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.UserAuthenticationSuccessResponseDto;
 import org.zerock.voteservice.security.jwt.JwtUtil;
+import org.zerock.voteservice.tool.http.HttpHelper;
 
 import java.io.IOException;
 
@@ -40,15 +41,16 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         response.setContentType("application/json; charset=utf-8");
 
         String accessToken = this.getJwtAccessToken(userDetails, authentication);
-        log.debug("{}Access-JWT generated and added to header for user", logPrefix);
-
         String refreshToken = this.getJwtRefreshToken(userDetails, authentication);
-        log.debug("{}Refresh-JWT generated and added to header for user", logPrefix);
 
         UserAuthenticationSuccessResponseDto successDto = this.getSuccessResponseDto(userDetails);
 
         response.addHeader("Authorization", "Bearer " + accessToken);
-        response.addCookie(jwtUtil.createRefreshJwtCookie(refreshToken));
+        log.debug("{}Access-JWT generated and added to header for user", logPrefix);
+
+        response.addCookie(HttpHelper.createRefreshTokenCookie(refreshToken, jwtUtil.getRefreshJwtExpireSeconds()));
+        log.debug("{}Refresh-JWT generated and added to cookie for user", logPrefix);
+
         response.getWriter().write(objectMapper.writeValueAsString(successDto));
         response.getWriter().flush();
 
