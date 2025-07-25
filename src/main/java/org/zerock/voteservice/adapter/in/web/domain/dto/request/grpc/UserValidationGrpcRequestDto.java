@@ -11,6 +11,6 @@ import org.zerock.voteservice.adapter.in.common.extend.GrpcRequestDto;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserValidationGrpcRequestDto implements GrpcRequestDto {
-    private Integer uid;
+    private Long uid;
     private String userHash;
 }

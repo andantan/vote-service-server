@@ -36,7 +36,7 @@ public class JwtUtil {
 
     private String createJwtToken(
             String category,
-            Integer uid,
+            Long uid,
             String userHash,
             String username,
             String role
@@ -59,11 +59,11 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createAccessJwt(Integer uid, String userHash, String username, String role) {
+    public String createAccessJwt(Long uid, String userHash, String username, String role) {
         return this.createJwtToken(ACCESS_TOKEN_CATEGORY, uid, userHash, username, role);
     }
 
-    public String createRefreshJwt(Integer uid, String userHash, String username, String role) {
+    public String createRefreshJwt(Long uid, String userHash, String username, String role) {
         return this.createJwtToken(REFRESH_TOKEN_CATEGORY, uid, userHash, username, role);
     }
 
@@ -79,8 +79,8 @@ public class JwtUtil {
         return claims.get("category", String.class);
     }
 
-    public Integer getUid(Claims claims) {
-        return claims.get("uid", Integer.class);
+    public Long getUid(Claims claims) {
+        return claims.get("uid", Long.class);
     }
 
     public String getUserHash(Claims claims) {
@@ -93,6 +93,10 @@ public class JwtUtil {
 
     public String getRole(Claims claims) {
         return claims.get("role", String.class);
+    }
+
+    public Long getExpiration(Claims claims) {
+        return claims.get("exp", Long.class);
     }
 
     public Boolean validateEssentialClaims(Claims claims) {

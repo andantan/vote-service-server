@@ -75,7 +75,7 @@ public class HttpHelper {
     }
 
     public void setAuthenticationContext(
-            Integer uid, String username, String userHash, String role
+            Long uid, String username, String userHash, String role
     ) throws IllegalArgumentException {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserEntity userEntity = UserEntity.newJwtUserEntity(uid, username, role);

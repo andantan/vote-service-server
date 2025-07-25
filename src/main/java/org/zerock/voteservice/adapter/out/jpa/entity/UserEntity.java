@@ -27,7 +27,7 @@ public class UserEntity {
             nullable = false,
             updatable = false
     )
-    private Integer uid;
+    private Long uid;
 
     @Column(
             name = "username",
@@ -142,7 +142,7 @@ public class UserEntity {
     }
 
     public static UserEntity newJwtUserEntity(
-            Integer uid, String username, String role
+            Long uid, String username, String role
     ) throws IllegalArgumentException {
         String enumRoleString = role.startsWith("ROLE_") ? role.substring("ROLE_".length()) : role;
 

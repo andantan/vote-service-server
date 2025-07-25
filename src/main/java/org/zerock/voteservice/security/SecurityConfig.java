@@ -2,6 +2,7 @@ package org.zerock.voteservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,16 +20,19 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.zerock.voteservice.security.filter.*;
 import org.zerock.voteservice.security.user.UserAuthenticationService;
 import org.zerock.voteservice.security.handler.*;
 import org.zerock.voteservice.security.jwt.JwtUtil;
 import org.zerock.voteservice.security.property.PublicEndpointsProperties;
+import org.zerock.voteservice.security.user.UserRefreshTokenRotateService;
 
 @Log4j2
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${spring.security.username.parameter.property}")
@@ -38,25 +42,12 @@ public class SecurityConfig {
     private String passwordParameterProperty;
 
     private final UserAuthenticationErrorHandler userAuthenticationErrorHandler;
+    private final UserRefreshTokenRotateService userRefreshTokenRotateService;
     private final UserAuthenticationService userAuthenticationService;
     private final PublicEndpointsProperties publicEndpointsProperties;
+    private final CorsConfigurationSource corsConfigurationSource;
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
-
-
-    public SecurityConfig(
-            UserAuthenticationErrorHandler userAuthenticationErrorHandler,
-            UserAuthenticationService userAuthenticationService,
-            PublicEndpointsProperties publicEndpointsProperties,
-            ObjectMapper objectMapper,
-            JwtUtil jwtUtil
-    ) {
-        this.userAuthenticationErrorHandler = userAuthenticationErrorHandler;
-        this.userAuthenticationService = userAuthenticationService;
-        this.publicEndpointsProperties = publicEndpointsProperties;
-        this.objectMapper = objectMapper;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -87,9 +78,10 @@ public class SecurityConfig {
     private void customizeRequestAuthorization(
             HttpSecurity httpSecurity
     ) throws Exception {
+        httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
-        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
+        // httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(publicEndpointsProperties.getPermittedRequestMatchers()).permitAll()
                 .anyRequest().authenticated());
@@ -144,7 +136,9 @@ public class SecurityConfig {
         filter.setUsernameParameter(usernameParameterProperty);
         filter.setPasswordParameter(passwordParameterProperty);
 
-        UserAuthenticationSuccessHandler successHandler = new UserAuthenticationSuccessHandler(objectMapper, jwtUtil);
+        UserAuthenticationSuccessHandler successHandler = new UserAuthenticationSuccessHandler(
+                userRefreshTokenRotateService, objectMapper, jwtUtil
+        );
         UserAuthenticationFailureHandler failureHandler = new UserAuthenticationFailureHandler(objectMapper);
 
         filter.setAuthenticationSuccessHandler(successHandler);
@@ -158,7 +152,9 @@ public class SecurityConfig {
     }
 
     private JwtRefreshAuthenticationFilter createJwtRefreshAuthenticationFilter() {
-        return new JwtRefreshAuthenticationFilter(jwtUtil, objectMapper, publicEndpointsProperties);
+        return new JwtRefreshAuthenticationFilter(
+                jwtUtil, objectMapper, publicEndpointsProperties, userRefreshTokenRotateService
+        );
     }
 
     private JwtAccessAuthenticationFilter createJwtAccessAuthenticationFilter() {

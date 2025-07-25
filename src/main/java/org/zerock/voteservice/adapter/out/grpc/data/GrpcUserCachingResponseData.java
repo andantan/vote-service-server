@@ -14,7 +14,7 @@ import org.zerock.voteservice.adapter.out.grpc.common.GrpcResponseData;
 public class GrpcUserCachingResponseData implements GrpcResponseData {
     Boolean success;
     String status;
-    Integer uid;
+    Long uid;
     String userHash;
 
     public GrpcUserCachingResponseData(UserCacheEventResponse response) {

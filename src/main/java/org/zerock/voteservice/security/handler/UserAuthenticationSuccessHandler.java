@@ -3,6 +3,7 @@ package org.zerock.voteservice.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -11,22 +12,18 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
 import org.zerock.voteservice.adapter.in.web.domain.dto.response.UserAuthenticationSuccessResponseDto;
 import org.zerock.voteservice.security.jwt.JwtUtil;
+import org.zerock.voteservice.security.user.UserRefreshTokenRotateService;
 import org.zerock.voteservice.tool.http.HttpHelper;
 
 import java.io.IOException;
 
 
 @Log4j2
+@RequiredArgsConstructor
 public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+    private final UserRefreshTokenRotateService userRefreshTokenRotateService;
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
-
-    public UserAuthenticationSuccessHandler(
-            ObjectMapper objectMapper, JwtUtil jwtUtil
-    ) {
-        this.objectMapper = objectMapper;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Override
     public void onAuthenticationSuccess(
@@ -42,6 +39,9 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         String accessToken = this.getJwtAccessToken(userDetails, authentication);
         String refreshToken = this.getJwtRefreshToken(userDetails, authentication);
+
+        userRefreshTokenRotateService.addRefreshToken(refreshToken);
+        log.debug("{}Refresh rotate configured to db for user", logPrefix);
 
         UserAuthenticationSuccessResponseDto successDto = this.getSuccessResponseDto(userDetails);
 
@@ -62,7 +62,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     }
 
     private String getJwtAccessToken(UserAuthenticationDetails userDetails, Authentication authentication) {
-        Integer uid = userDetails.getUid();
+        Long uid = userDetails.getUid();
         String username = userDetails.getUsername();
         String userHash = userDetails.getUserHash();
         String role = authentication.getAuthorities().stream()
@@ -74,7 +74,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     }
 
     private String getJwtRefreshToken(UserAuthenticationDetails userDetails, Authentication authentication) {
-        Integer uid = userDetails.getUid();
+        Long uid = userDetails.getUid();
         String username = userDetails.getUsername();
         String userHash = userDetails.getUserHash();
         String role = authentication.getAuthorities().stream()

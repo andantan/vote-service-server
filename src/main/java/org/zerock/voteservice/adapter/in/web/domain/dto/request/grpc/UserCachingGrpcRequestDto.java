@@ -9,7 +9,7 @@ import org.zerock.voteservice.adapter.in.common.extend.GrpcRequestDto;
 @AllArgsConstructor
 @Builder
 public class UserCachingGrpcRequestDto implements GrpcRequestDto {
-    private Integer uid;
+    private Long uid;
     private String userHash;
     private String gender;
     private Timestamp birthDate;

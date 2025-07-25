@@ -37,7 +37,7 @@ public class UserRegisterServiceResult {
                 .build();
     }
 
-    public Integer getUid() {
+    public Long getUid() {
         return this.userEntity.getUid();
     }
 

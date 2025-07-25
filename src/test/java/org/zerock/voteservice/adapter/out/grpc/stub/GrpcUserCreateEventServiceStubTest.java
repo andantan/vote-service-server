@@ -24,7 +24,7 @@ class GrpcUserCreateEventServiceStubTest extends BaseTestSettings {
 
     @Test
     void validateUser() {
-        Integer uid = 0;
+        Long uid = 0L;
         String userHash = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
         try {
@@ -47,7 +47,7 @@ class GrpcUserCreateEventServiceStubTest extends BaseTestSettings {
 
     @Test
     void cacheUser() {
-        Integer uid = 0;
+        Long uid = 0L;
         String userHash = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
         String gender = "M";
         Timestamp birthDate = DateConverter.toTimestamp(
