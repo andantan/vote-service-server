@@ -1,5 +1,6 @@
 package org.zerock.voteservice.config;
 
+import com.fasterxml.jackson.core.JsonParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ public class ApplicationBeanConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
 
         return objectMapper;
     }

@@ -70,7 +70,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
         if (httpHelper.isMissingRefreshToken(refreshTokenCookieName)) {
             log.warn("Refresh token cookie not found in the request.");
-            httpHelper.writeUnauthorizedError("리프레시 토큰이 필요합니다. 다시 로그인해주세요.");
+            httpHelper.writeUnauthorizedError("리프레시 토큰이 필요합니다. 다시 로그인 해주세요.");
             return;
         }
 
@@ -79,7 +79,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
             if (!this.jwtUtil.validateEssentialClaims(refreshTokenClaims) || !this.jwtUtil.isRefreshToken(refreshTokenClaims)) {
                 log.warn("Essential claims are missing or invalid in JWT token. (Path: {})", requestUri);
-                httpHelper.writeForbiddenError("리프래시 토큰이 유효하지 않습니다.");
+                httpHelper.writeForbiddenError("리프래시 토큰이 유효하지 않습니다. 다시 로그인 해주세요.");
 
                 return;
             }

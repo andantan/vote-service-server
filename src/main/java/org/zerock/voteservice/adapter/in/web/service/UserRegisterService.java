@@ -66,7 +66,7 @@ public class UserRegisterService {
     }
 
     @Transactional
-    public void rollbackUserCreation(String attemptedUsername, Integer uid) {
+    public void rollbackUserCreation(String attemptedUsername, Long uid) {
         String logPrefix = String.format("[AttemptingRegisterUsername:%s] ", attemptedUsername);
 
         try {

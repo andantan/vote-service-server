@@ -77,7 +77,7 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
             return this.userRegisterService.getFailureResponseEntity(userSavedServiceResult);
         }
 
-        Integer savedUserUid = userSavedServiceResult.getUid();
+        Long savedUserUid = userSavedServiceResult.getUid();
         String savedUsername = userSavedServiceResult.getUsername();
 
         log.debug("{}User successfully saved to DB: [UID: {}]", logPrefix, savedUserUid);

@@ -1,5 +1,6 @@
 package org.zerock.voteservice.security.user;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,12 +14,9 @@ import java.util.Optional;
 
 @Log4j2
 @Service
+@AllArgsConstructor
 public class UserAuthenticationService implements UserDetailsService {
     private final UserRepository userRepository;
-
-    public UserAuthenticationService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,7 +32,7 @@ public class UserAuthenticationService implements UserDetailsService {
         return new UserAuthenticationDetails(userEntity, null);
     }
 
-    public Optional<UserEntity> loadUserByJwt(Integer jwtUid, String jwtUsername) {
+    public Optional<UserEntity> loadUserByJwt(Long jwtUid, String jwtUsername) {
         return this.userRepository.findByUidAndUsername(jwtUid, jwtUsername);
     }
 }

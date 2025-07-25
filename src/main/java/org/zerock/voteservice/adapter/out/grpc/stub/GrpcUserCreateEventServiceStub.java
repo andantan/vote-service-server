@@ -29,7 +29,7 @@ public class GrpcUserCreateEventServiceStub extends AbstractGrpcClientStub {
     }
 
     public UserValidateEventResponse validateUser(
-            Integer uid, String userHash
+            Long uid, String userHash
     ) throws RuntimeException {
         UserValidateEventRequest request = UserValidateEventRequest.newBuilder()
                 .setUid(uid)
@@ -40,7 +40,7 @@ public class GrpcUserCreateEventServiceStub extends AbstractGrpcClientStub {
     }
 
     public UserCacheEventResponse cacheUser(
-            Integer uid, String userHash, String gender, Timestamp birthDate
+            Long uid, String userHash, String gender, Timestamp birthDate
     ) throws RuntimeException {
         UserCacheEventRequest request = UserCacheEventRequest.newBuilder()
                 .setUid(uid)

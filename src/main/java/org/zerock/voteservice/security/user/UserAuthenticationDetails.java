@@ -39,7 +39,7 @@ public class UserAuthenticationDetails implements UserDetails {
         return this.userEntity.getPassword();
     }
 
-    public Integer getUid() {
+    public Long getUid() {
         return this.userEntity.getUid();
     }
 

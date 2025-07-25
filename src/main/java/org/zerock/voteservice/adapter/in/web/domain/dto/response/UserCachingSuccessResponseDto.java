@@ -13,11 +13,8 @@ import org.zerock.voteservice.adapter.in.common.extend.CommonResponseDto;
 @AllArgsConstructor
 public class UserCachingSuccessResponseDto extends CommonResponseDto {
     @JsonProperty("uid")
-    private Integer uid;
+    private Long uid;
 
     @JsonProperty("user_hash")
     private String userHash;
-
-    @JsonProperty("username")
-    private String username;
 }
