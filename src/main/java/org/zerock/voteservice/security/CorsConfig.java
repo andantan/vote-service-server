@@ -24,14 +24,14 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        String reactClientOrigin = String.format("%s://%s:%d",
-                reactWebServerProtocol,
-                reactWebServerHost,
-                reactWebServerPort
-        );
+//        String reactClientOrigin = String.format("%s://%s:%d",
+//                reactWebServerProtocol,
+//                reactWebServerHost,
+//                reactWebServerPort
+//        );
 
         registry.addMapping("/**")
-                .allowedOrigins(reactClientOrigin)
+                .allowedOrigins("*")
                 .allowedMethods("GET", "POST")
                 .allowCredentials(true)
                 .maxAge(3600);
