@@ -39,6 +39,7 @@ public class PublicEndpointsProperties {
 
     public List<String> getPermittedEndpoints() {
         return List.of(
+                "/favicon.ico",
                 this.getCommandApiBaseEndpoint() + "/**",
                 this.getSpringdocDocumentEndpoint() + "/**",
                 this.getRegisterEndpoint() + "/**",
