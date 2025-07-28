@@ -45,7 +45,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         UserAuthenticationSuccessResponseDto successDto = this.getSuccessResponseDto(userDetails);
 
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("authorization", "Bearer " + accessToken);
         log.debug("{}Access-JWT generated and added to header for user", logPrefix);
 
         response.addCookie(HttpHelper.createRefreshTokenCookie(refreshToken, jwtUtil.getRefreshJwtExpireSeconds()));
