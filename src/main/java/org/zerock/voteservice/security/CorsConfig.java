@@ -1,11 +1,10 @@
 package org.zerock.voteservice.security;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+@Deprecated(since = "2025-08-04")
 public class CorsConfig implements WebMvcConfigurer {
     @Value("${react.web.server.protocol}")
     private String reactWebServerProtocol;
@@ -29,6 +28,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST")
                 .allowedHeaders("*")
                 .allowCredentials(true)
+                .exposedHeaders("authorization")
                 .maxAge(3600);
     }
 }

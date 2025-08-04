@@ -23,7 +23,7 @@ public class PendingNotificationReceiverController extends UnicastNotificationEn
     public ResponseEntity<? extends ResponseDto> receivePendingExpiredEvent(
             @RequestBody PendingExpiredEventBlockchainRequestDto dto
     ) {
-        log.debug(">>>>>> Received /submit request. Delegating to PendingExpiredEventOrchestrator.");
+        log.debug(">>>>>> Received /expired-pending request. Delegating to PendingExpiredEventOrchestrator.");
 
         return pendingExpiredEventOrchestrator.orchestrate(dto);
     }
