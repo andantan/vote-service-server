@@ -11,7 +11,7 @@ import org.zerock.voteservice.adapter.in.common.extend.CommonResponseDto;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserAuthenticationSuccessResponseDto extends CommonResponseDto {
+public class UserInfoSuccessResponseDto extends CommonResponseDto {
     @JsonProperty("uid")
     private Long uid;
 
@@ -20,4 +20,13 @@ public class UserAuthenticationSuccessResponseDto extends CommonResponseDto {
 
     @JsonProperty("user_name")
     private String userName;
+
+    @JsonProperty("real_name")
+    private String realName;
+
+    @JsonProperty("email")
+    private String email;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 }

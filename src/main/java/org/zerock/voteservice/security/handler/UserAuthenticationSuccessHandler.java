@@ -93,6 +93,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                 .httpStatusCode(HttpStatus.OK.value())
                 .uid(userDetails.getUid())
                 .userHash(userDetails.getUserHash())
+                .userName(userDetails.getUsername())
                 .build();
     }
 }
