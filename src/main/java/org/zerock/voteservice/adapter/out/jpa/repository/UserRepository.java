@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Boolean existsByPhoneNumber(String phoneNumber);
 
     Optional<UserEntity> findByUsername(String username);
-
+    Optional<UserEntity> findByUid(Long uid);
     Optional<UserEntity> findByUidAndUsername(Long uid, String username);
 
     void deleteByUid(Long uid);
