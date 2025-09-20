@@ -64,7 +64,13 @@ public class UserInfoService {
     }
 
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(UserInfoServiceResult result) {
+        UserInfoServiceStatus successStatus = result.getStatus();
+
         UserInfoSuccessResponseDto responseDto = UserInfoSuccessResponseDto.builder()
+                .success(true)
+                .status(successStatus.getCode())
+                .message(successStatus.getMessage())
+                .httpStatusCode(successStatus.getHttpStatusCode().value())
                 .uid(result.getUid())
                 .userHash(result.getUserHash())
                 .userName(result.getUsername())
