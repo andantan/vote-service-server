@@ -33,6 +33,11 @@ public class UserInfoQueryOrchestrator extends AbstractOrchestrator<UserInfoWebC
     ) {
         log.debug("{}Attempting query user info for username: {}", logPrefix, requestDto.getUsername());
 
+        if (!userDetails.getUsername().equals(requestDto.getUsername())) {
+            log.warn("{}Attempted to query info for abnormal username: {}, request username: {}", logPrefix, requestDto.getUsername(), userDetails.getUsername());
+            return this.userInfoService.getAbnormalResponseEntity();
+        }
+
         UserInfoRequestDto userInfoRequestDto = UserInfoRequestDto.builder()
                 .uid(requestDto.getUid())
                 .username(requestDto.getUsername())
