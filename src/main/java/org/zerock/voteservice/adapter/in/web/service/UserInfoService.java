@@ -50,19 +50,6 @@ public class UserInfoService {
         return UserInfoServiceResult.success(userEntity);
     }
 
-    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(UserInfoServiceResult result) {
-        UserInfoServiceStatus failureStatus = result.getStatus();
-
-        CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
-                .success(false)
-                .status(failureStatus.getCode())
-                .message(failureStatus.getMessage())
-                .httpStatusCode(failureStatus.getHttpStatusCode().value())
-                .build();
-
-        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
-    }
-
     public ResponseEntity<? extends ResponseDto> getSuccessResponseEntity(UserInfoServiceResult result) {
         UserInfoServiceStatus successStatus = result.getStatus();
 
@@ -80,6 +67,32 @@ public class UserInfoService {
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.valueOf(responseDto.getHttpStatusCode()));
+    }
+
+    public ResponseEntity<? extends ResponseDto> getFailureResponseEntity(UserInfoServiceResult result) {
+        UserInfoServiceStatus failureStatus = result.getStatus();
+
+        CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
+                .success(false)
+                .status(failureStatus.getCode())
+                .message(failureStatus.getMessage())
+                .httpStatusCode(failureStatus.getHttpStatusCode().value())
+                .build();
+
+        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
+    }
+
+    public ResponseEntity<? extends ResponseDto> getAbnormalResponseEntity() {
+        UserInfoServiceStatus failureStatus = UserInfoServiceStatus.ABNORMAL_REQUEST;
+
+        CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
+                .success(false)
+                .status(failureStatus.getCode())
+                .message(failureStatus.getMessage())
+                .httpStatusCode(failureStatus.getHttpStatusCode().value())
+                .build();
+
+        return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
     }
 }
 

@@ -5,13 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.mapper.UserApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserInfoWebClientRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserPasswordModifyWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.orchestrator.UserInfoQueryOrchestrator;
+import org.zerock.voteservice.adapter.in.web.orchestrator.UserModifyPasswordOrchestrator;
 
 @Log4j2
 @RestController
@@ -19,9 +19,14 @@ import org.zerock.voteservice.adapter.in.web.orchestrator.UserInfoQueryOrchestra
 public class UserInfoApiController extends UserApiEndpointMapper {
 
     private final UserInfoQueryOrchestrator userInfoQueryOrchestrator;
+    private final UserModifyPasswordOrchestrator userModifyPasswordOrchestrator;
 
-    public UserInfoApiController(UserInfoQueryOrchestrator userInfoQueryOrchestrator) {
+    public UserInfoApiController(
+            UserInfoQueryOrchestrator userInfoQueryOrchestrator,
+            UserModifyPasswordOrchestrator userModifyPasswordOrchestrator
+    ) {
         this.userInfoQueryOrchestrator = userInfoQueryOrchestrator;
+        this.userModifyPasswordOrchestrator = userModifyPasswordOrchestrator;
     }
 
     @Operation(summary = "회원 정보 조회", description = "UID를 Primary key로 하여 회원 세부 정보 조회")
@@ -41,5 +46,16 @@ public class UserInfoApiController extends UserApiEndpointMapper {
         log.debug(">>>>>> Received /spec request. Delegating to UserInfoQueryOrchestrator.");
 
         return this.userInfoQueryOrchestrator.orchestrate(dto);
+    }
+
+    @Operation(summary = "회원 비밀번호 변경", description = "UID, username을 Primary key로 하여 회원 비밀번호 변경")
+    @PutMapping("/modify/user-password")
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
+    public ResponseEntity<? extends ResponseDto> modifyUserPassword(
+            @RequestBody UserPasswordModifyWebClientRequestDto dto
+    ) {
+        log.debug(">>>>>> Received /modify/user-password request. Delegating to UserModifyPasswordOrchestrator.");
+
+        return this.userModifyPasswordOrchestrator.orchestrate(dto);
     }
 }
