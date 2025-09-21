@@ -33,6 +33,7 @@ public class ProposalQueryProcessHelper {
 
         return ProposalSummarizedSchema.builder()
                 .topic(proposal.getTopic())
+                .proposer(proposal.getProposer())
                 .expired(proposal.getExpired())
                 .expiredAt(kstExpiredAt)
                 .build();
@@ -52,6 +53,7 @@ public class ProposalQueryProcessHelper {
 
         return ProposalDetailSchema.builder()
                 .topic(proposal.getTopic())
+                .proposer(proposal.getProposer())
                 .duration(proposal.getDuration())
                 .expired(proposal.getExpired())
                 .blockHeights(blockHeightSchemas)
