@@ -78,7 +78,7 @@ public class ProposalCreateProxy {
 
         try {
             OpenProposalPendingResponse response = this.blockchainNodeStub.openProposalPending(
-                    dto.getTopic(), dto.getDuration()
+                    dto.getTopic(), dto.getProposer(), dto.getDuration()
             );
 
             serverStatus = GrpcRuntimeStatus.OK;
@@ -117,7 +117,7 @@ public class ProposalCreateProxy {
 
         try {
             ProposalCacheEventResponse response = this.cacheServerStub.cacheProposal(
-                    dto.getTopic(), dto.getDuration(), dto.getOptions()
+                    dto.getTopic(), dto.getProposer(), dto.getDuration(), dto.getOptions()
             );
 
             serverStatus = GrpcRuntimeStatus.OK;

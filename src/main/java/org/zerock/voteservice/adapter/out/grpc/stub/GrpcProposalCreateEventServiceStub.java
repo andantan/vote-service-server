@@ -37,10 +37,11 @@ public class GrpcProposalCreateEventServiceStub extends AbstractGrpcClientStub {
     }
 
     public ProposalCacheEventResponse cacheProposal(
-            String topic, int duration, List<String> options
+            String topic, String proposer, int duration, List<String> options
     ) throws RuntimeException {
         ProposalCacheEventRequest request = ProposalCacheEventRequest.newBuilder()
                 .setTopic(topic)
+                .setProposer(proposer)
                 .setDuration(duration)
                 .addAllOptions(options)
                 .build();

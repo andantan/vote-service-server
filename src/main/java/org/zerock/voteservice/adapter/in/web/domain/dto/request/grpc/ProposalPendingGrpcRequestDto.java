@@ -12,5 +12,6 @@ import org.zerock.voteservice.adapter.in.common.extend.GrpcRequestDto;
 @AllArgsConstructor
 public class ProposalPendingGrpcRequestDto implements GrpcRequestDto {
     private String topic;
+    private String proposer;
     private Integer duration;
 }

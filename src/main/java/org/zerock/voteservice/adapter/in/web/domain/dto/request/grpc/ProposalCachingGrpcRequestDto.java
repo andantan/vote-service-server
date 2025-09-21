@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProposalCachingGrpcRequestDto implements GrpcRequestDto {
     private String topic;
+    private String proposer;
     private Integer duration;
     private List<String> options;
 }

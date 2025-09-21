@@ -54,7 +54,7 @@ public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCre
             );
         }
 
-        log.debug("{}Attempting create propsoal for topic: {}", logPrefix, requestDto.getTopic());
+        log.debug("{}Attempting create propsoal for topic: {}, proposer: {}", logPrefix, requestDto.getTopic(), userDetails.getUserHash());
 
         ProposalValidationGrpcRequestDto validationRequestDto = ProposalValidationGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
@@ -72,6 +72,7 @@ public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCre
 
         ProposalPendingGrpcRequestDto pendingRequestDto = ProposalPendingGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
+                .proposer(userDetails.getUserHash())
                 .duration(requestDto.getDuration())
                 .build();
 
@@ -87,6 +88,7 @@ public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCre
 
         ProposalCachingGrpcRequestDto cachingRequestDto = ProposalCachingGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
+                .proposer(userDetails.getUserHash())
                 .duration(requestDto.getDuration())
                 .options(requestDto.getOptions())
                 .build();

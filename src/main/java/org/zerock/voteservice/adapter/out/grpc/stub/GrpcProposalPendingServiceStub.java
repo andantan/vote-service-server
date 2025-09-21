@@ -26,10 +26,11 @@ public class GrpcProposalPendingServiceStub extends AbstractGrpcClientStub {
     }
 
     public OpenProposalPendingResponse openProposalPending(
-            String topic, int duration
+            String topic, String proposer, int duration
     ) throws RuntimeException {
         OpenProposalPendingRequest request = OpenProposalPendingRequest.newBuilder()
                 .setTopic(topic)
+                .setProposer(proposer)
                 .setDuration(duration)
                 .build();
 
