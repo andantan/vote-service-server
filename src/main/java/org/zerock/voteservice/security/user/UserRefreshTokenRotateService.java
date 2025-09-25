@@ -29,12 +29,12 @@ public class UserRefreshTokenRotateService {
                 .refresh(refreshToken)
                 .build();
 
+        userRefreshTokenRotateRepository.save(entity);
+
         log.info("AddedEntity -> uid: {}", entity.getUid());
         log.info("AddedEntity -> username: {}", entity.getUsername());
         log.info("AddedEntity -> expiration: {}", entity.getExpiration());
         log.info("AddedEntity -> refresh: {}", entity.getRefresh());
-
-        userRefreshTokenRotateRepository.save(entity);
     }
 
     @Transactional
@@ -48,13 +48,31 @@ public class UserRefreshTokenRotateService {
                 .refresh(newRefreshToken)
                 .build();
 
+        userRefreshTokenRotateRepository.save(entity);
+
         log.info("updatedEntity -> uid: {}", entity.getUid());
         log.info("updatedEntity -> username: {}", entity.getUsername());
         log.info("updatedEntity -> expiration: {}", entity.getExpiration());
         log.info("updatedEntity -> refresh: {}", entity.getRefresh());
+    }
 
+    @Transactional
+    public void removeRefreshToken(String refreshToken) {
+        Claims refreshClaims = jwtUtil.extractAllClaims(refreshToken);
 
-        userRefreshTokenRotateRepository.save(entity);
+        UserRefreshTokenRotateEntity entity = UserRefreshTokenRotateEntity.builder()
+                .uid(jwtUtil.getUid(refreshClaims))
+                .username(jwtUtil.getUsername(refreshClaims))
+                .expiration(jwtUtil.getExpiration(refreshClaims))
+                .refresh(refreshToken)
+                .build();
+
+        userRefreshTokenRotateRepository.removeByUid(jwtUtil.getUid(refreshClaims));
+
+        log.info("removedEntity -> uid: {}", entity.getUid());
+        log.info("removedEntity -> username: {}", entity.getUsername());
+        log.info("removedEntity -> expiration: {}", entity.getExpiration());
+        log.info("removedEntity -> refresh: {}", entity.getRefresh());
     }
 
     public Boolean validateRefreshToken(String refreshToken) {

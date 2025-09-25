@@ -124,6 +124,10 @@ public class SecurityConfig {
                 this.createUserHashValidationFilter(),
                 JwtAccessAuthenticationFilter.class
         );
+        httpSecurity.addFilterAfter(
+                this.createUserLogoutFilter(),
+                UserHashValidationFilter.class
+        );
     }
 
     private UserAuthenticationFilter createUserAuthenticationFilter(
@@ -145,6 +149,12 @@ public class SecurityConfig {
         filter.setAuthenticationFailureHandler(failureHandler);
 
         return filter;
+    }
+
+    private UserLogoutFilter createUserLogoutFilter() {
+        return new UserLogoutFilter(
+                userRefreshTokenRotateService, publicEndpointsProperties, objectMapper, jwtUtil
+        );
     }
 
     private JwtValidationFilter createJwtValidationFilter() {

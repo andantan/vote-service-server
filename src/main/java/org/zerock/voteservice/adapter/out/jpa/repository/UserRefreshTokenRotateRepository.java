@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UserRefreshTokenRotateRepository extends JpaRepository<UserRefreshTokenRotateEntity, Long> {
     Optional<UserRefreshTokenRotateEntity> findByUid(Long uid);
+
+    void removeByUid(Long uid);
 }
