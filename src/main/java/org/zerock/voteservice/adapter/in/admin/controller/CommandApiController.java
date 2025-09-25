@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.voteservice.adapter.in.admin.controller.mapper.CommandApiEndPointMapper;
+import org.zerock.voteservice.adapter.in.admin.domain.request.client.CommandIntegratedHealthCheckAdminRequestDto;
 import org.zerock.voteservice.adapter.in.admin.domain.request.client.CommandL3HealthCheckAdminRequestDto;
 import org.zerock.voteservice.adapter.in.admin.domain.request.client.CommandL4HealthCheckAdminRequestDto;
+import org.zerock.voteservice.adapter.in.admin.orchestrator.CommandIntegratedHealthCheckOrchestrator;
 import org.zerock.voteservice.adapter.in.admin.orchestrator.CommandL3HealthCheckOrchestrator;
 import org.zerock.voteservice.adapter.in.admin.orchestrator.CommandL4HealthCheckOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
@@ -23,6 +25,7 @@ public class CommandApiController extends CommandApiEndPointMapper {
 
     private final CommandL3HealthCheckOrchestrator L3HealthCheckerOrchestrator;
     private final CommandL4HealthCheckOrchestrator L4HealthCheckerOrchestrator;
+    private final CommandIntegratedHealthCheckOrchestrator IntegratedHealthCheckerOrchestrator;
 
     @Operation(summary = "L3 상태 확인", description = "L3에 ping(string)을 보내고 이를 반환(pong)하며 서버 네트워크 상태 응답")
     @GetMapping("/L3/health/{ping}")
@@ -46,5 +49,17 @@ public class CommandApiController extends CommandApiEndPointMapper {
         CommandL4HealthCheckAdminRequestDto requestDto = CommandL4HealthCheckAdminRequestDto.builder().ping(ping).build();
 
         return L4HealthCheckerOrchestrator.orchestrate(requestDto);
+    }
+
+    @Operation(summary = "통합 상태 확인", description = "L3, L4에 health check 동시 요청")
+    @GetMapping("/integrated/health/{ping}")
+    public ResponseEntity<? extends ResponseDto> integratedHealthCheck(
+            @PathVariable(value = "ping") String ping
+    ) {
+        log.debug(">>>>>> Received /integrated/health/{} request. Delegating to CommandIntegratedHealthCheckOrchestrator.", ping);
+
+        CommandIntegratedHealthCheckAdminRequestDto requestDto = CommandIntegratedHealthCheckAdminRequestDto.builder().ping(ping).build();
+
+        return this.IntegratedHealthCheckerOrchestrator.orchestrate(requestDto);
     }
 }

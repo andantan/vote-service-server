@@ -33,6 +33,10 @@ public class PublicEndpointsProperties {
         return this.webClientUserEndpoint + "/login";
     }
 
+    public String getLogoutEndpoint() {
+        return this.webClientUserEndpoint + "/logout";
+    }
+
     public String getRefreshTokenEndpoint() {
         return this.webClientUserEndpoint + "/refresh-token";
     }

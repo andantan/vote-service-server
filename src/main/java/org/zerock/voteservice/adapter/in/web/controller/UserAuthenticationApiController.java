@@ -23,4 +23,10 @@ public class UserAuthenticationApiController extends UserApiEndpointMapper {
     ) {
         return null;
     }
+
+    @PostMapping("logout")
+    @Operation(summary = "회원 로그아웃 요청",  description = "로그아웃 요청")
+    public ResponseEntity<? extends ResponseDto> logout() {
+        return null;
+    }
 }
