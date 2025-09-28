@@ -14,4 +14,5 @@ public class BallotTransactionGrpcRequestDto implements GrpcRequestDto {
     private String userHash;
     private String topic;
     private String option;
+    private String salt;
 }

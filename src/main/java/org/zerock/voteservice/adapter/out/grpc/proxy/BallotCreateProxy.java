@@ -82,7 +82,7 @@ public class BallotCreateProxy {
 
         try {
             SubmitBallotTransactionResponse response = this.blockchainNodeStub.submitBallotTransaction(
-                    dto.getUserHash(), dto.getTopic(), dto.getOption()
+                    dto.getUserHash(), dto.getTopic(), dto.getOption(), dto.getSalt()
             );
 
             serverStatus = GrpcRuntimeStatus.OK;
