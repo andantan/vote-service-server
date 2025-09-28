@@ -17,4 +17,7 @@ public class BallotCreateWebClientRequestDto implements RestApiRequestDto {
 
     @JsonProperty("option")
     private String option;
+    
+    @JsonProperty("salt")
+    private String salt;
 }

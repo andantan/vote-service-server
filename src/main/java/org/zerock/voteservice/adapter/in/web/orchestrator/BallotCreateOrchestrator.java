@@ -77,6 +77,7 @@ public class BallotCreateOrchestrator extends AbstractOrchestrator<BallotCreateW
                 .userHash(userDetails.getUserHash())
                 .topic(requestDto.getTopic())
                 .option(requestDto.getOption())
+                .salt(requestDto.getSalt())
                 .build();
 
         GrpcBallotTransactionResponseResult transactionResult = processStep(

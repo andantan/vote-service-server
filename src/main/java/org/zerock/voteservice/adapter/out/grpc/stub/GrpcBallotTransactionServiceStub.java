@@ -26,12 +26,13 @@ public class GrpcBallotTransactionServiceStub extends AbstractGrpcClientStub {
     }
 
     public SubmitBallotTransactionResponse submitBallotTransaction(
-            String userHash, String topic, String option
+            String userHash, String topic, String option, String salt
     ) throws RuntimeException {
         SubmitBallotTransactionRequest request = SubmitBallotTransactionRequest.newBuilder()
                 .setUserHash(userHash)
                 .setOption(option)
                 .setTopic(topic)
+                .setSalt(salt)
                 .build();
 
         return stub.submitBallotTransaction(request);
