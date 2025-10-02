@@ -1,5 +1,6 @@
 package org.zerock.voteservice.adapter.in.web.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,31 +15,24 @@ import org.zerock.voteservice.adapter.out.jpa.repository.UserRepository;
 
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class UserRegisterService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserRegisterService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     public UserRegisterServiceResult validateUserExistence(
-            String username, String email, String phoneNumber
+            UserRegisterRequestDto dto
     ) {
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(dto.getUsername())) {
             return UserRegisterServiceResult.failure(UserRegisterServiceStatus.EXIST_USERNAME);
         }
 
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
             return UserRegisterServiceResult.failure(UserRegisterServiceStatus.EXIST_EMAIL);
         }
 
-        if (userRepository.existsByPhoneNumber(phoneNumber)) {
+        if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
             return UserRegisterServiceResult.failure(UserRegisterServiceStatus.EXIST_PHONENUMBER);
         }
 

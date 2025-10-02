@@ -30,11 +30,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
 
-    // Seciruty dependencies
+    // Security dependencies
     implementation 'org.springframework.boot:spring-boot-starter-security:3.5.0'
 
     // Tools dependencies
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // Test framework dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

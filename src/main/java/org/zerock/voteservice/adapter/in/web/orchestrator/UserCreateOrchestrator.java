@@ -10,10 +10,13 @@ import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserCaching
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.internal.UserRegisterRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.UserValidationGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserRegisterWebClientRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.internal.UserVerificationRequestDto;
 import org.zerock.voteservice.adapter.in.web.processor.UserCachingProcessor;
 import org.zerock.voteservice.adapter.in.web.processor.UserValidationProcessor;
 import org.zerock.voteservice.adapter.in.web.service.UserRegisterService;
 import org.zerock.voteservice.adapter.in.web.service.UserRegisterServiceResult;
+import org.zerock.voteservice.adapter.in.web.service.UserVerificationResult;
+import org.zerock.voteservice.adapter.in.web.service.UserVerificationService;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserCachingResponseResult;
 import org.zerock.voteservice.adapter.out.grpc.result.GrpcUserValidationResponseResult;
 import org.zerock.voteservice.security.user.UserAuthenticationDetails;
@@ -26,17 +29,20 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
     private final UserValidationProcessor userValidationProcessor;
     private final UserCachingProcessor userCachingProcessor;
     private final UserRegisterService userRegisterService;
+    private final UserVerificationService userVerificationService;
 
     public UserCreateOrchestrator(
             ControllerHelper controllerHelper,
             UserValidationProcessor userValidationProcessor,
             UserCachingProcessor userCachingProcessor,
-            UserRegisterService userRegisterService
+            UserRegisterService userRegisterService,
+            UserVerificationService userVerificationService
     ) {
         super(controllerHelper);
         this.userValidationProcessor = userValidationProcessor;
         this.userCachingProcessor = userCachingProcessor;
         this.userRegisterService = userRegisterService;
+        this.userVerificationService = userVerificationService;
     }
 
 
@@ -48,6 +54,24 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
     ) {
         log.debug("{}Attempting create user for username: {}", logPrefix, requestDto.getUsername());
 
+        UserVerificationRequestDto verificationRequestDto = UserVerificationRequestDto.builder()
+                .username(requestDto.getUsername())
+                .realname(requestDto.getRealName())
+                .email(requestDto.getEmail())
+                .phoneNumber(requestDto.getPhoneNumber())
+                .code(requestDto.getVerificationCode())
+                .category("register")
+                .build();
+
+        UserVerificationResult verificationServiceResult = this.userVerificationService.matchVerificationCode(verificationRequestDto);
+
+        if (!verificationServiceResult.getSuccess()) {
+            log.debug("{}User email-verification failed for registration: [Status: {}]",
+                    logPrefix, verificationServiceResult.getStatus().getCode());
+
+            return this.userVerificationService.getFailureResponseEntity(verificationServiceResult);
+        }
+
         UserRegisterRequestDto registerRequestDto = UserRegisterRequestDto.builder()
                 .username(requestDto.getUsername())
                 .password(requestDto.getPassword())
@@ -57,9 +81,7 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
                 .phoneNumber(requestDto.getPhoneNumber())
                 .build();
 
-        UserRegisterServiceResult validationServiceResult = this.userRegisterService.validateUserExistence(
-                registerRequestDto.getUsername(), registerRequestDto.getEmail(), registerRequestDto.getPhoneNumber()
-        );
+        UserRegisterServiceResult validationServiceResult = this.userRegisterService.validateUserExistence(registerRequestDto);
 
         if (!validationServiceResult.getSuccess()) {
             log.debug("{}User validation failed for registration: [Status: {}]",
@@ -120,6 +142,8 @@ public class UserCreateOrchestrator extends AbstractOrchestrator<UserRegisterWeb
 
         log.debug("{}User successfully cached to L3-MongoDB: [UserHash: {}]",
                 logPrefix, userSavedServiceResult.getUserHash());
+
+        this.userVerificationService.deleteVerificationCode(verificationRequestDto);
 
         return createSuccessResponse(
                 userCachingProcessor, cachingRequestDto, cachingProcessorResult, logPrefix, "User Create"

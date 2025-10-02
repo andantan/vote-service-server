@@ -10,8 +10,10 @@ import org.zerock.voteservice.adapter.in.common.ResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.mapper.UserApiEndpointMapper;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserInfoWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserPasswordModifyWebClientRequestDto;
+import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.UserPasswordResetWebClientRequestDto;
 import org.zerock.voteservice.adapter.in.web.orchestrator.UserInfoQueryOrchestrator;
 import org.zerock.voteservice.adapter.in.web.orchestrator.UserModifyPasswordOrchestrator;
+import org.zerock.voteservice.adapter.in.web.orchestrator.UserResetPasswordOrchestrator;
 
 @Log4j2
 @RestController
@@ -20,13 +22,16 @@ public class UserInfoApiController extends UserApiEndpointMapper {
 
     private final UserInfoQueryOrchestrator userInfoQueryOrchestrator;
     private final UserModifyPasswordOrchestrator userModifyPasswordOrchestrator;
+    private final UserResetPasswordOrchestrator userResetPasswordOrchestrator;
 
     public UserInfoApiController(
             UserInfoQueryOrchestrator userInfoQueryOrchestrator,
-            UserModifyPasswordOrchestrator userModifyPasswordOrchestrator
+            UserModifyPasswordOrchestrator userModifyPasswordOrchestrator,
+            UserResetPasswordOrchestrator userResetPasswordOrchestrator
     ) {
         this.userInfoQueryOrchestrator = userInfoQueryOrchestrator;
         this.userModifyPasswordOrchestrator = userModifyPasswordOrchestrator;
+        this.userResetPasswordOrchestrator = userResetPasswordOrchestrator;
     }
 
     @Operation(summary = "회원 정보 조회", description = "UID를 Primary key로 하여 회원 세부 정보 조회")
@@ -57,5 +62,15 @@ public class UserInfoApiController extends UserApiEndpointMapper {
         log.debug(">>>>>> Received /modify/user-password request. Delegating to UserModifyPasswordOrchestrator.");
 
         return this.userModifyPasswordOrchestrator.orchestrate(dto);
+    }
+
+    @Operation(summary = "회원 비밀번호 초기화", description = "비밀번호 초기화를 위한 이메일 인증 요청")
+    @PutMapping("/reset/user-password")
+    public ResponseEntity<? extends ResponseDto> resetUserPassword(
+            @RequestBody UserPasswordResetWebClientRequestDto dto
+    ) {
+        log.debug(">>>>>> Received /reset/user-password request. Delegating to UserResetPasswordOrchestrator.");
+
+        return this.userResetPasswordOrchestrator.orchestrate(dto);
     }
 }
