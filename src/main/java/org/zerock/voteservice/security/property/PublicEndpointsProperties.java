@@ -37,8 +37,12 @@ public class PublicEndpointsProperties {
         return this.webClientUserEndpoint + "/logout";
     }
 
-    public String getRefreshTokenEndpoint() {
-        return this.webClientUserEndpoint + "/refresh-token";
+    public String getEmailEndpoint() {
+        return this.webClientUserEndpoint + "/email-verification";
+    }
+
+    public String getResetPasswordEndpoint() {
+        return this.webClientUserEndpoint + "/reset/user-password";
     }
 
     public List<String> getPermittedEndpoints() {
@@ -48,6 +52,8 @@ public class PublicEndpointsProperties {
                 this.getSpringdocDocumentEndpoint() + "/**",
                 this.getRegisterEndpoint() + "/**",
                 this.getLoginEndpoint() + "/**",
+                this.getEmailEndpoint() + "/**",
+                this.getResetPasswordEndpoint() + "/**",
                 this.getBlockchainNodeUnicastNotificationEndpoint() + "/**"
         );
     }

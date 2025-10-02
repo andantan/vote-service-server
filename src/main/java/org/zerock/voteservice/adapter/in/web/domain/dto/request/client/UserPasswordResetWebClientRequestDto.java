@@ -11,30 +11,30 @@ import org.zerock.voteservice.adapter.in.common.extend.UnauthenticatedRequestDto
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterWebClientRequestDto implements UnauthenticatedRequestDto {
+public class UserPasswordResetWebClientRequestDto implements UnauthenticatedRequestDto {
+    @JsonProperty("uid")
+    private Long uid;
+
     @JsonProperty("username")
     private String username;
-
-    @JsonProperty("password")
-    private String password;
-
-    @JsonProperty("real_name")
-    private String realName;
-
-    @JsonProperty("srn_part")
-    private String srnPart;
 
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("real_name")
+    private String realName;
+
     @JsonProperty("phone_number")
     private String phoneNumber;
+
+    @JsonProperty("new_password")
+    private String newPassword;
 
     @JsonProperty("verification_code")
     private String verificationCode;
 
     @Override
     public String identifier() {
-        return String.format("AttemptingRegisterUsername:%s", username);
+        return String.format("UID:%s ", uid.toString());
     }
 }

@@ -11,6 +11,11 @@ public enum GrpcProposalPendingResponseStatus implements GrpcResponseStatus {
             "요청 처리 성공",
             HttpStatus.OK // 200
     ),
+    INVALID_DURATION(
+      "INVALID_DURATION",
+      "유효하지 않은 투표 진행 기간입니다.",
+            HttpStatus.BAD_REQUEST // 400
+    ),
     PROPOSAL_ALREADY_OPEN(
             "PROPOSAL_ALREADY_OPEN",
             "현재 진행 중인 투표입니다.",
