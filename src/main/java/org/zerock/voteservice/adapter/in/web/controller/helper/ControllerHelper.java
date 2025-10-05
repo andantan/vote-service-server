@@ -28,7 +28,7 @@ public class ControllerHelper {
         CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
                 .success(false)
                 .message(message)
-                .status(status) // 받은 status 인자 사용
+                .status(status)
                 .httpStatusCode(httpStatus.value())
                 .build();
 

@@ -42,6 +42,5 @@ public class UserRegisterApiController extends UserApiEndpointMapper {
         log.debug(">>>>>> Received /email-verification request. Delegating to UserVerificationOrchestrator.");
 
         return this.userVerificationOrchestrator.orchestrate(dto);
-
     }
 }
