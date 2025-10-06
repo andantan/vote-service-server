@@ -17,10 +17,6 @@ public class VerificationCleanupScheduler {
 
     @Scheduled(cron = "0 */10 * * * *")
     public void cleanupExpiredVerification() {
-        log.info("[Scheduler-cron] Starting cleanup task for expired verification data...");
-
-        int deletedCount = userVerificationRepository.deleteByExpirationBefore(new Date());
-
-        log.info("[Scheduler-cron] Successfully deleted {} expired verification records.", deletedCount);
+        userVerificationRepository.deleteByExpirationBefore(new Date());
     }
 }
