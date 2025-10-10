@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.zerock.voteservice.adapter.in.common.extend.AbstractOrchestrator;
 import org.zerock.voteservice.adapter.in.common.ResponseDto;
+import org.zerock.voteservice.adapter.in.common.extend.CommonFailureResponseDto;
 import org.zerock.voteservice.adapter.in.web.controller.helper.ControllerHelper;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.grpc.ProposalCachingGrpcRequestDto;
 import org.zerock.voteservice.adapter.in.web.domain.dto.request.client.ProposalCreateWebClientRequestDto;
@@ -55,6 +56,20 @@ public class ProposalCreateOrchestrator extends AbstractOrchestrator<ProposalCre
         }
 
         log.debug("{}Attempting create propsoal for topic: {}, proposer: {}", logPrefix, requestDto.getTopic(), userDetails.getUserHash());
+
+        String topic = requestDto.getTopic();
+
+        if (topic.contains("/") || topic.contains("#") || topic.contains("$") || topic.contains("\\")) {
+            CommonFailureResponseDto failureDto = CommonFailureResponseDto.builder()
+                    .success(false)
+                    .status("INVALID_TOPIC_VALIDATION")
+                    .message("주제(topic)에는 '/', '#', '$', '\\' 특수문자를 사용할 수 없습니다.")
+                    .httpStatusCode(HttpStatus.BAD_REQUEST.value())
+                    .build();
+
+
+            return new ResponseEntity<>(failureDto, HttpStatus.valueOf(failureDto.getHttpStatusCode()));
+        }
 
         ProposalValidationGrpcRequestDto validationRequestDto = ProposalValidationGrpcRequestDto.builder()
                 .topic(requestDto.getTopic())
